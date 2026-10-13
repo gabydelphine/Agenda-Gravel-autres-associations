@@ -206,14 +206,20 @@ for nom, url in SOURCES.items():
                     f"Détails {titre} {match.group()} {bloc}"
                 )
 
-                                # Cherche un lieu uniquement s'il est indiqué
-                # avant les informations de parcours.
-                debut = re.split(
-                    r"\b(?:VTT|Gravel|Route|Marche)\b",
+                # Le lieu est situé après les horaires
+                # et avant le type de parcours.
+                correspondance = re.search(
+                    r"(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*){2}"
+                    r"(.+?)\s+(?:VTT|Gravel|Route|Marche)\b",
                     bloc,
-                    maxsplit=1,
                     flags=re.IGNORECASE
-                )[0]
+                )
+
+                debut = (
+                    correspondance.group(1).strip()
+                    if correspondance
+                    else ""
+                )
 
                 # Retire les horaires éventuels.
                 debut = re.sub(
