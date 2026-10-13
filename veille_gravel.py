@@ -82,5 +82,3 @@ fichier.write_text(
 )
 
 print(f"Total observations : {len(observations)}")
-
-          fi
