@@ -195,12 +195,32 @@ for nom, url in SOURCES.items():
                     f"Détails {titre} {match.group()} {bloc}"
                 )
 
+                                # Cherche un lieu uniquement s'il est indiqué
+                # avant les informations de parcours.
+                debut = re.split(
+                    r"\b(?:VTT|Gravel|Route|Marche)\b",
+                    bloc,
+                    maxsplit=1,
+                    flags=re.IGNORECASE
+                )[0]
+
+                # Retire les horaires éventuels.
+                debut = re.sub(
+                    r"\b\d{1,2}:\d{2}\s*(?:am|pm)?\b",
+                    " ",
+                    debut,
+                    flags=re.IGNORECASE
+                ).strip()
+
+                lieu = debut if 2 <= len(debut) <= 60 else None
+
                 enregistrer(
                     nom,
                     url,
                     extrait[:500],
                     observations,
-                    connus
+                    connus,
+                    lieu=lieu
                 )
 
                 print(
