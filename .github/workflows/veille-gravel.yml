@@ -1,0 +1,35 @@
+
+name: Veille Gravel Toulouse
+
+on:
+  schedule:
+    - cron: '15 5 * * *'
+    - cron: '0 7 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  veille:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Recuperer le depot
+        uses: actions/checkout@v4
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Executer la veille
+        if: github.event.schedule != '0 7 * * 0'
+        run: python veille_gravel.py
+
+      - name: Envoyer le recapitulatif
+        if: github.event.schedule == '0 7 * * 0'
+        env:
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+        run: python notification_email.py
