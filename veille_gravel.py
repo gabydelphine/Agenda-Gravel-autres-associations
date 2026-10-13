@@ -107,9 +107,20 @@ def enregistrer(nom, url, extrait, observations, connus, lieu=None):
     if len(extrait) < 30:
         return
 
-    identifiant = url + "|" + extrait.casefold()
+        identifiant = url + "|" + extrait.casefold()
 
     if identifiant in connus:
+        # Compléter le lieu d'une observation existante.
+        if lieu:
+            for observation in observations:
+                cle = (
+                    observation.get("url", "") + "|" +
+                    observation.get("extrait", "").casefold()
+                )
+
+                if cle == identifiant and not observation.get("lieu"):
+                    observation["lieu"] = lieu
+
         return
 
     observations.append({
