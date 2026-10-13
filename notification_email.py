@@ -1,33 +1,41 @@
 
 import json
 import os
-from datetime import date, timedelta
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
-fichier = Path("veille-resultats.json")
+RESULTATS = Path("veille-resultats.json")
+HISTORIQUE = Path("veille-notifications.json")
 
-if not fichier.exists():
+if not RESULTATS.exists():
     print("Aucun fichier de veille.")
     raise SystemExit(0)
 
-donnees = json.loads(fichier.read_text(encoding="utf-8"))
+donnees = json.loads(RESULTATS.read_text(encoding="utf-8"))
 observations = donnees.get("observations", [])
 
-limite = date.today() - timedelta(days=7)
-nouveautes = []
+if HISTORIQUE.exists():
+    historique = json.loads(
+        HISTORIQUE.read_text(encoding="utf-8")
+    )
+else:
+    historique = {"envoyes": []}
 
-for item in observations:
-    try:
-        detection = date.fromisoformat(item["date_detection"])
-        if detection >= limite:
-            nouveautes.append(item)
-    except (KeyError, ValueError):
-        continue
+deja_envoyes = set(historique.get("envoyes", []))
+
+
+def identifiant(item):
+    return item.get("source", "") + "|" + item.get("extrait", "")
+
+
+nouveautes = [
+    item for item in observations
+    if identifiant(item) not in deja_envoyes
+]
 
 if not nouveautes:
-    print("Aucune nouveaute cette semaine.")
+    print("Aucune nouvelle observation a envoyer.")
     raise SystemExit(0)
 
 lignes = [
@@ -48,17 +56,17 @@ for numero, item in enumerate(nouveautes, 1):
 
 lignes.append("Veille Gravel Toulouse")
 
-destinataire = os.environ["NOTIFICATION_EMAIL"]
-cle_api = os.environ["BREVO_API_KEY"]
-expediteur = os.environ["BREVO_SENDER_EMAIL"]
-
 message = {
     "sender": {
         "name": "Veille Gravel Toulouse",
-        "email": expediteur
+        "email": os.environ["BREVO_SENDER_EMAIL"]
     },
-    "to": [{"email": destinataire}],
-    "subject": f"Veille Gravel - {len(nouveautes)} observation(s)",
+    "to": [{
+        "email": os.environ["NOTIFICATION_EMAIL"]
+    }],
+    "subject": (
+        f"Veille Gravel - {len(nouveautes)} nouveaute(s)"
+    ),
     "textContent": "\n".join(lignes)
 }
 
@@ -66,7 +74,7 @@ requete = Request(
     "https://api.brevo.com/v3/smtp/email",
     data=json.dumps(message).encode("utf-8"),
     headers={
-        "api-key": cle_api,
+        "api-key": os.environ["BREVO_API_KEY"],
         "Content-Type": "application/json",
         "Accept": "application/json"
     },
@@ -75,11 +83,24 @@ requete = Request(
 
 try:
     with urlopen(requete, timeout=30) as reponse:
-        print(f"Demande d'envoi acceptee : HTTP {reponse.status}")
+        print(f"Envoi accepte par Brevo : HTTP {reponse.status}")
 except HTTPError as erreur:
     print(f"Erreur Brevo : HTTP {erreur.code}")
     raise SystemExit(1)
 except URLError as erreur:
-    print(f"Connexion Brevo impossible : {erreur.reason}")
+    print(f"Connexion impossible : {erreur.reason}")
     raise SystemExit(1)
+
+deja_envoyes.update(identifiant(item) for item in nouveautes)
+
+HISTORIQUE.write_text(
+    json.dumps(
+        {"envoyes": sorted(deja_envoyes)},
+        ensure_ascii=False,
+        indent=2
+    ),
+    encoding="utf-8"
+)
+
+print(f"{len(nouveautes)} observations marquees comme envoyees.")
 
