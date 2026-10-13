@@ -26,6 +26,14 @@
       "date_detection": "2026-10-13",
       "statut": "a_verifier",
       "lieu": "Garidech"
+    },
+    {
+      "source": "Circuit Gravel Saubens 2026",
+      "url": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf",
+      "extrait": "Saubens Cyclo 31 La ronde SAUBENOISE Circuit Gravel - 47 km - 721 d+ - Or 24713856",
+      "date_evenement": null,
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
     }
   ]
 }
