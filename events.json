@@ -1,0 +1,27 @@
+{
+  "updated": "2026-10-13",
+  "events": [
+    {
+      "date": "2026-10-18",
+      "title": "19e Raid du Lys",
+      "location": "Saint-Lys (31)",
+      "details": "Gravel : 60 et 95 km · GPS nécessaire",
+      "source": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026"
+    },
+    {
+      "date": "2026-10-25",
+      "title": "La Lauragaise",
+      "location": "Escalquens (31)",
+      "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
+      "source": "https://www.intramuros.org/escalquens/agenda/893310"
+    },
+    {
+      "date": "2027-04-03",
+      "end_date": "2027-04-08",
+      "title": "Ô Gravel Occitanie 600",
+      "location": "Garidech (31)",
+      "details": "Ultra et Gravel Tourisme · environ 666 km annoncés",
+      "source": "https://ogravel.com/occitanie-600-2027-les-inscriptions-sont-lancees/"
+    }
+  ]
+}
