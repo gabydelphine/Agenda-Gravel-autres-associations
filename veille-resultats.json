@@ -1,426 +1,199 @@
-
-import json
-import re
-from datetime import datetime, timezone
-from pathlib import Path
-from urllib.request import Request, urlopen
-from urllib.parse import urljoin, urlparse
-from html import unescape
-from io import BytesIO
-
-from pypdf import PdfReader
-
-
-SOURCES = {
-    "FSGT 31": "https://cyclismefsgt31.fr/",
-    "FFVelo 31": "https://haute-garonne.ffvelo.fr/",
-    "Cyclotourisme 31": "https://www.cyclotourisme-31.com/",
-    "FFVelo 82": "https://cyclotourisme82-ffct.fr/",
-    "Velo Occitanie": "https://www.velo-occitanie.fr/",
-    "Saubens Cyclo": "https://saubenscyclo31.fr/",
-}
-
-PDF_CONNUS = {
-    "Circuit Gravel Saubens 2026":
-        "https://www.cyclotourisme-31.com/"
-        "uploaded/Circuits_InterClubs/2026/"
-        "saubensgravel2026.pdf",
-}
-
-FICHIER = Path("veille-resultats.json")
-
-MOIS = {
-    "janvier": 1,
-    "fevrier": 2,
-    "mars": 3,
-    "avril": 4,
-    "mai": 5,
-    "juin": 6,
-    "juillet": 7,
-    "aout": 8,
-    "septembre": 9,
-    "octobre": 10,
-    "novembre": 11,
-    "decembre": 12,
-}
-
-
-def telecharger(url):
-    requete = Request(
-        url,
-        headers={"User-Agent": "Mozilla/5.0"}
-    )
-    with urlopen(requete, timeout=25) as reponse:
-        return reponse.read(10_000_001)
-
-
-def nettoyer_html(contenu):
-    html = contenu.decode("utf-8", errors="replace")
-
-    html = re.sub(
-        r"(?is)<(script|style|nav|footer)\b[^>]*>.*?</\1>",
-        " ",
-        html
-    )
-
-    html = re.sub(
-        r"(?i)</(?:div|article|li|p|h[1-6])>",
-        "\n",
-        html
-    )
-
-    html = re.sub(r"<[^>]+>", " ", html)
-
-    return unescape(html)
-
-
-def lire_pdf(contenu):
-    lecteur = PdfReader(BytesIO(contenu))
-
-    return "\n".join(
-        page.extract_text() or ""
-        for page in lecteur.pages[:15]
-    )
-
-
-def extraire_liens_pdf(contenu, base):
-    html = contenu.decode("utf-8", errors="replace")
-
-    liens = re.findall(
-        r"""href\s*=\s*["']([^"']+\.pdf(?:\?[^"']*)?)["']""",
-        html,
-        re.IGNORECASE
-    )
-
-    return {
-        urljoin(base, unescape(lien))
-        for lien in liens
+{
+  "observations": [
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "31) Cyclos (32) Cyclos (34) Cyclos (46) Cyclos (48) Cyclos (65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gr",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "os (32) Cyclos (34) Cyclos (46) Cyclos (48) Cyclos (65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (8",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "s (34) Cyclos (46) Cyclos (48) Cyclos (65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager u",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "(46) Cyclos (48) Cyclos (65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement B",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "(48) Cyclos (65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Bi",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "65) Cyclos (66) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "6) Cyclos (81) Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informa",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": ") Cyclos (82) Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations histori",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "Gravels Gravels (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes in",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "els (09) Gravels (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes inscriptions Pa",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "els (11) Gravels (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes inscriptions Parcours GPS VT",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "els (12) Gravels (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitan",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "els (30) Gravels (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occi",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "els (31) Gravels (32) Gravels (34) Gravels (46) Gravels (48) Gravels (65) Gravels (66) Gravels (81) Gravels (82) Partager un événement Billetterie Billetterie en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occitanie Gravel",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occitanie Gravel Occitanie Discussion Les clubs Octobre   2026 L M M J V S D       1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31   Chers p",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "2 parcours Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 circuits chronométrés avec classement vous emmèneront sur les routes d",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "ls La pampelonnaise Dim. 25 Octobre 2026 8:00 am 8:00 am VTT 5 parcours Marche 2 parcours Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours Détails Votre compte Connexion Déconnexion Création de compte Formulaire de mo",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "s Marche 2 parcours Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours Détails Votre compte Connexion Déconnexion Création de compte Formulaire de modification du profil Profil de l'utilisateur Rappel de l'identifiant R",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occitanie Gravel Occitanie Discussion Les clubs",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "a suite:   Randuro Dim. 18 Octobre 2026 7:30 am 7:30 am anduze RANDURO VTT 2 parcours Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 c",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occitanie Gravel Occitanie Discussion Les clubs Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "la suite: Randuro Dim. 18 Octobre 2026 7:30 am 7:30 am anduze RANDURO VTT 2 parcours Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 c",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Circuit Gravel Saubens 2026",
+      "url": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf",
+      "extrait": "Saubens Cyclo 31 La ronde SAUBENOISE Circuit Gravel - 47 km - 721 d+ - Or 24713856",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier",
+      "lieu": "SAINT LYS"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours",
+      "date_evenement": "2027-04-03",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier",
+      "lieu": "Garidech"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 circuits chronométrés avec classement vous emmèneront sur les routes du Tarn, du Sidobre et du Haut Languedo",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "8:00 am 8:00 am VTT 5 parcours Marche 2 parcours Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours Détails Votre compte Connexion Déconnexion Création de compte Formulaire de modification du profil Profil de l'utilisateur Rappel de l'identifiant Réinitialisation du mot de passe @ savoir Enregistrer une vidéo les vidéos Type de Vélo L'équipement du cycliste Les équipements de secours Partenaire privés Convertir une trace FIT Evénements partenaires",
+      "date_evenement": "2027-04-03",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
     }
-
-
-def trouver_date(texte):
-    texte = texte.lower()
-
-    texte = (
-        texte.replace("é", "e")
-        .replace("è", "e")
-        .replace("ê", "e")
-        .replace("û", "u")
-        .replace("ô", "o")
-        .replace("à", "a")
-    )
-
-    motif = (
-        r"\b(\d{1,2})\s+("
-        + "|".join(MOIS)
-        + r")\s+(20\d{2})\b"
-    )
-
-    match = re.search(motif, texte)
-
-    if match:
-        jour, mois, annee = match.groups()
-
-        try:
-            return datetime(
-                int(annee),
-                MOIS[mois],
-                int(jour)
-            ).date().isoformat()
-        except ValueError:
-            pass
-
-    return None
-
-
-def extraire_lieu(bloc):
-    """
-    Recherche le lieu entre les horaires et
-    le type de parcours sur Velo Occitanie.
-    Ne retourne rien si le format est inconnu.
-    """
-
-    correspondance = re.search(
-        r"(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*){2}"
-        r"(.+?)\s+(?:VTT|Gravel|Route|Marche)\b",
-        bloc,
-        flags=re.IGNORECASE
-    )
-
-    if not correspondance:
-        return None
-
-    lieu = re.sub(
-        r"\s+",
-        " ",
-        correspondance.group(1)
-    ).strip()
-
-    # Refuser les textes trop longs ou suspects.
-    if not 2 <= len(lieu) <= 60:
-        return None
-
-    if re.search(
-        r"\b(?:parcours|détails|connexion|inscription)\b",
-        lieu,
-        re.IGNORECASE
-    ):
-        return None
-
-    return lieu
-
-
-def enregistrer(
-    nom,
-    url,
-    extrait,
-    observations,
-    connus,
-    lieu=None
-):
-    extrait = re.sub(r"\s+", " ", extrait).strip()
-    extrait = extrait[:500]
-
-    if not re.search(r"\bgravel\b", extrait, re.I):
-        return
-
-    if len(extrait) < 30:
-        return
-
-    identifiant = url + "|" + extrait.casefold()
-
-    # Une observation déjà connue peut recevoir
-    # un lieu sans être ajoutée une seconde fois.
-    if identifiant in connus:
-        if lieu:
-            for observation in observations:
-                cle = (
-                    observation.get("url", "") + "|" +
-                    observation.get("extrait", "").casefold()
-                )
-
-                if (
-                    cle == identifiant
-                    and not observation.get("lieu")
-                ):
-                    observation["lieu"] = lieu
-                    print(
-                        f"Lieu complete : {lieu}"
-                    )
-
-        return
-
-    observation = {
-        "source": nom,
-        "url": url,
-        "extrait": extrait,
-        "date_evenement": trouver_date(extrait),
-        "date_detection": datetime.now(
-            timezone.utc
-        ).date().isoformat(),
-        "statut": "a_verifier"
-    }
-
-    if lieu:
-        observation["lieu"] = lieu
-
-    observations.append(observation)
-    connus.add(identifiant)
-
-    print(f"Nouvelle observation : {nom}")
-
-
-# Charger les observations existantes.
-if FICHIER.exists():
-    donnees = json.loads(
-        FICHIER.read_text(encoding="utf-8")
-    )
-else:
-    donnees = {"observations": []}
-
-observations = donnees.get("observations", [])
-
-connus = {
-    item.get("url", "") + "|" +
-    item.get("extrait", "").casefold()
-    for item in observations
+  ]
 }
-
-pdf_a_consulter = dict(PDF_CONNUS)
-
-
-# Consulter les sites.
-for nom, url in SOURCES.items():
-    try:
-        contenu = telecharger(url)
-        texte = nettoyer_html(contenu)
-
-        if nom == "Velo Occitanie":
-            texte_normalise = re.sub(
-                r"\s+",
-                " ",
-                texte
-            )
-
-            motif_date = (
-                r"\b(?:Lun|Mar|Mer|Jeu|Ven|Sam|Dim)\.?\s+"
-                r"\d{1,2}\s+[A-Za-zÀ-ÿ]+\s+20\d{2}\b"
-            )
-
-            dates = list(
-                re.finditer(
-                    motif_date,
-                    texte_normalise,
-                    re.IGNORECASE
-                )
-            )
-
-            for i, match in enumerate(dates):
-                fin = (
-                    dates[i + 1].start()
-                    if i + 1 < len(dates)
-                    else len(texte_normalise)
-                )
-
-                bloc = texte_normalise[
-                    match.end():fin
-                ]
-
-                # Fin de l'annonce courante.
-                bloc = re.split(
-                    r"\bDétails\b",
-                    bloc,
-                    maxsplit=1,
-                    flags=re.IGNORECASE
-                )[0]
-
-                # Ne retenir que les annonces qui
-                # mentionnent un parcours Gravel.
-                if not re.search(
-                    r"\bGravel\b",
-                    bloc,
-                    re.IGNORECASE
-                ):
-                    continue
-
-                avant_date = texte_normalise[
-                    max(0, match.start() - 120):
-                    match.start()
-                ]
-
-                titre = re.split(
-                    r"\bDétails\b",
-                    avant_date,
-                    flags=re.IGNORECASE
-                )[-1].strip()
-
-                if not titre or len(titre) > 100:
-                    continue
-
-                date_evenement = trouver_date(
-                    match.group()
-                )
-
-                if not date_evenement:
-                    continue
-
-                lieu = extraire_lieu(bloc)
-
-                extrait = (
-                    f"Détails {titre} "
-                    f"{match.group()} {bloc}"
-                )
-
-                enregistrer(
-                    nom,
-                    url,
-                    extrait,
-                    observations,
-                    connus,
-                    lieu=lieu
-                )
-
-                print(
-                    f"Gravel detecte : {titre} "
-                    f"({date_evenement}) "
-                    f"- Lieu : {lieu or 'non trouve'}"
-                )
-
-        # Rechercher les PDF présents sur le site.
-        for lien in extraire_liens_pdf(
-            contenu,
-            url
-        ):
-            if (
-                urlparse(lien).netloc
-                == urlparse(url).netloc
-            ):
-                pdf_a_consulter[lien] = lien
-
-        print(f"Site consulte : {nom}")
-
-    except Exception as erreur:
-        print(
-            f"Erreur site {nom} : {erreur}"
-        )
-
-
-# Lire les PDF connus ou découverts.
-for nom, url in pdf_a_consulter.items():
-    try:
-        contenu = telecharger(url)
-
-        if len(contenu) > 10_000_000:
-            print(
-                f"PDF trop volumineux : {url}"
-            )
-            continue
-
-        texte = lire_pdf(contenu)
-
-        lignes = [
-            re.sub(r"\s+", " ", ligne).strip()
-            for ligne in texte.splitlines()
-        ]
-
-        for i, ligne in enumerate(lignes):
-            if re.search(
-                r"\bgravel\b",
-                ligne,
-                re.IGNORECASE
-            ):
-                extrait = " ".join(
-                    lignes[
-                        max(0, i - 3):i + 4
-                    ]
-                )
-
-                enregistrer(
-                    nom,
-                    url,
-                    extrait,
-                    observations,
-                    connus
-                )
-
-        print(f"PDF consulte : {url}")
-
-    except Exception as erreur:
-        print(
-            f"Erreur PDF {url} : {erreur}"
-        )
-
-
-# Sauvegarder sans supprimer les anciennes données.
-FICHIER.write_text(
-    json.dumps(
-        {"observations": observations},
-        ensure_ascii=False,
-        indent=2
-    ) + "\n",
-    encoding="utf-8"
-)
-
-print(
-    f"Total observations : {len(observations)}"
-)
