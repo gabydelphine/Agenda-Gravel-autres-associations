@@ -142,52 +142,62 @@ for nom, url in SOURCES.items():
     try:
         contenu = telecharger(url)
         texte = nettoyer_html(contenu)
-
-        
+  
         if nom == "Velo Occitanie":
-            # Chaque annonce commence par un titre,
-            # suivi du jour et de la date.
-            motif = (
-                r"(?P<titre>[^\n]{5,100}?)\s+"
-                r"(?P<jour>Lun|Mar|Mer|Jeu|Ven|Sam|Dim)\.?\s+"
-                r"(?P<date>\d{1,2}\s+"
-                r"[A-Za-zÀ-ÿ]+\s+20\d{2})"
-            )
-
+            # On découpe les annonces à partir de leur date.
+            # Le nom précède la date et les parcours la suivent.
             texte_normalise = re.sub(r"\s+", " ", texte)
-            annonces = list(
-                re.finditer(motif, texte_normalise, re.I)
+
+            motif_date = (
+                r"\b(?:Lun|Mar|Mer|Jeu|Ven|Sam|Dim)\.?\s+"
+                r"\d{1,2}\s+[A-Za-zÀ-ÿ]+\s+20\d{2}\b"
             )
 
-            for i, annonce in enumerate(annonces):
+            dates = list(
+                re.finditer(motif_date, texte_normalise, re.I)
+            )
+
+            for i, match in enumerate(dates):
                 fin = (
-                    annonces[i + 1].start()
-                    if i + 1 < len(annonces)
+                    dates[i + 1].start()
+                    if i + 1 < len(dates)
                     else len(texte_normalise)
                 )
 
-                bloc = texte_normalise[
-                    annonce.start():fin
-                ]
+                bloc = texte_normalise[match.end():fin]
 
-                # On ignore les manifestations sans Gravel.
-                if not re.search(
-                    r"\bgravel\b", bloc, re.I
-                ):
+                # "Détails" marque la fin de l'annonce.
+                bloc = re.split(
+                    r"\bDétails\b", bloc, maxsplit=1,
+                    flags=re.IGNORECASE
+                )[0]
+
+                if not re.search(r"\bGravel\b", bloc, re.I):
                     continue
 
-                titre = annonce.group("titre").strip()
-                date_evenement = trouver_date(
-                    annonce.group("date")
-                )
+                # Le titre est situé avant la date.
+                avant_date = texte_normalise[
+                    max(0, match.start() - 120):match.start()
+                ]
+
+                titre = avant_date.split("Détails")[-1].strip()
+
+                if not titre or len(titre) > 100:
+                    continue
+
+                date_evenement = trouver_date(match.group())
 
                 if not date_evenement:
                     continue
 
+                extrait = (
+                    f"Détails {titre} {match.group()} {bloc}"
+                )
+
                 enregistrer(
                     nom,
                     url,
-                    bloc[:500],
+                    extrait[:500],
                     observations,
                     connus
                 )
