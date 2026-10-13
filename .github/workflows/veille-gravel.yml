@@ -33,3 +33,14 @@ jobs:
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
         run: python notification_email.py
+
+      - name: Sauvegarder les observations
+        if: github.event.schedule != '0 7 * * 0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add veille-resultats.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Mise a jour veille gravel"
+            git push
+          fi
