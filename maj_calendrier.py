@@ -14,6 +14,7 @@ SOURCE_PDF = ('https://www.cyclotourisme-31.com/'
 def normaliser(texte):
     texte = unicodedata.normalize('NFKD', str(texte))
     texte = ''.join(c for c in texte if not unicodedata.combining(c))
+    texte = re.sub(r'\b(\d+)\s*(?:eme|eme|er|e)\b', r'\1', texte, flags=re.I)
     return re.sub(r'\s+', ' ', texte).strip().casefold()
 
 
@@ -125,4 +126,3 @@ if ajouts:
         encoding='utf-8',
     )
 
-print(f'{ajouts} nouvelle(s) manifestation(s) ajoutee(s)')
