@@ -27,7 +27,7 @@ jobs:
         run: python veille_gravel.py
 
       - name: Envoyer le recapitulatif
-        if: github.event.schedule == '0 7 * * 0'
+        if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
         env:
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
