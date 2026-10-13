@@ -160,6 +160,22 @@
       "extrait": "Saubens Cyclo 31 La ronde SAUBENOISE Circuit Gravel - 47 km - 721 d+ - Or 24713856",
       "date_detection": "2026-10-13",
       "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours",
+      "date_evenement": "2027-04-03",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
     }
   ]
 }
