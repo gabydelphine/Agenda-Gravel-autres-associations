@@ -28,6 +28,10 @@ jobs:
       - name: Executer la veille
         if: github.event.schedule != '0 7 * * 0'
         run: python veille_gravel.py
+        
+      - name: Mettre a jour le calendrier
+        if: github.event.schedule != '0 7 * * 0'
+        run: python maj_calendrier.py
 
       - name: Envoyer le recapitulatif
         if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
@@ -42,7 +46,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add veille-resultats.json
+          git add veille-resultats.json events.json
           if ! git diff --cached --quiet; then
             git commit -m "Mise a jour veille gravel"
             git push
