@@ -176,6 +176,22 @@
       "date_evenement": "2027-04-03",
       "date_detection": "2026-10-13",
       "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 circuits chronométrés avec classement vous emmèneront sur les routes du Tarn, du Sidobre et du Haut Languedo",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "8:00 am 8:00 am VTT 5 parcours Marche 2 parcours Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours Détails Votre compte Connexion Déconnexion Création de compte Formulaire de modification du profil Profil de l'utilisateur Rappel de l'identifiant Réinitialisation du mot de passe @ savoir Enregistrer une vidéo les vidéos Type de Vélo L'équipement du cycliste Les équipements de secours Partenaire privés Convertir une trace FIT Evénements partenaires",
+      "date_evenement": "2027-04-03",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
     }
   ]
 }
