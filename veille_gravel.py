@@ -82,3 +82,16 @@ fichier.write_text(
 )
 
 print(f"Total observations : {len(observations)}")
+
+ - name: Sauvegarder l'historique des emails
+        if: success() && (github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch')
+        run: |
+          if [ -f veille-notifications.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add veille-notifications.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Mise a jour historique notifications gravel"
+              git push
+            fi
+          fi
