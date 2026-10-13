@@ -143,21 +143,59 @@ for nom, url in SOURCES.items():
         contenu = telecharger(url)
         texte = nettoyer_html(contenu)
 
+        
         if nom == "Velo Occitanie":
-            blocs = re.split(
-                r"(?=Détails|Details)", texte,
-                flags=re.IGNORECASE
+            # Chaque annonce commence par un titre,
+            # suivi du jour et de la date.
+            motif = (
+                r"(?P<titre>[^\n]{5,100}?)\s+"
+                r"(?P<jour>Lun|Mar|Mer|Jeu|Ven|Sam|Dim)\.?\s+"
+                r"(?P<date>\d{1,2}\s+"
+                r"[A-Za-zÀ-ÿ]+\s+20\d{2})"
             )
-            for bloc in blocs:
-                bloc = re.sub(r"\s+", " ", bloc)
-                if (
-                    "gravel" in bloc.lower()
-                    and trouver_date(bloc)
+
+            texte_normalise = re.sub(r"\s+", " ", texte)
+            annonces = list(
+                re.finditer(motif, texte_normalise, re.I)
+            )
+
+            for i, annonce in enumerate(annonces):
+                fin = (
+                    annonces[i + 1].start()
+                    if i + 1 < len(annonces)
+                    else len(texte_normalise)
+                )
+
+                bloc = texte_normalise[
+                    annonce.start():fin
+                ]
+
+                # On ignore les manifestations sans Gravel.
+                if not re.search(
+                    r"\bgravel\b", bloc, re.I
                 ):
-                    enregistrer(
-                        nom, url, bloc[-500:],
-                        observations, connus
-                    )
+                    continue
+
+                titre = annonce.group("titre").strip()
+                date_evenement = trouver_date(
+                    annonce.group("date")
+                )
+
+                if not date_evenement:
+                    continue
+
+                enregistrer(
+                    nom,
+                    url,
+                    bloc[:500],
+                    observations,
+                    connus
+                )
+
+                print(
+                    f"Gravel detecte : {titre} "
+                    f"({date_evenement})"
+                )
 
         for lien in extraire_liens_pdf(contenu, url):
             if urlparse(lien).netloc == urlparse(url).netloc:
