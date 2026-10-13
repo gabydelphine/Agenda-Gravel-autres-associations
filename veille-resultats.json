@@ -139,6 +139,27 @@
       "extrait": "a suite:   Randuro Dim. 18 Octobre 2026 7:30 am 7:30 am anduze RANDURO VTT 2 parcours Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 c",
       "date_detection": "2026-10-13",
       "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "en ligne Informations historique de mes inscriptions Parcours GPS VTT(AE) Occitanie Cyclo Occitanie Gravel Occitanie Discussion Les clubs Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Velo Occitanie",
+      "url": "https://www.velo-occitanie.fr/",
+      "extrait": "la suite: Randuro Dim. 18 Octobre 2026 7:30 am 7:30 am anduze RANDURO VTT 2 parcours Détails 19ème Raid du Lys Dim. 18 Octobre 2026 7:30 am 7:30 am SAINT LYS VTT 5 parcours Gravel 3 parcours Détails LA CASTRAISE Dim. 18 Octobre 2026 9:00 am 9:00 am CASTRES 81100 Les 3 c",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Circuit Gravel Saubens 2026",
+      "url": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf",
+      "extrait": "Saubens Cyclo 31 La ronde SAUBENOISE Circuit Gravel - 47 km - 721 d+ - Or 24713856",
+      "date_detection": "2026-10-13",
+      "statut": "a_verifier"
     }
   ]
 }
