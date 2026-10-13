@@ -98,7 +98,7 @@ def trouver_date(texte):
 
     return None
 
-def enregistrer(nom, url, extrait, observations, connus):
+def enregistrer(nom, url, extrait, observations, connus, lieu=None):
     extrait = re.sub(r"\s+", " ", extrait).strip()
 
     if not re.search(r"\bgravel\b", extrait, re.I):
@@ -115,6 +115,7 @@ def enregistrer(nom, url, extrait, observations, connus):
     observations.append({
         "source": nom,
         "url": url,
+        "lieu": lieu,
         "extrait": extrait[:500],
         "date_evenement": trouver_date(extrait),
         "date_detection": datetime.now(
