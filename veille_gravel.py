@@ -3,7 +3,7 @@ import math
 import re
 import unicodedata
 from collections import deque
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 from html import unescape
 from io import BytesIO
 from pathlib import Path
@@ -230,7 +230,7 @@ def est_candidat_evenement(extrait, date_evenement=None, pdf_connu=False):
         jour = date.fromisoformat(date_evenement)
     except (TypeError, ValueError):
         return False
-    if jour < date.today():
+    if jour < date.today() - timedelta(days=365):
         return False
     return True
 
@@ -328,7 +328,7 @@ def lieu_depuis_vetete(url):
 
 
 def nettoyer_observations(items):
-    """Garde uniquement les annonces futures dans la zone, ou à vérifier si lieu inconnu."""
+    """Conserve 365 jours glissants d’historique et toutes les dates futures dans la zone."""
     resultat = []
     for item in regrouper_observations(items):
         nom = identite_manifestation(item)
@@ -338,7 +338,7 @@ def nettoyer_observations(items):
         if not jour:
             continue
         try:
-            if date.fromisoformat(jour) < date.today():
+            if date.fromisoformat(jour) < date.today() - timedelta(days=365):
                 continue
         except ValueError:
             continue
@@ -487,7 +487,7 @@ def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
             print(f"Date non déterminée : {url}")
             return
         jour = date.fromisoformat(date_evenement)
-        if jour < date.today() - __import__('datetime').timedelta(days=365):
+        if jour < date.today() - timedelta(days=365):
             return
         extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
         # Les événements passés ne sont plus ajoutés à la liste active.
