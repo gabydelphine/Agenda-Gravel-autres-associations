@@ -19,15 +19,11 @@ SOURCES = {
     "FFVelo 82": "https://cyclotourisme82-ffct.fr/",
     "Velo Occitanie": "https://www.velo-occitanie.fr/",
     "Saubens Cyclo": "https://saubenscyclo31.fr/",
-    "Battistrada Gravel": "https://battistrada.com/fr/calendrier-cyclosportives/france/gravel/?biketype=4",
+    "Vetete": "https://vetete.com/",
     "Gravel Agenda": "https://gravelagenda.com/",
     "Gravel Passion": "https://www.gravelpassion.fr/evenements-calendrier-gravel/",
     "Fontenilles VTT": "https://fontenilles-vtt.fr/",
 }
-
-BATTISTRADA_EVENEMENTS = (
-    "https://battistrada.com/fr/calendrier-cyclosportives/edition/rando-nocturne-la-revdautan-2026/59674/",
-)
 
 # Pages événementielles ciblées (elles complètent les sites généraux).
 PAGES_CIBLEES = {
@@ -121,7 +117,7 @@ MAX_OCTETS_PAGE = 2_000_000
 
 MOTS_PAGES_PRIORITAIRES = (
     "agenda", "calendrier", "evenement", "manifestation", "randonnee",
-    "gravel", "circuit", "sortie", "interclubs", "cyclotourisme",
+    "gravel", "gravier", "circuit", "sortie", "interclubs", "cyclotourisme",
 )
 
 MOTS_DOCUMENTS_A_EXCLURE = (
@@ -202,7 +198,7 @@ def trouver_date(texte):
 
 def extraire_lieu(bloc):
     match = re.search(
-        r"(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*){2}(.+?)\s+(?:VTT|Gravel|Route|Marche)\b",
+        r"(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*){2}(.+?)\s+(?:VTT|Gravel|Gravier|Route|Marche)\b",
         bloc, re.I,
     )
     if not match:
@@ -222,7 +218,7 @@ def extrait_a_exclure(extrait):
 
 def est_candidat_evenement(extrait, date_evenement=None, pdf_connu=False):
     texte = normaliser(extrait)
-    if not re.search(r"\bgravel\b", texte):
+    if not re.search(r"\b(?:gravel|gravier)\b", texte):
         return False
     if extrait_a_exclure(extrait):
         return False
@@ -255,7 +251,7 @@ def cle_evenement_approximative(url, extrait):
     if titre_match and date_evenement:
         titre = titre_match.group(1).strip(" -:")
         lieu_match = re.search(
-            r"\b([a-z][a-z '\-]{2,45})\s+(?:vtt|gravel|route|marche)\b",
+            r"\b([a-z][a-z '\-]{2,45})\s+(?:vtt|gravel|gravier|route|marche)\b",
             texte,
         )
         lieu = lieu_match.group(1).strip() if lieu_match else ""
@@ -390,7 +386,7 @@ def analyser_velo_occitanie(texte, url, observations, connus, lieux_connus):
             r"\bDétails\b", texte_normalise[match.end():fin],
             maxsplit=1, flags=re.I
         )[0]
-        if not re.search(r"\bGravel\b", bloc, re.I):
+        if not re.search(r"\b(?:Gravel|Gravier)\b", bloc, re.I):
             continue
         avant = texte_normalise[max(0, match.start() - 120):match.start()]
         titre = re.split(r"\bDétails\b", avant, flags=re.I)[-1].strip()
@@ -404,31 +400,24 @@ def analyser_velo_occitanie(texte, url, observations, connus, lieux_connus):
         print(f"Annonce Gravel examinée : {titre}")
 
 
-def analyser_battistrada(url, observations, connus, lieux_connus):
-    """Collecte prudente : candidats gravel à vérifier manuellement."""
+def analyser_vetete(url, observations, connus, lieux_connus):
+    """Ne retient que les fiches avec mention explicite d'un parcours gravel."""
     try:
         contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
         texte = nettoyer_html(contenu)
-        # Les fiches peuvent être en français ou présenter une date numérique.
-        # On conserve uniquement les dates explicites au format déjà reconnu.
-        date_evenement = trouver_date(texte)
-        if not date_evenement or date.fromisoformat(date_evenement) < date.today():
-            print(f"Battistrada : date absente ou passée : {url}")
+        if not re.search(r"\b(?:circuit|parcours|rando)\s+(?:gravel|gravier)\b|\b(?:gravel|gravier)\s+(?:nocturne|km|de|du|des)\b", normaliser(texte)):
             return
-        if not re.search(r"\bgravel\b", normaliser(texte)):
-            print(f"Battistrada : parcours gravel non confirmé : {url}")
+        jour_iso = trouver_date(texte)
+        if not jour_iso or date.fromisoformat(jour_iso) < date.today():
             return
-        # Limiter le texte à un extrait court et contextualisé.
         titre = re.search(r"(?is)<title[^>]*>(.*?)</title>", contenu.decode("utf-8", errors="replace"))
-        titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Battistrada"
-        extrait = f"{titre} — {date_evenement} — Gravel. " + re.sub(r"\s+", " ", texte)[:250]
-        # enregistrer() attend une date en toutes lettres, et garde le statut à vérifier.
-        jour = date.fromisoformat(date_evenement)
-        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
-        enregistrer("Battistrada", url, extrait, observations, connus, lieux_connus)
+        titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Vetete"
+        jour = date.fromisoformat(jour_iso)
+        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — parcours gravel. " + re.sub(r"\s+", " ", texte)[:220]
+        enregistrer("Vetete", url, extrait, observations, connus, lieux_connus)
+        print(f"Fiche Vetete examinée : {titre}")
     except Exception as erreur:
-        print(f"Erreur Battistrada {url} : {erreur}")
-
+        print(f"Erreur fiche Vetete {url} : {erreur}")
 
 
 def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
@@ -437,7 +426,7 @@ def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
         contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
         html = contenu.decode("utf-8", errors="replace")
         texte = nettoyer_html(contenu)
-        if not re.search(r"\bgravel\b", normaliser(texte)):
+        if not re.search(r"\b(?:gravel|gravier)\b", normaliser(texte)):
             print(f"Page sans gravel explicite : {url}")
             return
         titre_match = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
@@ -568,18 +557,16 @@ for nom, urls in PAGES_CIBLEES.items():
         analyser_page_ciblee(nom, url, observations, connus, lieux_connus)
 
 try:
-    listing_url = SOURCES["Battistrada Gravel"]
+    listing_url = SOURCES["Vetete"]
     contenu, _ = telecharger(listing_url, MAX_OCTETS_PAGE)
     fiches = {lien for lien in extraire_liens(contenu, listing_url)
-              if "battistrada.com" in urlparse(lien).netloc
-              and "/edition/" in urlparse(lien).path}
-    fiches.update(BATTISTRADA_EVENEMENTS)
-    for fiche in sorted(fiches)[:80]:
-        analyser_battistrada(fiche, observations, connus, lieux_connus)
+              if urlparse(lien).netloc in ("vetete.com", "www.vetete.com")
+              and re.search(r"-20(?:26|27|28)(?:/|$)", urlparse(lien).path)}
+    print(f"Vetete : {len(fiches)} fiches d'événements repérées")
+    for fiche in sorted(fiches)[:100]:
+        analyser_vetete(fiche, observations, connus, lieux_connus)
 except Exception as erreur:
-    print(f"Erreur calendrier Battistrada : {erreur}")
-    for fiche in BATTISTRADA_EVENEMENTS:
-        analyser_battistrada(fiche, observations, connus, lieux_connus)
+    print(f"Erreur calendrier Vetete : {erreur}")
 
 for url, (nom, _) in pdf_a_consulter.items():
     try:
@@ -594,7 +581,7 @@ for url, (nom, _) in pdf_a_consulter.items():
         lignes = [re.sub(r"\s+", " ", ligne).strip() for ligne in texte.splitlines()]
         pdf_connu = url in PDF_CONNUS.values()
         for i, ligne in enumerate(lignes):
-            if not re.search(r"\bgravel\b", ligne, re.I):
+            if not re.search(r"\b(?:gravel|gravier)\b", ligne, re.I):
                 continue
             extrait = " ".join(lignes[max(0, i - 3):i + 4])
             enregistrer(
