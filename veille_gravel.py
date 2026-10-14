@@ -19,11 +19,29 @@ SOURCES = {
     "Velo Occitanie": "https://www.velo-occitanie.fr/",
     "Saubens Cyclo": "https://saubenscyclo31.fr/",
     "Battistrada Gravel": "https://battistrada.com/fr/calendrier-cyclosportives/gravel/?biketype=4",
+    "Gravel Agenda": "https://gravelagenda.com/",
+    "Gravel Passion": "https://www.gravelpassion.fr/evenements-calendrier-gravel/",
+    "Fontenilles VTT": "https://fontenilles-vtt.fr/",
 }
 
 BATTISTRADA_EVENEMENTS = (
     "https://battistrada.com/fr/calendrier-cyclosportives/edition/rando-nocturne-la-revdautan-2026/59674/",
 )
+
+# Pages événementielles ciblées (elles complètent les sites généraux).
+PAGES_CIBLEES = {
+    "VTT31 / Vélo Occitanie": [
+        "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026",
+        "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
+        "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
+    ],
+    "Fontenilles VTT": [
+        "https://fontenilles-vtt.fr/wp/?page_id=4553",
+    ],
+}
+# Facebook VTT31 : lien exact non encore confirmé. Ne pas simuler
+# un accès automatique à des publications Facebook non publiques.
+FACEBOOK_VTT31 = None
 
 PDF_CONNUS = {
     "Circuit Gravel Saubens 2026": (
@@ -278,6 +296,53 @@ def analyser_battistrada(url, observations, connus, lieux_connus):
         print(f"Erreur Battistrada {url} : {erreur}")
 
 
+
+def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
+    """Recherche une date gravel sur une fiche ciblée, sans publication automatique."""
+    try:
+        contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
+        html = contenu.decode("utf-8", errors="replace")
+        texte = nettoyer_html(contenu)
+        if not re.search(r"\bgravel\b", normaliser(texte)):
+            print(f"Page sans gravel explicite : {url}")
+            return
+        titre_match = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
+        if not titre_match:
+            titre_match = re.search(r"(?is)<title\b[^>]*>(.*?)</title>", html)
+        titre = nettoyer_html(titre_match.group(1).encode()) if titre_match else nom
+        titre = re.sub(r"\s+", " ", titre).strip()[:120]
+        # Plusieurs dates peuvent apparaître dans les menus / articles liés :
+        # la première date n'est qu'une observation à contrôler.
+        date_evenement = trouver_date(texte)
+        if not date_evenement:
+            m = re.search(r"\b(\d{1,2})[/.](\d{1,2})[/.](20\d{2})\b", texte)
+            if m:
+                try:
+                    date_evenement = date(int(m.group(3)), int(m.group(2)), int(m.group(1))).isoformat()
+                except ValueError:
+                    pass
+        if not date_evenement:
+            print(f"Date non déterminée : {url}")
+            return
+        jour = date.fromisoformat(date_evenement)
+        if jour < date.today() - __import__('datetime').timedelta(days=365):
+            return
+        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
+        # Les événements passés récents sont conservés pour la revue historique.
+        if jour < date.today():
+            identifiant = cle_observation(url, extrait)
+            if identifiant not in connus:
+                observations.append({"source": nom, "url": url, "extrait": extrait[:500],
+                                     "date_evenement": date_evenement,
+                                     "date_detection": datetime.now(timezone.utc).date().isoformat(),
+                                     "statut": "a_verifier"})
+                connus.add(identifiant)
+        else:
+            enregistrer(nom, url, extrait, observations, connus, lieux_connus)
+        print(f"Fiche examinée : {nom} — {titre}")
+    except Exception as erreur:
+        print(f"Erreur fiche ciblée {url} : {erreur}")
+
 def explorer_site(nom, url, pdf_a_consulter):
     hote = urlparse(url).netloc.lower()
     file_attente = deque([(url, 0)])
@@ -362,6 +427,10 @@ for nom, url in SOURCES.items():
         print(f"Erreur site {nom} : {erreur}")
 
 # Examiner la fiche signalée et les fiches d'événements reliées au calendrier.
+for nom, urls in PAGES_CIBLEES.items():
+    for url in urls:
+        analyser_page_ciblee(nom, url, observations, connus, lieux_connus)
+
 try:
     listing_url = SOURCES["Battistrada Gravel"]
     contenu, _ = telecharger(listing_url, MAX_OCTETS_PAGE)
