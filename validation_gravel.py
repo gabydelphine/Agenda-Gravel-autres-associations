@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Enregistre une décision humaine sur une fiche de l'inventaire gravel.
+"""Applique une décision humaine à une fiche de l'inventaire gravel.
 
-Utilisation : python validation_gravel.py --id IDENTIFIANT --decision valider|refuser
-Le script ne décide rien seul : un workflow GitHub devra vérifier l'auteur
-et transmettre explicitement ces arguments après confirmation.
+Usage : python validation_gravel.py --id IDENTIFIANT --decision valider|refuser
+L'autorisation de l'auteur de la décision est contrôlée par le workflow GitHub.
 """
 import argparse
 import hashlib
@@ -39,12 +38,18 @@ def sauvegarder(chemin, donnees):
     chemin.write_text(json.dumps(donnees, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
 
 
+def est_ogravel(fiche):
+    champs = ' '.join(str(fiche.get(k, '')) for k in ('title', 'organizer', 'organisateur', 'association'))
+    urls = ' '.join(str(fiche.get(k, '')) for k in ('source', 'event_url', 'url', 'organizer_url'))
+    return bool(re.search(r'\b(?:ogravel|o\s*gravel|occitanie 600)\b', normaliser(champs))
+                or re.search(r'https?://(?:[^/]*\.)?ogravel\.com(?:/|$)', urls, re.I))
+
+
 def main():
     parser = argparse.ArgumentParser(description='Valider ou refuser une manifestation gravel')
-    parser.add_argument('--id', required=True, help='Identifiant de la manifestation (16 caractères)')
+    parser.add_argument('--id', required=True)
     parser.add_argument('--decision', required=True, choices=('valider', 'refuser'))
     args = parser.parse_args()
-
     if not re.fullmatch(r'[a-f0-9]{16}', args.id):
         parser.error('Identifiant incorrect')
 
@@ -54,26 +59,33 @@ def main():
         raise SystemExit('Manifestation introuvable ou identifiant ambigu : aucune modification')
     fiche = correspondances[0]
     statut = normaliser(fiche.get('statut', 'a_verifier'))
-    if statut == 'annule':
-        raise SystemExit('Manifestation annulée : décision bloquée pour préserver l’historique')
-    if statut in ('valide', 'refuse'):
-        raise SystemExit(f'Décision déjà enregistrée ({statut}) : aucune modification')
-    if not fiche.get('date') or not fiche.get('title') or not fiche.get('location'):
+    if statut in ('annule', 'annulee', 'valide', 'refuse'):
+        raise SystemExit(f'Fiche déjà traitée ou annulée ({statut}) : aucune modification')
+    if statut not in ('a_verifier', 'a verifier', ''):
+        raise SystemExit(f'Statut non reconnu ({statut}) : aucune modification')
+    if not all(fiche.get(c) for c in ('date', 'title', 'location')):
         raise SystemExit('Fiche incomplète : aucune modification')
     date.fromisoformat(fiche['date'])
-    if 'occitanie 600' in normaliser(fiche['title']) or 'ogravel' in normaliser(fiche.get('organizer', '')):
-        raise SystemExit('Événement ÔGravel exclu du calendrier des autres associations')
+    if est_ogravel(fiche):
+        raise SystemExit('Manifestation ÔGravel : aucune modification')
 
     if args.decision == 'valider':
+        # Pour publier, une vérification géographique positive est obligatoire.
+        if fiche.get('controle_zone') != 'dans_zone':
+            raise SystemExit('Zone non confirmée dans les 150 km : publication bloquée')
+        distance = fiche.get('distance_toulouse_km')
+        if isinstance(distance, bool) or not isinstance(distance, (int, float)) or not 0 <= distance <= 150:
+            raise SystemExit('Distance absente ou hors rayon : publication bloquée')
         calendrier = charger(CALENDRIER)
-        deja = any(identifiant(e) == args.id for e in calendrier['events'])
-        if not deja:
-            evenement = {cle: fiche[cle] for cle in ('date', 'title', 'location', 'details', 'source', 'end_date') if cle in fiche}
-            evenement['statut'] = 'valide'
-            calendrier['events'].append(evenement)
-            calendrier['events'].sort(key=lambda e: (e.get('date', ''), e.get('title', '')))
-            calendrier['updated'] = date.today().isoformat()
-            sauvegarder(CALENDRIER, calendrier)
+        # Empêcher les doublons, même si l'intitulé diffère légèrement.
+        if any(identifiant(e) == args.id for e in calendrier['events']):
+            raise SystemExit('Manifestation déjà publiée : aucune modification')
+        evenement = {k: fiche[k] for k in ('date', 'title', 'location', 'details', 'source', 'end_date') if k in fiche}
+        evenement['statut'] = 'valide'
+        calendrier['events'].append(evenement)
+        calendrier['events'].sort(key=lambda e: (e.get('date', ''), e.get('title', '')))
+        calendrier['updated'] = date.today().isoformat()
+        sauvegarder(CALENDRIER, calendrier)
         fiche['statut'] = 'valide'
     else:
         fiche['statut'] = 'refuse'
