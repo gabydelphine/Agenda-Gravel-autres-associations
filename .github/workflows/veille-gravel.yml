@@ -1,7 +1,7 @@
 
 name: Veille Gravel Toulouse
 
-on:
+'on':
   schedule:
     - cron: '15 5 * * *'
     - cron: '0 7 * * 0'
@@ -13,6 +13,7 @@ permissions:
 jobs:
   veille:
     runs-on: ubuntu-latest
+
     steps:
       - name: Recuperer le depot
         uses: actions/checkout@v4
@@ -30,7 +31,7 @@ jobs:
         run: python veille_gravel.py
 
       - name: Envoyer le recapitulatif
-        if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch')
+        if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
         env:
           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
@@ -49,7 +50,7 @@ jobs:
           fi
 
       - name: Sauvegarder l'historique des emails
-        if: success() && (github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
+        if: success() && (github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch')
         run: |
           if [ -f veille-notifications.json ]; then
             git config user.name "github-actions[bot]"
