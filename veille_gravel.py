@@ -19,7 +19,7 @@ SOURCES = {
     "FFVelo 82": "https://cyclotourisme82-ffct.fr/",
     "Velo Occitanie": "https://www.velo-occitanie.fr/",
     "Saubens Cyclo": "https://saubenscyclo31.fr/",
-    "Battistrada Gravel": "https://battistrada.com/fr/calendrier-cyclosportives/gravel/?biketype=4",
+    "Battistrada Gravel": "https://battistrada.com/fr/calendrier-cyclosportives/france/gravel/?biketype=4",
     "Gravel Agenda": "https://gravelagenda.com/",
     "Gravel Passion": "https://www.gravelpassion.fr/evenements-calendrier-gravel/",
     "Fontenilles VTT": "https://fontenilles-vtt.fr/",
@@ -263,6 +263,65 @@ def cle_evenement_approximative(url, extrait):
     return cle_observation(url, extrait)
 
 
+# Regroupement des annonces d'un même événement provenant de plusieurs sources.
+# Les trois manifestations confirmées (Venerque, Nocturne du Lys,
+# Côtes Gasconnes) restent conservées.
+def identite_manifestation(item):
+    texte = normaliser(item.get("extrait", ""))
+    url = normaliser(item.get("url", ""))
+    if "raid du lys" in texte:
+        nom = "raid-du-lys"
+    elif "saubenoise" in texte or "saubensgravel2026.pdf" in url:
+        nom = "ronde-saubenoise"
+    elif "occitanie 600" in texte:
+        nom = "occitanie-600"
+    elif "venerque" in texte and "randonnee" in texte:
+        nom = "randonnee-venerque"
+    elif "nocturne du lys" in texte:
+        nom = "nocturne-du-lys"
+    elif "cotes gasconnes" in texte:
+        nom = "cotes-gasconnes"
+    else:
+        return None
+    # Une date absente ne doit pas créer un second événement.
+    return nom
+
+
+def regrouper_observations(items):
+    resultat = []
+    indices = {}
+    for item in items:
+        identite = identite_manifestation(item)
+        if not identite:
+            resultat.append(item)
+            continue
+        date_item = item.get("date_evenement")
+        # Ne pas fusionner deux éditions d'années différentes.
+        annee = (date_item or "")[:4] or "inconnue"
+        if annee == "inconnue":
+            for (nom, an), idx in indices.items():
+                if nom == identite:
+                    annee = an
+                    break
+        cle = (identite, annee)
+        if cle not in indices:
+            indices[cle] = len(resultat)
+            resultat.append(item)
+            continue
+        precedent = resultat[indices[cle]]
+        # Conserver la fiche la plus complète et les données déjà vérifiées.
+        if not precedent.get("date_evenement") and date_item:
+            precedent["date_evenement"] = date_item
+        if not precedent.get("lieu") and item.get("lieu"):
+            precedent["lieu"] = item["lieu"]
+        if precedent.get("distance_toulouse_km") is None and item.get("distance_toulouse_km") is not None:
+            precedent["distance_toulouse_km"] = item["distance_toulouse_km"]
+            precedent["controle_zone"] = item.get("controle_zone", "lieu_a_verifier")
+        if not precedent.get("rayon_recherche_km"):
+            precedent["rayon_recherche_km"] = RAYON_KM
+    return resultat
+
+
 def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
                 lieu=None, pdf_connu=False):
     extrait = re.sub(r"\s+", " ", extrait or "").strip()[:500]
@@ -274,6 +333,18 @@ def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
 
     identifiant = cle_observation(url, extrait)
     cle_event = cle_evenement_approximative(url, extrait)
+    nouvelle_identite = identite_manifestation({"url": url, "extrait": extrait})
+    if nouvelle_identite:
+        for existante in observations:
+            if identite_manifestation(existante) == nouvelle_identite:
+                ancienne_date = existante.get("date_evenement")
+                if ancienne_date and date_evenement and ancienne_date[:4] != date_evenement[:4]:
+                    continue
+                if not ancienne_date:
+                    existante["date_evenement"] = date_evenement
+                if lieu and not existante.get("lieu"):
+                    existante["lieu"] = lieu
+                return
     if identifiant in connus or cle_event in lieux_connus:
         if lieu:
             for observation in observations:
@@ -465,7 +536,7 @@ if FICHIER.exists():
 else:
     donnees = {"observations": []}
 
-observations = donnees.get("observations", [])
+observations = regrouper_observations(donnees.get("observations", []))
 connus = {
     cle_observation(item.get("url", ""), item.get("extrait", ""))
     for item in observations
@@ -534,6 +605,7 @@ for url, (nom, _) in pdf_a_consulter.items():
     except Exception as erreur:
         print(f"Erreur PDF {url} : {erreur}")
 
+observations = regrouper_observations(observations)
 FICHIER.write_text(
     json.dumps({"observations": observations}, ensure_ascii=False, indent=2) + "\n",
     encoding="utf-8",
