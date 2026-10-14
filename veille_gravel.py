@@ -79,14 +79,17 @@ def verifier_commune(lieu):
     nom = re.sub(r"\s*\(\d{2,3}[AB]?\)\s*$", "", lieu, flags=re.I).strip()
     if not nom or len(nom) > 65:
         return None, "lieu_a_verifier"
-    cle = (normaliser(nom), departement)
+    def cle_nom(texte):
+        return re.sub(r"[^a-z0-9]+", " ", normaliser(texte)).strip()
+
+    cle = (cle_nom(nom), departement)
     if cle in _cache_communes:
         return _cache_communes[cle]
     try:
         params = urlencode({"nom": nom, "fields": "nom,codeDepartement,centre", "format": "json", "geometry": "centre", "limit": 30})
         contenu, _ = telecharger("https://geo.api.gouv.fr/communes?" + params, 250_000)
         resultats = json.loads(contenu)
-        exacts = [c for c in resultats if normaliser(c.get("nom")) == normaliser(nom)
+        exacts = [c for c in resultats if cle_nom(c.get("nom")) == cle_nom(nom)
                   and (not departement or c.get("codeDepartement") == departement)]
         if len(exacts) != 1:
             resultat = (None, "lieu_ambigu_ou_inconnu")
@@ -188,6 +191,18 @@ def trouver_date(texte):
     motif = r"\b(\d{1,2})\s+(" + "|".join(MOIS) + r")\s+(20\d{2})\b"
     match = re.search(motif, texte_n)
     if not match:
+        numerique = re.search(r"\b(\d{1,2})[/.\-](\d{1,2})[/.\-](20\d{2})\b", texte_n)
+        if numerique:
+            try:
+                return date(int(numerique.group(3)), int(numerique.group(2)), int(numerique.group(1))).isoformat()
+            except ValueError:
+                return None
+        iso = re.search(r"\b(20\d{2})-(\d{2})-(\d{2})\b", texte_n)
+        if iso:
+            try:
+                return date.fromisoformat(iso.group()).isoformat()
+            except ValueError:
+                return None
         return None
     jour, mois, annee = match.groups()
     try:
@@ -514,7 +529,46 @@ def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
     except Exception as erreur:
         print(f"Erreur fiche ciblée {url} : {erreur}")
 
-def explorer_site(nom, url, pdf_a_consulter):
+def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_connus):
+    """Inspecte une fiche événement, sans confondre un calendrier global avec une fiche.
+
+    Les données incomplètes restent des observations ; jamais de publication directe.
+    """
+    html = contenu.decode("utf-8", errors="replace")
+    h1 = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
+    if not h1:
+        return
+    titre = re.sub(r"\s+", " ", nettoyer_html(h1.group(1).encode("utf-8"))).strip()[:140]
+    if not 8 <= len(titre) <= 140:
+        return
+    # Évite les pages d'accueil, catégories et calendriers généraux.
+    if re.search(r"\b(accueil|calendrier|agenda|actualites|evenements|resultats)\b", normaliser(titre)) and not re.search(r"\bgravel\b", normaliser(titre)):
+        return
+    article = re.search(r"(?is)<article\b[^>]*>(.*?)</article>", html)
+    if not article:
+        article = re.search(r"(?is)<main\b[^>]*>(.*?)</main>", html)
+    corps = nettoyer_html((article.group(1) if article else html).encode("utf-8"))
+    texte = re.sub(r"\s+", " ", corps).strip()
+    # Le mot gravel doit se trouver dans le contenu de la fiche, et non dans un menu.
+    if not re.search(r"\b(?:gravel|gravier)\b", normaliser(texte[:6000])):
+        return
+    # Priorité aux dates structurées, puis au texte du début de la fiche.
+    date_struct = re.search(r'(?is)<time\b[^>]*datetime=["\']([^"\']+)', html)
+    jour = trouver_date(date_struct.group(1)) if date_struct else None
+    if not jour:
+        jour = trouver_date(texte[:1800])
+    if not jour:
+        return
+    if date.fromisoformat(jour) < date.today() - timedelta(days=365):
+        return
+    d = date.fromisoformat(jour)
+    extrait = f"{titre} — {d.day} {list(MOIS)[d.month-1]} {d.year} — gravel. {texte[:240]}"
+    # Sans commune fiable, garder l'observation sans autoriser sa publication.
+    lieu = lieu_depuis_vetete(url) if "vetete.com" in urlparse(url).netloc else None
+    enregistrer(nom, url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
+
+
+def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus):
     hote = urlparse(url).netloc.lower()
     file_attente = deque([(url, 0)])
     pages_vues = set()
@@ -540,6 +594,7 @@ def explorer_site(nom, url, pdf_a_consulter):
                 t in type_contenu for t in ("html", "text/", "application/xhtml")
             ):
                 continue
+            analyser_page_decouverte(nom, page, contenu, observations, connus, lieux_connus)
             liens = extraire_liens(contenu, page)
             pdf_liens = sorted(
                 lien for lien in liens
@@ -737,7 +792,7 @@ for nom, url in SOURCES.items():
             analyser_velo_occitanie(
                 texte, url, observations, connus, lieux_connus
             )
-        explorer_site(nom, url, pdf_a_consulter)
+        explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus)
     except Exception as erreur:
         print(f"Erreur site {nom} : {erreur}")
 
