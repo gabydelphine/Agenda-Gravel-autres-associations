@@ -77,6 +77,10 @@ def verifier_commune(lieu):
     match_dept = re.search(r"\((\d{2,3}[AB]?)\)\s*$", lieu, re.I)
     departement = match_dept.group(1).upper() if match_dept else None
     nom = re.sub(r"\s*\(\d{2,3}[AB]?\)\s*$", "", lieu, flags=re.I).strip()
+    # Lever les ambiguïtés pour les communes déjà identifiées localement.
+    departements_connus = {"revel": "31", "saint lys": "31", "saubens": "31", "fontenilles": "31", "venerque": "31"}
+    cle_locale = re.sub(r"[^a-z0-9]+", " ", normaliser(nom)).strip()
+    departement = departement or departements_connus.get(cle_locale)
     if not nom or len(nom) > 65:
         return None, "lieu_a_verifier"
     def cle_nom(texte):
@@ -342,10 +346,28 @@ def lieu_depuis_vetete(url):
     return match.group(1).replace("-", " ").strip()
 
 
+def est_page_generique(item):
+    """Écarte les rubriques et pages d'index, sans toucher à l'inventaire validé."""
+    titre = normaliser(item.get("titre", "")).strip()
+    generiques = (
+        "au vert le dimanche", "page title theme 600", "toutes les actus velo",
+        "conseils preparation et culture gravel", "calendrier gravel france",
+    )
+    titre_cle = re.sub(r"[^a-z0-9]+", " ", titre).strip()
+    if any(titre_cle.startswith(g) for g in generiques):
+        return True
+    url = urlparse(item.get("url", ""))
+    if url.netloc in ("vetete.com", "www.vetete.com") and not url.path.strip("/"):
+        return True
+    return False
+
+
 def nettoyer_observations(items):
     """Conserve 365 jours glissants d’historique et toutes les dates futures dans la zone."""
     resultat = []
     for item in regrouper_observations(items):
+        if est_page_generique(item):
+            continue
         nom = identite_manifestation(item)
         if nom == "occitanie-600":
             continue  # Sortie officielle ÔGravel, hors calendrier des autres associations.
@@ -541,6 +563,8 @@ def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_conn
     titre = re.sub(r"\s+", " ", nettoyer_html(h1.group(1).encode("utf-8"))).strip()[:140]
     if not 8 <= len(titre) <= 140:
         return
+    if est_page_generique({"titre": titre, "url": url}):
+        return
     # Évite les pages d'accueil, catégories et calendriers généraux.
     if re.search(r"\b(accueil|calendrier|agenda|actualites|evenements|resultats)\b", normaliser(titre)) and not re.search(r"\bgravel\b", normaliser(titre)):
         return
@@ -565,6 +589,10 @@ def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_conn
     extrait = f"{titre} — {d.day} {list(MOIS)[d.month-1]} {d.year} — gravel. {texte[:240]}"
     # Sans commune fiable, garder l'observation sans autoriser sa publication.
     lieu = lieu_depuis_vetete(url) if "vetete.com" in urlparse(url).netloc else None
+    if not lieu:
+        match_lieu = re.search(r"\b(?:à|a)\s+([A-ZÀ-Ÿ][\wÀ-ÿ'-]+(?:[ -][A-ZÀ-Ÿ][\wÀ-ÿ'-]+){0,3})\s+(?:le|les)\s+(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)", titre)
+        if match_lieu:
+            lieu = match_lieu.group(1)
     enregistrer(nom, url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
 
 
