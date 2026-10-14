@@ -136,7 +136,8 @@
       "source": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 18.8,
-      "statut": "a_verifier"
+      "statut": "valide",
+      "date_decision": "2026-10-14"
     },
     {
       "date": "2026-09-20",

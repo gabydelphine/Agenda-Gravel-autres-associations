@@ -1,4 +1,3 @@
-
 {
   "updated": "2026-10-14",
   "events": [
@@ -104,6 +103,14 @@
       "location": "Venerque (31)",
       "details": "Parcours gravel confirmé.",
       "source": "",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "39ème Randonnée de Venerque",
+      "location": "Venerque (31)",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
       "statut": "valide"
     },
     {
