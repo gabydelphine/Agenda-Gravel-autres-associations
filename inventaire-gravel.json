@@ -185,6 +185,14 @@
       "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
       "source": "https://www.intramuros.org/escalquens/agenda/893310",
       "statut": "valide"
+    },
+    {
+      "date": "2027-06-15",
+      "title": "TEST GRAVEL EMAIL - A SUPPRIMER",
+      "location": "Toulouse (31)",
+      "details": "Manifestation fictive pour tester les boutons Valider et Refuser",
+      "source": "",
+      "statut": "a_verifier"
     }
   ]
 }
