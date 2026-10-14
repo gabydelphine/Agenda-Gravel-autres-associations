@@ -394,6 +394,59 @@ def nettoyer_observations(items):
     return resultat
 
 
+def analyser_pdf_calendrier(nom, url, lignes, observations, connus, lieux_connus):
+    """Repère des lignes d'événements, sans prendre la date de mise à jour du PDF.
+
+    Ne déduit l'année du nom de fichier que si elle est unique et explicite.
+    Une date et un lieu doivent appartenir à la même entrée de calendrier.
+    """
+    nom_fichier = unquote(urlparse(url).path.rsplit("/", 1)[-1])
+    annees = set(re.findall(r"(?<!\d)20(?:2[5-9]|3\d)(?!\d)", nom_fichier))
+    annee_fichier = int(next(iter(annees))) if len(annees) == 1 else None
+    mois_pattern = "|".join(MOIS)
+    date_ligne = re.compile(
+        r"\b(?:lun(?:di)?|mar(?:di)?|mer(?:credi)?|jeu(?:di)?|ven(?:dredi)?|"
+        r"sam(?:edi)?|dim(?:anche)?)?\s*(\d{1,2})\s+(" + mois_pattern +
+        r")(?:\s+(20\d{2}))?\b", re.I)
+    nombre = 0
+    for ligne in lignes:
+        if not re.search(r"\b(?:gravel|gravier)\b", normaliser(ligne)):
+            continue
+        m = date_ligne.search(normaliser(ligne))
+        if not m:
+            continue
+        annee = int(m.group(3)) if m.group(3) else annee_fichier
+        if annee is None:
+            continue
+        try:
+            jour = date(annee, MOIS[m.group(2)], int(m.group(1)))
+        except ValueError:
+            continue
+        if jour < date.today() - timedelta(days=365):
+            continue
+        # Une entrée comme « Dimanche 20 septembre Gravel St André (31) ».
+        suite = ligne[m.end():].strip()
+        lieu = None
+        titre = None
+        match = re.search(r"\b(?:gravel|gravier)\s+(.{2,60}?)\s*\((\d{2,3}[AB]?)\)", suite, re.I)
+        if match:
+            lieu = match.group(1).strip(" -–,.") + " (" + match.group(2) + ")"
+            titre = "Gravel " + match.group(1).strip(" -–,.")
+        else:
+            # « Dimanche 18 octobre Saubens (31) ... Gravel ».
+            match = re.match(r"\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,55}?)\s*\((\d{2,3}[AB]?)\)", suite)
+            if match:
+                lieu = match.group(1).strip() + " (" + match.group(2) + ")"
+                titre = "Manifestation gravel à " + match.group(1).strip()
+        if not lieu or not titre:
+            continue
+        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month - 1]} {jour.year} — gravel. {ligne}"
+        enregistrer(nom, url, extrait, observations, connus, lieux_connus,
+                    lieu=lieu, titre=titre)
+        nombre += 1
+    return nombre
+
+
 def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
                 lieu=None, pdf_connu=False, titre=None):
     extrait = re.sub(r"\s+", " ", extrait or "").strip()[:500]
@@ -853,6 +906,13 @@ for url, (nom, _) in pdf_a_consulter.items():
         texte = lire_pdf(contenu)
         lignes = [re.sub(r"\s+", " ", ligne).strip() for ligne in texte.splitlines()]
         pdf_connu = url in PDF_CONNUS.values()
+        nb_calendrier = analyser_pdf_calendrier(
+            nom, url, lignes, observations, connus, lieux_connus)
+        # Les calendriers multi-événements ne doivent pas être interprétés
+        # comme une seule manifestation datée de la mise à jour du document.
+        if nb_calendrier or re.search(r"calendrier", unquote(urlparse(url).path), re.I):
+            print(f"Calendrier PDF : {nb_calendrier} entrée(s) exploitables — {url}")
+            continue
         for i, ligne in enumerate(lignes):
             if not re.search(r"\b(?:gravel|gravier)\b", ligne, re.I):
                 continue
