@@ -356,6 +356,33 @@ def lieu_depuis_vetete(url):
     return match.group(1).replace("-", " ").strip()
 
 
+def lieu_depuis_fiche(titre, texte):
+    """Repère uniquement des communes explicites, jamais une région déduite."""
+    motifs = (
+        r"\b(?:a|à)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,3})\s+(?:le|les)\s+(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)",
+        r"\b(?:depart|départ|au départ|rendez[- ]vous)\s+(?:de|du|à|a)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})\b",
+        r"\b(?:à|a)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})\s*\((\d{2,3}[AB]?)\)",
+    )
+    for fragment in (titre, texte[:1000]):
+        for motif in motifs:
+            m = re.search(motif, fragment, re.I)
+            if m:
+                lieu = m.group(1).strip(' -,.')
+                if len(m.groups()) > 1 and m.group(2):
+                    lieu += ' (' + m.group(2) + ')'
+                if 3 <= len(lieu) <= 60:
+                    distance, etat = verifier_commune(lieu)
+                    if etat in ('dans_zone', 'hors_zone'):
+                        return lieu
+    # Les fiches d'inscription indiquent souvent « 46340 Salviac ».
+    for m in re.finditer(r"\b(?:0[1-9]|[1-8]\d|9[0-5])\d{3}\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})", texte[:1400]):
+        lieu = m.group(1).strip(' -,.')
+        distance, etat = verifier_commune(lieu)
+        if etat in ('dans_zone', 'hors_zone'):
+            return lieu
+    return None
+
+
 def est_page_generique(item):
     """Écarte les rubriques et pages d'index, sans toucher à l'inventaire validé."""
     titre = normaliser(item.get("titre", "")).strip()
@@ -364,6 +391,12 @@ def est_page_generique(item):
         "conseils preparation et culture gravel", "calendrier gravel france",
     )
     titre_cle = re.sub(r"[^a-z0-9]+", " ", titre).strip()
+    # Pages de rubriques, auteurs, pays et régions ne sont pas des événements.
+    chemin = urlparse(item.get("url", "")).path.lower()
+    if re.search(r"/(?:regions|pays|lieu|author|tests-gravel|agenda|calendrier)(?:/|$)", chemin):
+        return True
+    if re.search(r"^(?:calendrier|agenda|tous nos articles|tous les articles|pays|lieu)\b", titre_cle):
+        return True
     if any(titre_cle.startswith(g) for g in generiques):
         return True
     url = urlparse(item.get("url", ""))
@@ -416,6 +449,12 @@ def nettoyer_observations(items):
         distance, etat = verifier_commune(lieu)
         if etat == "hors_zone":
             print(f"Hors rayon de {RAYON_KM} km : {lieu} ({distance} km)")
+            continue
+        # Les découvertes de la V4 sans commune vérifiée sont du bruit :
+        # préserver cependant les observations V3, y compris celles à examiner.
+        if (etat != "dans_zone" and item.get("date_detection", "") >= "2026-10-14"
+                and item.get("source") in ("Gravel Agenda", "Gravel Passion", "Gravel du Drac", "Velo Occitanie")
+                and not identite):
             continue
         # Une fiche peut être citée par plusieurs sites : une seule observation.
         titre_cle = re.sub(r"[^a-z0-9]+", "", normaliser(item.get("titre", "")))
@@ -678,12 +717,17 @@ def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_conn
         return
     d = date.fromisoformat(jour)
     extrait = f"{titre} — {d.day} {list(MOIS)[d.month-1]} {d.year} — gravel. {texte[:240]}"
-    # Sans commune fiable, garder l'observation sans autoriser sa publication.
     lieu = lieu_depuis_vetete(url) if "vetete.com" in urlparse(url).netloc else None
     if not lieu:
-        match_lieu = re.search(r"\b(?:à|a)\s+([A-ZÀ-Ÿ][\wÀ-ÿ'-]+(?:[ -][A-ZÀ-Ÿ][\wÀ-ÿ'-]+){0,3})\s+(?:le|les)\s+(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)", titre)
-        if match_lieu:
-            lieu = match_lieu.group(1)
+        lieu = lieu_depuis_fiche(titre, texte)
+    if not lieu:
+        return  # Pas de commune fiable : ne pas créer de faux candidat.
+    distance, etat = verifier_commune(lieu)
+    if etat != "dans_zone":
+        return
+    # Une mention de gravel dans le menu commun à tout le site ne suffit pas.
+    if not re.search(r"\bgravel\b|\bgravier\b", normaliser(titre + ' ' + texte[:1600])):
+        return
     enregistrer(nom, url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
 
 
