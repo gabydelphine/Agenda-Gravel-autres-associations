@@ -50,7 +50,7 @@ PDF_CONNUS = {
 FICHIER = Path("veille-resultats.json")
 
 # Distance à vol d'oiseau, et non distance routière.
-RAYON_KM = 150
+RAYON_KM = 200
 TOULOUSE_LAT, TOULOUSE_LON = 43.6047, 1.4442
 _cache_communes = {}
 
