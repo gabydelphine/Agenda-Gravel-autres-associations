@@ -18,7 +18,12 @@ SOURCES = {
     "FFVelo 82": "https://cyclotourisme82-ffct.fr/",
     "Velo Occitanie": "https://www.velo-occitanie.fr/",
     "Saubens Cyclo": "https://saubenscyclo31.fr/",
+    "Battistrada Gravel": "https://battistrada.com/fr/calendrier-cyclosportives/gravel/?biketype=4",
 }
+
+BATTISTRADA_EVENEMENTS = (
+    "https://battistrada.com/fr/calendrier-cyclosportives/edition/rando-nocturne-la-revdautan-2026/59674/",
+)
 
 PDF_CONNUS = {
     "Circuit Gravel Saubens 2026": (
@@ -247,6 +252,32 @@ def analyser_velo_occitanie(texte, url, observations, connus, lieux_connus):
         print(f"Annonce Gravel examinée : {titre}")
 
 
+def analyser_battistrada(url, observations, connus, lieux_connus):
+    """Collecte prudente : candidats gravel à vérifier manuellement."""
+    try:
+        contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
+        texte = nettoyer_html(contenu)
+        # Les fiches peuvent être en français ou présenter une date numérique.
+        # On conserve uniquement les dates explicites au format déjà reconnu.
+        date_evenement = trouver_date(texte)
+        if not date_evenement or date.fromisoformat(date_evenement) < date.today():
+            print(f"Battistrada : date absente ou passée : {url}")
+            return
+        if not re.search(r"\bgravel\b", normaliser(texte)):
+            print(f"Battistrada : parcours gravel non confirmé : {url}")
+            return
+        # Limiter le texte à un extrait court et contextualisé.
+        titre = re.search(r"(?is)<title[^>]*>(.*?)</title>", contenu.decode("utf-8", errors="replace"))
+        titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Battistrada"
+        extrait = f"{titre} — {date_evenement} — Gravel. " + re.sub(r"\s+", " ", texte)[:250]
+        # enregistrer() attend une date en toutes lettres, et garde le statut à vérifier.
+        jour = date.fromisoformat(date_evenement)
+        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
+        enregistrer("Battistrada", url, extrait, observations, connus, lieux_connus)
+    except Exception as erreur:
+        print(f"Erreur Battistrada {url} : {erreur}")
+
+
 def explorer_site(nom, url, pdf_a_consulter):
     hote = urlparse(url).netloc.lower()
     file_attente = deque([(url, 0)])
@@ -329,6 +360,21 @@ for nom, url in SOURCES.items():
         explorer_site(nom, url, pdf_a_consulter)
     except Exception as erreur:
         print(f"Erreur site {nom} : {erreur}")
+
+# Examiner la fiche signalée et les fiches d'événements reliées au calendrier.
+try:
+    listing_url = SOURCES["Battistrada Gravel"]
+    contenu, _ = telecharger(listing_url, MAX_OCTETS_PAGE)
+    fiches = {lien for lien in extraire_liens(contenu, listing_url)
+              if "battistrada.com" in urlparse(lien).netloc
+              and "/edition/" in urlparse(lien).path}
+    fiches.update(BATTISTRADA_EVENEMENTS)
+    for fiche in sorted(fiches)[:80]:
+        analyser_battistrada(fiche, observations, connus, lieux_connus)
+except Exception as erreur:
+    print(f"Erreur calendrier Battistrada : {erreur}")
+    for fiche in BATTISTRADA_EVENEMENTS:
+        analyser_battistrada(fiche, observations, connus, lieux_connus)
 
 for url, (nom, _) in pdf_a_consulter.items():
     try:
