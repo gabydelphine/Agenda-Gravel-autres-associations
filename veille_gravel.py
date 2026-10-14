@@ -447,7 +447,7 @@ def analyser_vetete(url, observations, connus, lieux_connus):
         if not re.search(r"\b(?:circuit|parcours|rando)\s+(?:gravel|gravier)\b|\b(?:gravel|gravier)\s+(?:nocturne|km|de|du|des)\b", normaliser(texte)):
             return
         jour_iso = trouver_date(texte)
-        if not jour_iso or date.fromisoformat(jour_iso) < date.today():
+        if not jour_iso or date.fromisoformat(jour_iso) < date.today() - timedelta(days=365):
             return
         titre = re.search(r"(?is)<title[^>]*>(.*?)</title>", contenu.decode("utf-8", errors="replace"))
         titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Vetete"
@@ -586,20 +586,44 @@ MANIFESTATIONS_VALIDEES = [
     ("2026-10-25", "La Lauragaise", "Escalquens (31)", "", "https://www.intramuros.org/escalquens/agenda/893310"),
 ]
 
-def inventaire_valide():
-    """Fusion non destructive avec events.json ; aucun ajout automatique à la publication."""
-    fiches = []
-    if Path("events.json").exists():
-        try:
-            brut = json.loads(Path("events.json").read_text(encoding="utf-8"))
-            fiches = brut.get("events", []) if isinstance(brut, dict) else []
-        except (ValueError, OSError) as exc:
-            print(f"Lecture events.json impossible : {exc}")
-    # On exclut l'association ÔGravel du calendrier des autres associations.
-    fiches = [f for f in fiches if "occitanie 600" not in normaliser(f.get("title", ""))]
+def inventaire_valide(observations):
+    """Conserve l'inventaire, les décisions et les événements historiques.
+
+    Seules les observations ayant une date, un lieu géographiquement vérifié
+    et un titre identifiable deviennent des fiches à vérifier.
+    """
+    chemin = Path("inventaire-gravel.json")
+    if chemin.exists():
+        brut = json.loads(chemin.read_text(encoding="utf-8"))
+        if not isinstance(brut, dict) or not isinstance(brut.get("events"), list):
+            raise ValueError("Format de l'inventaire incorrect : arrêt sans écrasement")
+        fiches = brut["events"]
+    else:
+        fiches = []
+
+    # Les décisions humaines existantes sont prioritaires sur les sources.
     def cle(f):
         return (f.get("date", ""), normaliser(f.get("title", "")))
-    cles = {cle(f) for f in fiches}
+
+    # Fusionner les entrées publiées sans modifier les décisions déjà enregistrées.
+    if Path("events.json").exists():
+        calendrier = json.loads(Path("events.json").read_text(encoding="utf-8"))
+        if not isinstance(calendrier, dict) or not isinstance(calendrier.get("events"), list):
+            raise ValueError("Format du calendrier incorrect : arrêt sans écrasement")
+        publiees = calendrier["events"]
+    else:
+        publiees = []
+
+    index = {cle(f): f for f in fiches}
+    for f in publiees:
+        if "occitanie 600" in normaliser(f.get("title", "")):
+            continue
+        if cle(f) not in index:
+            nouvelle = dict(f)
+            nouvelle.setdefault("statut", "valide")
+            fiches.append(nouvelle)
+            index[cle(nouvelle)] = nouvelle
+
     for jour, titre, lieu, details, source in MANIFESTATIONS_VALIDEES:
         if date.fromisoformat(jour) < date.today() - timedelta(days=365):
             continue
@@ -607,14 +631,45 @@ def inventaire_valide():
                   "details": ("Parcours gravel confirmé par l'organisateur / utilisateur. " + details).strip(),
                   "source": source, "validation_gravel": "utilisateur",
                   "statut": "annule" if "Annulé" in details else "valide"}
-        if cle(entree) not in cles:
+        if cle(entree) not in index:
             fiches.append(entree)
-            cles.add(cle(entree))
+            index[cle(entree)] = entree
+
+    # Seules les fiches structurées peuvent recevoir un lien de décision.
+    # Une observation ambiguë reste dans veille-resultats.json pour revue.
+    for item in observations:
+        jour = item.get("date_evenement")
+        lieu = item.get("lieu")
+        if not jour or not lieu or item.get("controle_zone") != "dans_zone":
+            continue
+        if item.get("source") != "Velo Occitanie":
+            continue  # Autres sources : titre non extrait avec certitude.
+        match = re.fullmatch(
+            r"\s*Détails\s+(.+?)\s+"
+            r"(?:lun|mar|mer|jeu|ven|sam|dim)\.?\s+"
+            r"\d{1,2}\s+[a-zéèêûôàîïù]+\s+20\d{2}\s+(.*)",
+            item.get("extrait", ""), re.I | re.S)
+        if not match:
+            continue
+        titre, bloc = match.group(1).strip(), match.group(2)
+        if (not titre or len(titre) > 100 or len(lieu) > 60
+                or normaliser(lieu) not in normaliser(bloc)
+                or not re.search(r"\bgravel\s+\d+\s+parcours?\b|\bgravier\b", bloc, re.I)):
+            continue
+        entree = {"date": jour, "title": titre, "location": lieu,
+                  "details": "Parcours gravel à vérifier", "source": item.get("url", ""),
+                  "controle_zone": "dans_zone", "distance_toulouse_km": item.get("distance_toulouse_km"),
+                  "statut": "a_verifier"}
+        if cle(entree) not in index:
+            fiches.append(entree)
+            index[cle(entree)] = entree
+
+    # Ne supprimer aucune décision ni aucun événement historique ici.
+    # L'affichage public applique déjà la fenêtre glissante de 12 mois.
     fiches.sort(key=lambda f: (f.get("date", ""), f.get("title", "")))
-    Path("inventaire-gravel.json").write_text(
-        json.dumps({"updated": date.today().isoformat(), "events": fiches}, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8")
-    print(f"Inventaire de travail : {len(fiches)} fiches (events.json inchangé)")
+    chemin.write_text(json.dumps({"updated": date.today().isoformat(), "events": fiches},
+                                  ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Inventaire préservé : {len(fiches)} fiches (events.json inchangé)")
 
 if FICHIER.exists():
     donnees = json.loads(FICHIER.read_text(encoding="utf-8"))
