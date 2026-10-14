@@ -79,7 +79,7 @@ def est_a_examiner(fiche):
     distance = fiche.get("distance_toulouse_km")
     if distance is not None:
         try:
-            if float(distance) > 150:
+            if float(distance) > 200:
                 return False
         except (TypeError, ValueError):
             return False
