@@ -1,0 +1,59 @@
+name: Validation des manifestations gravel
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: validation-gravel
+  cancel-in-progress: false
+
+jobs:
+  enregistrer-decision:
+    if: github.event.issue.user.login == github.repository_owner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Installer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Appliquer la décision
+        env:
+          TITRE: ${{ github.event.issue.title }}
+        run: |
+          python - <<'PY'
+          import os, re, subprocess
+          titre = os.environ['TITRE']
+          match = re.fullmatch(r'GRAVEL (VALIDER|REFUSER) ([0-9a-f]{16})', titre)
+          if not match:
+              raise SystemExit('Titre non reconnu : aucune modification')
+          decision = 'valider' if match.group(1) == 'VALIDER' else 'refuser'
+          subprocess.run(['python', 'validation_gravel.py', '--id', match.group(2), '--decision', decision], check=True)
+          PY
+
+      - name: Enregistrer les modifications
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add events.json inventaire-gravel.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Décision humaine sur une manifestation gravel'
+            git push
+          fi
+
+      - name: Clore la demande
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ github.repository }}
+        run: gh issue close "$ISSUE" --repo "$REPO" --comment 'Décision enregistrée dans le dépôt.'
