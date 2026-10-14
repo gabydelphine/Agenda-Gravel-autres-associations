@@ -21,24 +21,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          
+
       - name: Installer le lecteur PDF
         run: pip install pypdf
-        
+
       - name: Executer la veille
         if: github.event.schedule != '0 7 * * 0'
         run: python veille_gravel.py
-        
-        - name: Mettre a jour le calendrier
-        if: github.event.schedule != '0 7 * * 0'
-        run: python maj_calendrier.py
 
       - name: Envoyer le recapitulatif
         if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
         env:
-           NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
-           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
-           BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
+          NOTIFICATION_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+          BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
+          BREVO_SENDER_EMAIL: ${{ secrets.BREVO_SENDER_EMAIL }}
         run: python notification_email.py
 
       - name: Sauvegarder les observations
@@ -46,13 +42,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add veille-resultats.json events.json inventaire-gravel.json
+          git add veille-resultats.json inventaire-gravel.json
           if ! git diff --cached --quiet; then
             git commit -m "Mise a jour veille gravel"
             git push
           fi
+
       - name: Sauvegarder l'historique des emails
-        if: success() && (github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch')
+        if: success() && (github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
         run: |
           if [ -f veille-notifications.json ]; then
             git config user.name "github-actions[bot]"
