@@ -52,6 +52,46 @@
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
       "statut": "a_verifier"
+    },
+    {
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/la-6eme-randonnee-vtt-octobre-rose-a-portes-les-valence-le-samedi-17-octobre-2026",
+      "extrait": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée.",
+      "date_evenement": "2026-10-17",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
+      "extrait": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable",
+      "date_evenement": "2026-10-17",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/ronde-des-7-clochers-25eme-edition-a-chinon-le-samedi-17-octobre-2026",
+      "extrait": "Ronde des 7 Clochers (25ème édition) à Chinon le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. Ronde des 7 Clochers (25ème édition) à Chinon le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie",
+      "date_evenement": "2026-10-17",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/trans-revermont-vtt-29eme-edition-a-simandre-sur-suran-le-dimanche-25-octobre-2026",
+      "extrait": "Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com — 25 octobre 2026 — parcours gravel. Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminu",
+      "date_evenement": "2026-10-25",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
     }
   ]
 }
