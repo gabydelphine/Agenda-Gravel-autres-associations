@@ -1,13 +1,12 @@
-
 {
   "updated": "2026-10-14",
   "events": [
     {
-  "date": "2026-09-20",
-  "title": "Gravel Saint-André",
-  "location": "Saint-André",
-  "details": "Manifestation gravel confirmée",
-  "source": ""
+      "date": "2026-09-20",
+      "title": "Gravel Saint-André",
+      "location": "Saint-André",
+      "details": "Manifestation gravel confirmée",
+      "source": ""
     },
     {
       "date": "2026-10-18",
@@ -29,6 +28,13 @@
       "location": "Escalquens (31)",
       "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
       "source": "https://www.intramuros.org/escalquens/agenda/893310"
+    },
+    {
+      "date": "2027-04-03",
+      "title": "Ô Gravel Occitanie 600 2027",
+      "location": "Garidech",
+      "details": "Parcours Gravel annoncé",
+      "source": "https://www.velo-occitanie.fr/"
     }
   ]
 }
