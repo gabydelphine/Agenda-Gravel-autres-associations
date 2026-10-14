@@ -208,7 +208,8 @@
       "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 175.6,
-      "statut": "a_verifier"
+      "statut": "refuse",
+      "date_decision": "2026-10-14"
     },
     {
       "date": "2026-10-18",
