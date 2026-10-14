@@ -1,3 +1,4 @@
+
 {
   "updated": "2026-10-14",
   "events": [
@@ -132,7 +133,8 @@
       "title": "Gravel Saint-André",
       "location": "Saint-André",
       "details": "Manifestation gravel confirmée",
-      "source": ""
+      "source": "",
+      "statut": "valide"
     },
     {
       "date": "2026-09-27",
@@ -166,21 +168,24 @@
       "title": "19e Raid du Lys",
       "location": "Saint-Lys (31)",
       "details": "Gravel : 60 et 95 km · GPS nécessaire",
-      "source": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026"
+      "source": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026",
+      "statut": "valide"
     },
     {
       "date": "2026-10-18",
       "title": "La Ronde Saubenoise",
       "location": "Saubens (31)",
       "details": "Gravel : 47 km · 721 m D+",
-      "source": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf"
+      "source": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf",
+      "statut": "valide"
     },
     {
       "date": "2026-10-25",
       "title": "La Lauragaise",
       "location": "Escalquens (31)",
       "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
-      "source": "https://www.intramuros.org/escalquens/agenda/893310"
+      "source": "https://www.intramuros.org/escalquens/agenda/893310",
+      "statut": "valide"
     }
   ]
 }
