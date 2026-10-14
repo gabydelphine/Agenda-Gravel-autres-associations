@@ -34,6 +34,38 @@
       "date_evenement": null,
       "date_detection": "2026-10-13",
       "statut": "a_verifier"
+    },
+    {
+      "source": "VTT31 / Vélo Occitanie",
+      "url": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026",
+      "extrait": "19ème Raid du Lys — 18 octobre 2026 — Gravel. 19ème Raid du Lys-VTT (31) Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la co",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "VTT31 / Vélo Occitanie",
+      "url": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
+      "extrait": "39ème Randonnée de Venerque 31 — 20 septembre 2026 — Gravel.  39ème Randonnée de Venerque 31-VTT (31) Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynam",
+      "date_evenement": "2026-09-20",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "VTT31 / Vélo Occitanie",
+      "url": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
+      "extrait": "5ème Nocturne du Lys — 11 avril 2026 — Gravel.  5ème Nocturne du Lys-VTT (31) Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la",
+      "date_evenement": "2026-04-11",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
+    },
+    {
+      "source": "Fontenilles VTT",
+      "url": "https://fontenilles-vtt.fr/wp/?page_id=4553",
+      "extrait": "Fontenilles VTT — 20 septembre 2026 — Gravel.  Côtes Gasconnes 2026 | Fontenilles VTT Fontenilles VTT Fontenilles VTT – Les oranges roulent des mécaniques ! Accueil Cotes Gasconnes Côtes Gasconnes 2026 le règlement Le Club La vie du club Les rece",
+      "date_evenement": "2026-09-20",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
     }
   ]
 }
