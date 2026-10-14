@@ -7,7 +7,7 @@ from datetime import datetime, timezone, date
 from html import unescape
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urldefrag, urlencode
+from urllib.parse import urljoin, urlparse, urldefrag, urlencode, unquote
 from urllib.request import Request, urlopen
 
 from pypdf import PdfReader
@@ -318,6 +318,45 @@ def regrouper_observations(items):
     return resultat
 
 
+def lieu_depuis_vetete(url):
+    """Lit la commune dans l'adresse des fiches Vetete (…-a-revel-le-…)."""
+    chemin = unquote(urlparse(url).path).strip("/")
+    match = re.search(r"-a-(.+?)-le-(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)-", chemin, re.I)
+    if not match:
+        return None
+    return match.group(1).replace("-", " ").strip()
+
+
+def nettoyer_observations(items):
+    """Garde uniquement les annonces futures dans la zone, ou à vérifier si lieu inconnu."""
+    resultat = []
+    for item in regrouper_observations(items):
+        nom = identite_manifestation(item)
+        if nom == "occitanie-600":
+            continue  # Sortie officielle ÔGravel, hors calendrier des autres associations.
+        jour = item.get("date_evenement")
+        if not jour:
+            continue
+        try:
+            if date.fromisoformat(jour) < date.today():
+                continue
+        except ValueError:
+            continue
+        lieu = item.get("lieu") or (lieu_depuis_vetete(item.get("url", "")) if item.get("source") == "Vetete" else None)
+        if lieu and not item.get("lieu"):
+            item["lieu"] = lieu
+        distance, etat = verifier_commune(lieu)
+        if etat == "hors_zone":
+            print(f"Hors rayon de {RAYON_KM} km : {lieu} ({distance} km)")
+            continue
+        item["rayon_recherche_km"] = RAYON_KM
+        item["controle_zone"] = etat
+        if distance is not None:
+            item["distance_toulouse_km"] = distance
+        resultat.append(item)
+    return resultat
+
+
 def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
                 lieu=None, pdf_connu=False):
     extrait = re.sub(r"\s+", " ", extrait or "").strip()[:500]
@@ -414,7 +453,7 @@ def analyser_vetete(url, observations, connus, lieux_connus):
         titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Vetete"
         jour = date.fromisoformat(jour_iso)
         extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — parcours gravel. " + re.sub(r"\s+", " ", texte)[:220]
-        enregistrer("Vetete", url, extrait, observations, connus, lieux_connus)
+        enregistrer("Vetete", url, extrait, observations, connus, lieux_connus, lieu=lieu_depuis_vetete(url))
         print(f"Fiche Vetete examinée : {titre}")
     except Exception as erreur:
         print(f"Erreur fiche Vetete {url} : {erreur}")
@@ -451,7 +490,7 @@ def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
         if jour < date.today() - __import__('datetime').timedelta(days=365):
             return
         extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
-        # Les événements passés récents sont conservés pour la revue historique.
+        # Les événements passés ne sont plus ajoutés à la liste active.
         if jour < date.today():
             identifiant = cle_observation(url, extrait)
             if identifiant not in connus:
@@ -525,7 +564,7 @@ if FICHIER.exists():
 else:
     donnees = {"observations": []}
 
-observations = regrouper_observations(donnees.get("observations", []))
+observations = nettoyer_observations(donnees.get("observations", []))
 connus = {
     cle_observation(item.get("url", ""), item.get("extrait", ""))
     for item in observations
@@ -592,7 +631,7 @@ for url, (nom, _) in pdf_a_consulter.items():
     except Exception as erreur:
         print(f"Erreur PDF {url} : {erreur}")
 
-observations = regrouper_observations(observations)
+observations = nettoyer_observations(observations)
 FICHIER.write_text(
     json.dumps({"observations": observations}, ensure_ascii=False, indent=2) + "\n",
     encoding="utf-8",
