@@ -36,7 +36,8 @@
       "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 22.1,
-      "statut": "a_verifier"
+      "statut": "valide",
+      "date_decision": "2026-10-14"
     },
     {
       "date": "2026-04-12",
