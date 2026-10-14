@@ -21,7 +21,6 @@ SOURCES = {
     "Saubens Cyclo": "https://saubenscyclo31.fr/",
     "Vetete": "https://vetete.com/",
     "Gravel Agenda": "https://gravelagenda.com/",
-    "Gravel Passion": "https://www.gravelpassion.fr/evenements-calendrier-gravel/",
     "Fontenilles VTT": "https://fontenilles-vtt.fr/",
     "Cahors Cyclisme": "https://www.cahorscyclisme.com/",
     "Gravel du Drac": "https://sport.ikinoa.com/fr/evt/graveldudrac2026",
@@ -453,7 +452,7 @@ def nettoyer_observations(items):
         # Les découvertes de la V4 sans commune vérifiée sont du bruit :
         # préserver cependant les observations V3, y compris celles à examiner.
         if (etat != "dans_zone" and item.get("date_detection", "") >= "2026-10-14"
-                and item.get("source") in ("Gravel Agenda", "Gravel Passion", "Gravel du Drac", "Velo Occitanie")
+                and item.get("source") in ("Gravel Agenda", "Gravel du Drac", "Velo Occitanie")
                 and not identite):
             continue
         # Une fiche peut être citée par plusieurs sites : une seule observation.
@@ -731,141 +730,6 @@ def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_conn
     enregistrer(nom, url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
 
 
-def explorer_gravel_passion(observations, connus, lieux_connus):
-    """Priorité aux fiches Gravel Passion, avec diagnostic par fiche."""
-    base = SOURCES["Gravel Passion"]
-    prefixe = "/evenements-calendrier-gravel/"
-    attente = deque([base])
-    vues = set()
-    fiches = 0
-    compteurs = {}
-    limite_fiches = 180
-    while attente and len(vues) < limite_fiches + 20:
-        url = attente.popleft()
-        parsed = urlparse(url)
-        chemin = parsed.path
-        if url in vues or parsed.netloc not in ("www.gravelpassion.fr", "gravelpassion.fr"):
-            continue
-        if not chemin.startswith(prefixe):
-            continue
-        vues.add(url)
-        try:
-            contenu, typ = telecharger(url, MAX_OCTETS_PAGE)
-            if typ and "html" not in typ:
-                print(f"Gravel Passion : contenu non HTML — {url}")
-                continue
-            reste = chemin[len(prefixe):].strip("/")
-            fiche = bool(reste and "/" not in reste and reste not in ("feed", "amp"))
-            if fiche:
-                fiches += 1
-                raison = analyser_fiche_gravel_passion(url, contenu, observations, connus, lieux_connus)
-                compteurs[raison] = compteurs.get(raison, 0) + 1
-                print(f"Gravel Passion : {raison} — {url}")
-            liens = extraire_liens(contenu, url)
-            candidats = []
-            for lien in liens:
-                cible = urlparse(lien)
-                if cible.netloc not in ("www.gravelpassion.fr", "gravelpassion.fr"):
-                    continue
-                if not cible.path.startswith(prefixe) or lien in vues:
-                    continue
-                reste_lien = cible.path[len(prefixe):].strip("/")
-                if not reste_lien:
-                    continue
-                if "/" in reste_lien:
-                    if re.fullmatch(r"page/\d+", reste_lien):
-                        candidats.append((1, lien))
-                    continue
-                if reste_lien in ("feed", "amp") or re.fullmatch(r"page-?\d+", reste_lien):
-                    continue
-                candidats.append((0, lien))
-            for _, lien in sorted(candidats):
-                if lien not in attente:
-                    attente.append(lien)
-        except Exception as erreur:
-            print(f"Gravel Passion : erreur {url} : {erreur}")
-    print(f"Gravel Passion : {fiches} fiches examinées ({len(vues)} pages) ; bilan {compteurs}")
-
-
-def analyser_fiche_gravel_passion(url, contenu, observations, connus, lieux_connus):
-    """Renvoie la raison de conservation ou de rejet, sans inventer de commune."""
-    html = contenu.decode("utf-8", errors="replace")
-    evenement = None
-    for script in re.findall(r'<script\b[^>]*type=["\\\']application/ld\+json["\\\'][^>]*>(.*?)</script>', html, re.I | re.S):
-        try:
-            blocs = json.loads(unescape(script))
-        except (ValueError, TypeError):
-            continue
-        pile = blocs if isinstance(blocs, list) else [blocs]
-        while pile:
-            bloc = pile.pop()
-            if not isinstance(bloc, dict):
-                continue
-            graphe = bloc.get("@graph", [])
-            if isinstance(graphe, list):
-                pile.extend(graphe)
-            types = bloc.get("@type", [])
-            types = [types] if isinstance(types, str) else types
-            if any(str(t).rsplit("/", 1)[-1] in ("Event", "SportsEvent") for t in types):
-                evenement = bloc
-                break
-        if evenement:
-            break
-    h1 = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
-    titre = re.sub(r"\s+", " ", nettoyer_html(h1.group(1).encode()) if h1 else "").strip()
-    if evenement and evenement.get("name"):
-        titre = re.sub(r"\s+", " ", str(evenement["name"])).strip()
-    if not titre or est_page_generique({"titre": titre, "url": url}):
-        return "page générique ou sans titre"
-    article = re.search(r"(?is)<article\b[^>]*>(.*?)</article>", html)
-    if not article:
-        article = re.search(r"(?is)<main\b[^>]*>(.*?)</main>", html)
-    texte = re.sub(r"\s+", " ", nettoyer_html((article.group(1) if article else html).encode())).strip()
-    if not re.search(r"\b(?:gravel|gravier)\b", normaliser(titre + " " + texte[:2500])):
-        return "gravel non confirmé"
-    jour = trouver_date(str(evenement.get("startDate", ""))) if evenement else None
-    if not jour:
-        # Les pages WordPress comportent parfois la date dans un attribut ou un bloc.
-        for fragment in (texte[:1400], html[:12000]):
-            jour = trouver_date(fragment)
-            if jour:
-                break
-    if not jour:
-        return "date introuvable"
-    if date.fromisoformat(jour) < date.today() - timedelta(days=365):
-        return "date trop ancienne"
-    lieu = None
-    if evenement:
-        localisation = evenement.get("location", {})
-        if isinstance(localisation, list):
-            localisation = localisation[0] if localisation else {}
-        if isinstance(localisation, dict):
-            adresse = localisation.get("address", {})
-            if isinstance(adresse, dict):
-                lieu = adresse.get("addressLocality")
-            if not lieu:
-                lieu = localisation.get("name")
-    if lieu:
-        lieu = str(lieu).strip()
-        _, etat = verifier_commune(lieu)
-        if etat not in ("dans_zone", "hors_zone"):
-            lieu = None
-    if not lieu:
-        lieu = lieu_depuis_fiche(titre, texte)
-    if not lieu:
-        return "commune introuvable"
-    distance, etat = verifier_commune(lieu)
-    if etat == "hors_zone":
-        return f"hors zone ({distance} km)"
-    if etat != "dans_zone":
-        return f"commune non vérifiée ({lieu})"
-    d = date.fromisoformat(jour)
-    extrait = f"{titre} — {d.day} {list(MOIS)[d.month-1]} {d.year} — gravel. {texte[:230]}"
-    avant = len(observations)
-    enregistrer("Gravel Passion", url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
-    return "enregistrée" if len(observations) > avant else "déjà connue ou rejetée par les contrôles"
-
-
 def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus):
     hote = urlparse(url).netloc.lower()
     file_attente = deque([(url, 0)])
@@ -1081,7 +945,10 @@ if FICHIER.exists():
 else:
     donnees = {"observations": []}
 
-observations = nettoyer_observations(donnees.get("observations", []))
+observations = nettoyer_observations([
+    item for item in donnees.get("observations", [])
+    if item.get("source") != "Gravel Passion"
+])
 connus = {
     cle_observation(item.get("url", ""), item.get("extrait", ""))
     for item in observations
@@ -1095,11 +962,7 @@ pdf_a_consulter = {
     url: (nom, url) for nom, url in PDF_CONNUS.items()
 }
 
-explorer_gravel_passion(observations, connus, lieux_connus)
-
 for nom, url in SOURCES.items():
-    if nom == "Gravel Passion":
-        continue  # Exploration dédiée des fiches, ci-dessus.
     try:
         contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
         texte = nettoyer_html(contenu)
