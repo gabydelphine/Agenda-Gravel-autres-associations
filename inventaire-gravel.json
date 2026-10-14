@@ -172,6 +172,16 @@
     },
     {
       "date": "2026-10-18",
+      "title": "19ème Raid du Lys",
+      "location": "SAINT LYS",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://www.velo-occitanie.fr/",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 22.1,
+      "statut": "a_verifier"
+    },
+    {
+      "date": "2026-10-18",
       "title": "La Ronde Saubenoise",
       "location": "Saubens (31)",
       "details": "Gravel : 47 km · 721 m D+",

@@ -9,8 +9,9 @@
       "statut": "a_verifier",
       "lieu": "SAINT LYS",
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_ambigu_ou_inconnu",
-      "titre": "19ème Raid du Lys"
+      "controle_zone": "dans_zone",
+      "titre": "19ème Raid du Lys",
+      "distance_toulouse_km": 22.1
     },
     {
       "source": "Circuit Gravel Saubens 2026",
@@ -58,18 +59,6 @@
       "rayon_recherche_km": 200,
       "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
-      "url": "https://vetete.com/la-6eme-randonnee-vtt-octobre-rose-a-portes-les-valence-le-samedi-17-octobre-2026",
-      "extrait": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée.",
-      "date_evenement": "2026-10-17",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "lieu": "portes les valence",
-      "titre": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_ambigu_ou_inconnu",
-      "source": "Vetete",
       "url": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
       "extrait": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable",
       "date_evenement": "2026-10-17",
@@ -80,15 +69,113 @@
     },
     {
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_ambigu_ou_inconnu",
-      "source": "Vetete",
-      "url": "https://vetete.com/trans-revermont-vtt-29eme-edition-a-simandre-sur-suran-le-dimanche-25-octobre-2026",
-      "extrait": "Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com — 25 octobre 2026 — parcours gravel. Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminu",
-      "date_evenement": "2026-10-25",
+      "controle_zone": "lieu_a_verifier",
+      "source": "Cyclotourisme 31",
+      "url": "https://www.cyclotourisme-31.com/500+saubens.html",
+      "extrait": "Page title theme 600 — 18 octobre 2026 — gravel. Page title theme 600 Corps de la page Saubens Dimanche 18 Octobre 2026 La ronde SAUBENO ISE Saubens Cyclo 31 4 Circuits Vert - 27 km - Bleu - 71 km - Rouge - 94 km - Circuits gravel non fléché (GPS Obligatoire) Gravel - 47 km La saucisse au",
+      "date_evenement": "2026-10-18",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "lieu": "simandre sur suran",
-      "titre": "Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026"
+      "titre": "Page title theme 600"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/",
+      "extrait": "Au vert le dimanche. — 16 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
+      "date_evenement": "2026-10-16",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Au vert le dimanche."
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_ambigu_ou_inconnu",
+      "source": "Vetete",
+      "url": "https://vetete.com/croix-d-automne-rando-vtt-gravel-23eme-edition-a-chalain-d-uzore-le-samedi-17-octobre-2026",
+      "extrait": "Croix d'Automne rando VTT/GRAVEL (23 ème édition) à Chalain-d'Uzore le samedi 17 octobre 2026 — 17 octobre 2026 — gravel. Croix d'Automne rando VTT/GRAVEL (23ème édition) à Chalain-d'Uzore le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie",
+      "date_evenement": "2026-10-17",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "lieu": "chalain d uzore",
+      "titre": "Croix d'Automne rando VTT/GRAVEL (23 ème édition) à Chalain-d'Uzore le samedi 17 octobre 2026"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/drome-bike-festival-vtt-gravel-route-4eme-edition-a-allan-les-samedi-17-et-dimanche-18-octobre-2026",
+      "extrait": "Drôme Bike Festival - VTT - GRAVEL - ROUTE (4 ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026 — 18 octobre 2026 — gravel. Drôme Bike Festival - VTT - GRAVEL - ROUTE (4ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité dimi",
+      "date_evenement": "2026-10-18",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Drôme Bike Festival - VTT - GRAVEL - ROUTE (4 ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com",
+      "extrait": "Au vert le dimanche. — 16 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
+      "date_evenement": "2026-10-16",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Au vert le dimanche."
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Vetete",
+      "url": "https://vetete.com/?week_page=3",
+      "extrait": "Au vert le dimanche. — 30 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
+      "date_evenement": "2026-10-30",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Au vert le dimanche."
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Gravel Agenda",
+      "url": "https://gravelagenda.com/blog/",
+      "extrait": "Conseils, préparation et culture gravel — 5 octobre 2026 — gravel. 5 octobre 2026 Gravel Tour Montanha de Haute-Loire : 182 km et 4 295 m de dénivelé à organiser en cinq jours La Haute-Loire dispose depuis 2026 d’une itinérance gravel documentée par l’office de tourisme du département : le Gravel Tour Mont",
+      "date_evenement": "2026-10-05",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Conseils, préparation et culture gravel"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Gravel Agenda",
+      "url": "https://gravelagenda.com/pays/france/",
+      "extrait": "Calendrier gravel France 2026-2027 : 313 événements — 16 octobre 2026 — gravel. Découvrez les randonnées, courses, ultras et autres événements gravel à venir en France. Le calendrier affiche actuellement 313 événements avec leurs dates, lieux et liens utiles. 16 octobre 2026 GravelMan Orléans Loiret (45) France Orléans",
+      "date_evenement": "2026-10-16",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Calendrier gravel France 2026-2027 : 313 événements"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "Gravel Passion",
+      "url": "https://www.gravelpassion.fr/actus-velo/",
+      "extrait": "Toutes les actus vélo — 13 octobre 2026 — gravel. Toutes les actualités du monde du vélo - Gravelpassion.fr Aller au contenu Toutes les actus vélo Nouveautés Actus Business 52 mm de dégagement, UDH, Lefty : le Topstone alu change de dimension Vélo 1299 € – 2699 € Plage de prix : 1299€ à 26",
+      "date_evenement": "2026-10-13",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "titre": "Toutes les actus vélo"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_a_verifier",
+      "source": "FSGT 31",
+      "url": "https://cyclismefsgt31.fr/images/cyclisme_fsgt31/route/calendrier/2026/Calendrier_route_FSGT2026_110626.pdf",
+      "extrait": "Dimanc he 6 septembre Roquettes (31) V.C.Roquettes O 07 60 08 33 27 Dimanc he 13 septembre Pins Justaret (31) CPRS 06 15 38 94 46 Samdi 19 septembre Montespan (31) A.S. Muret 06 08 52 28 39 Dimanc he 20 septembre Gravel St André (31) matin et après-midi A.C. Le Fousseret 06 50 61 39 10 Dimanc he 27 septembre Fabas (82) ASC Gagnac Cyclisme 07 63 66 84 84 CALENDRIER ROUTE/VTT/GRAVEL 2026 Occitanie-Pyrénées Mise à jour le 11/06/2026 => ANNULATION de tous les CANDIE suite à refus de Toulouse Métropo",
+      "date_evenement": "2026-06-11",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier"
     }
   ]
 }
