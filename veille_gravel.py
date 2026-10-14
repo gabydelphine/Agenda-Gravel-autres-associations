@@ -1,4 +1,5 @@
 import json
+import math
 import re
 import unicodedata
 from collections import deque
@@ -6,7 +7,7 @@ from datetime import datetime, timezone, date
 from html import unescape
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urldefrag
+from urllib.parse import urljoin, urlparse, urldefrag, urlencode
 from urllib.request import Request, urlopen
 
 from pypdf import PdfReader
@@ -51,6 +52,61 @@ PDF_CONNUS = {
 }
 
 FICHIER = Path("veille-resultats.json")
+
+# Distance à vol d'oiseau, et non distance routière.
+RAYON_KM = 150
+TOULOUSE_LAT, TOULOUSE_LON = 43.6047, 1.4442
+_cache_communes = {}
+
+
+def distance_km(lat, lon):
+    """Distance à vol d'oiseau entre Toulouse et une commune."""
+    r = 6371.0088
+    p1, p2 = math.radians(TOULOUSE_LAT), math.radians(lat)
+    dp = p2 - p1
+    dl = math.radians(lon - TOULOUSE_LON)
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return round(2 * r * math.asin(min(1, math.sqrt(a))), 1)
+
+
+def verifier_commune(lieu):
+    """Renvoie (distance, état). En cas de doute, ne rejette jamais l'annonce.
+
+    La base publique des communes est interrogée seulement pour les lieux explicites.
+    Un nom de commune ambigu n'est pas utilisé pour exclure un événement.
+    """
+    if not lieu:
+        return None, "lieu_a_verifier"
+    lieu = re.sub(r"\s+", " ", lieu).strip()
+    match_dept = re.search(r"\((\d{2,3}[AB]?)\)\s*$", lieu, re.I)
+    departement = match_dept.group(1).upper() if match_dept else None
+    nom = re.sub(r"\s*\(\d{2,3}[AB]?\)\s*$", "", lieu, flags=re.I).strip()
+    if not nom or len(nom) > 65:
+        return None, "lieu_a_verifier"
+    cle = (normaliser(nom), departement)
+    if cle in _cache_communes:
+        return _cache_communes[cle]
+    try:
+        params = urlencode({"nom": nom, "fields": "nom,codeDepartement,centre", "format": "json", "geometry": "centre", "limit": 30})
+        contenu, _ = telecharger("https://geo.api.gouv.fr/communes?" + params, 250_000)
+        resultats = json.loads(contenu)
+        exacts = [c for c in resultats if normaliser(c.get("nom")) == normaliser(nom)
+                  and (not departement or c.get("codeDepartement") == departement)]
+        if len(exacts) != 1:
+            resultat = (None, "lieu_ambigu_ou_inconnu")
+        else:
+            coord = exacts[0].get("centre", {}).get("coordinates", [])
+            if len(coord) != 2:
+                resultat = (None, "coordonnees_indisponibles")
+            else:
+                distance = distance_km(coord[1], coord[0])
+                resultat = (distance, "dans_zone" if distance <= RAYON_KM else "hors_zone")
+    except Exception as erreur:
+        print(f"Vérification géographique impossible pour {lieu}: {erreur}")
+        resultat = (None, "geolocalisation_indisponible")
+    _cache_communes[cle] = resultat
+    return resultat
+
 MOIS = {
     "janvier": 1, "fevrier": 2, "mars": 3, "avril": 4,
     "mai": 5, "juin": 6, "juillet": 7, "aout": 8,
@@ -227,7 +283,12 @@ def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
                     observation["lieu"] = lieu
         return
 
+    distance, controle_zone = verifier_commune(lieu)
+    # Ne pas supprimer silencieusement les événements hors zone : ils restent
+    # dans la revue humaine, signalés explicitement.
     observation = {
+        "rayon_recherche_km": RAYON_KM,
+        "controle_zone": controle_zone,
         "source": nom,
         "url": url,
         "extrait": extrait,
@@ -237,6 +298,8 @@ def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
     }
     if lieu:
         observation["lieu"] = lieu
+    if distance is not None:
+        observation["distance_toulouse_km"] = distance
     observations.append(observation)
     connus.add(identifiant)
     lieux_connus.add(cle_event)
@@ -332,7 +395,9 @@ def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
         if jour < date.today():
             identifiant = cle_observation(url, extrait)
             if identifiant not in connus:
-                observations.append({"source": nom, "url": url, "extrait": extrait[:500],
+                observations.append({"rayon_recherche_km": RAYON_KM,
+                                     "controle_zone": "lieu_a_verifier",
+                                     "source": nom, "url": url, "extrait": extrait[:500],
                                      "date_evenement": date_evenement,
                                      "date_detection": datetime.now(timezone.utc).date().isoformat(),
                                      "statut": "a_verifier"})
