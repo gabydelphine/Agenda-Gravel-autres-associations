@@ -202,6 +202,16 @@
     },
     {
       "date": "2026-10-18",
+      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
+      "location": "mourens",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 175.6,
+      "statut": "a_verifier"
+    },
+    {
+      "date": "2026-10-18",
       "title": "La Ronde Saubenoise",
       "location": "Saubens (31)",
       "details": "Gravel : 47 km · 721 m D+",
