@@ -8,7 +8,7 @@
       "date_detection": "2026-10-13",
       "statut": "a_verifier",
       "lieu": "SAINT LYS",
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_ambigu_ou_inconnu",
       "titre": "19ème Raid du Lys"
     },
@@ -20,7 +20,7 @@
       "date_detection": "2026-10-13",
       "statut": "a_verifier",
       "lieu": "Saubens (31)",
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 15.5
     },
@@ -31,7 +31,7 @@
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_a_verifier"
     },
     {
@@ -41,7 +41,7 @@
       "date_evenement": "2026-04-11",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_a_verifier"
     },
     {
@@ -51,11 +51,11 @@
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_a_verifier"
     },
     {
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/la-6eme-randonnee-vtt-octobre-rose-a-portes-les-valence-le-samedi-17-octobre-2026",
@@ -67,7 +67,7 @@
       "titre": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026"
     },
     {
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
@@ -79,7 +79,7 @@
       "titre": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026"
     },
     {
-      "rayon_recherche_km": 150,
+      "rayon_recherche_km": 200,
       "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/trans-revermont-vtt-29eme-edition-a-simandre-sur-suran-le-dimanche-25-octobre-2026",
