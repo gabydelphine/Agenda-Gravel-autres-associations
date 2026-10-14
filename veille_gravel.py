@@ -23,6 +23,8 @@ SOURCES = {
     "Gravel Agenda": "https://gravelagenda.com/",
     "Gravel Passion": "https://www.gravelpassion.fr/evenements-calendrier-gravel/",
     "Fontenilles VTT": "https://fontenilles-vtt.fr/",
+    "Cahors Cyclisme": "https://www.cahorscyclisme.com/",
+    "Gravel du Drac": "https://sport.ikinoa.com/fr/evt/graveldudrac2026",
 }
 
 # Pages événementielles ciblées (elles complètent les sites généraux).
@@ -121,13 +123,14 @@ MOIS = {
 
 MAX_PDF = 10_000_000
 MAX_PDF_PAR_SITE = 25
-MAX_PAGES_PAR_SITE = 15
-MAX_PROFONDEUR = 2
+MAX_PAGES_PAR_SITE = 40
+MAX_PROFONDEUR = 3
 MAX_OCTETS_PAGE = 2_000_000
 
 MOTS_PAGES_PRIORITAIRES = (
     "agenda", "calendrier", "evenement", "manifestation", "randonnee",
     "gravel", "gravier", "circuit", "sortie", "interclubs", "cyclotourisme",
+    "2026", "2027", "rando", "raid", "epreuve", "parcours",
 )
 
 MOTS_DOCUMENTS_A_EXCLURE = (
@@ -372,6 +375,7 @@ def est_page_generique(item):
 def nettoyer_observations(items):
     """Conserve 365 jours glissants d’historique et toutes les dates futures dans la zone."""
     resultat = []
+    deja_titres = set()
     for item in regrouper_observations(items):
         # Supprimer l'ancienne fausse observation issue de la date de mise à jour
         # du calendrier FSGT, sans supprimer les vrais événements du PDF.
@@ -413,6 +417,13 @@ def nettoyer_observations(items):
         if etat == "hors_zone":
             print(f"Hors rayon de {RAYON_KM} km : {lieu} ({distance} km)")
             continue
+        # Une fiche peut être citée par plusieurs sites : une seule observation.
+        titre_cle = re.sub(r"[^a-z0-9]+", "", normaliser(item.get("titre", "")))
+        if titre_cle and len(titre_cle) >= 8:
+            cle_doublon = (jour, titre_cle)
+            if cle_doublon in deja_titres:
+                continue
+            deja_titres.add(cle_doublon)
         item["rayon_recherche_km"] = RAYON_KM
         item["controle_zone"] = etat
         if distance is not None:
@@ -717,12 +728,18 @@ def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus)
                     lien for lien in liens
                     if urlparse(lien).netloc.lower() == hote and not est_pdf(lien)
                 ]
+                internes = [lien for lien in internes if not re.search(
+                    r"\.(?:jpg|jpeg|png|gif|webp|svg|zip|gpx|ics|mp4)(?:$|\?)|"
+                    r"/(?:wp-admin|login|connexion|mon-compte|panier)(?:/|$)",
+                    urlparse(lien).path, re.I)]
                 internes.sort(key=lambda lien: (
+                    0 if re.search(r"gravel|gravier", normaliser(lien)) else 1,
+                    0 if re.search(r"2026|2027|2028", lien) else 1,
                     0 if any(mot in normaliser(lien) for mot in MOTS_PAGES_PRIORITAIRES) else 1,
                     len(lien),
                 ))
                 for lien in internes:
-                    if lien not in pages_vues:
+                    if lien not in pages_vues and not any(lien == deja for deja, _ in file_attente):
                         file_attente.append((lien, profondeur + 1))
         except Exception as erreur:
             print(f"Erreur page {page} : {erreur}")
@@ -773,7 +790,7 @@ def inventaire_valide(observations):
 
     # Les décisions humaines existantes sont prioritaires sur les sources.
     def cle(f):
-        return (f.get("date", ""), normaliser(f.get("title", "")))
+        return (f.get("date", ""), re.sub(r"[^a-z0-9]+", "", normaliser(f.get("title", ""))))
 
     # Fusionner les entrées publiées sans modifier les décisions déjà enregistrées.
     if Path("events.json").exists():
@@ -854,10 +871,17 @@ def inventaire_valide(observations):
         cle_nouvelle = cle(entree)
         if cle_nouvelle in index:
             continue
+        # Les décisions de refus et les validations restent prioritaires,
+        # y compris pour les variations de casse, accents et ponctuation.
+        def comparable(t):
+            t = normaliser(t)
+            t = re.sub(r"\b(?:eme|e|edition|randonnee|rando|gravel|vtt)\b", " ", t)
+            return re.sub(r"[^a-z0-9]+", "", t)
         doublon = any(
             f.get("date") == jour and (
-                titre_n in normaliser(f.get("title", ""))
-                or normaliser(f.get("title", "")) in titre_n
+                (titre_n in normaliser(f.get("title", ""))
+                 or normaliser(f.get("title", "")) in titre_n)
+                or (len(comparable(titre)) >= 7 and comparable(titre) == comparable(f.get("title", "")))
             )
             for f in fiches if f.get("title")
         )
