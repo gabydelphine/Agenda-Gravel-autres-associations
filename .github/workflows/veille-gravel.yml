@@ -29,7 +29,7 @@ jobs:
         if: github.event.schedule != '0 7 * * 0'
         run: python veille_gravel.py
         
-      - name: Mettre a jour le calendrier
+        - name: Mettre a jour le calendrier
         if: github.event.schedule != '0 7 * * 0'
         run: python maj_calendrier.py
 
