@@ -9,6 +9,7 @@ from io import BytesIO
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit, urldefrag, urlencode, unquote, quote
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 from pypdf import PdfReader
 
@@ -122,7 +123,7 @@ MOIS = {
 }
 
 MAX_PDF = 10_000_000
-MAX_PDF_PAR_SITE = 25
+MAX_PDF_PAR_SITE = 8
 MAX_PAGES_PAR_SITE = 40
 MAX_PROFONDEUR = 3
 MAX_OCTETS_PAGE = 2_000_000
@@ -159,13 +160,16 @@ def url_http_valide(url):
 
 
 def pdf_utile(url):
-    """Évite les archives de résultats sportifs et les documents administratifs."""
+    """Ne télécharge que les calendriers récents et les documents gravel pertinents."""
     chemin = normaliser(unquote(urlparse(url).path))
-    if re.search(r"/(?:resultats?|classements?|podiums?|assemblee_generale|commission)/", chemin):
+    if re.search(r"/(?:resultats?|classements?|podiums?|assemblee_generale|commission|archives?|challenges?|suivie_categorie|cyclocross|circuits_route)/", chemin):
         return False
-    if re.search(r"(?:classement|podium|challenge_du_printemps|challenge_dautomne)", chemin):
+    if re.search(r"(?:classement|podium|reglement|challenge|montees|descentes|fiche.circuit.route)", chemin):
         return False
-    return True
+    annees = [int(x) for x in re.findall(r"(?<!\d)20(?:1\d|2\d|3\d)(?!\d)", chemin)]
+    if annees and max(annees) < date.today().year:
+        return False
+    return bool(re.search(r"gravel|calendrier|randonnee|randonn|evenement|programme|saubens", chemin))
 
 
 def telecharger(url, limite=MAX_PDF + 1):
@@ -992,37 +996,52 @@ pdf_a_consulter = {
     url: (nom, url) for nom, url in PDF_CONNUS.items()
 }
 
-def analyser_miles_republic(observations, connus, lieux_connus):
-    """Explore uniquement les fiches liées à la rubrique gravel Occitanie.
+# Pistes confirmées par l'organisateur/utilisateur : gravel oui, date à vérifier.
+# Ne pas ajouter à events.json ni aux observations sans fiche datée vérifiable.
+PISTES_GRAVEL = ("Lézat-sur-Lèze (09)", "Verniolle (09)", "Limoux (11)")
 
-    Une fiche n'est conservée que si date, gravel et commune dans le rayon
-    sont confirmés par les contrôles existants. Jamais de publication directe.
-    """
+
+def analyser_miles_republic(observations, connus, lieux_connus):
+    """Explore Miles Republic avec limitation stricte et arrêt en cas de blocage 429."""
     base = SOURCES["Miles Republic"]
     try:
         contenu, _ = telecharger(base, MAX_OCTETS_PAGE)
-        liens = sorted(lien for lien in extraire_liens(contenu, base)
-                       if urlparse(lien).netloc == "fr.milesrepublic.com"
-                       and lien.rstrip("/") != base.rstrip("/")
-                       and not re.search(r"/(?:connexion|login|inscription|profil|blog|contact)(?:/|$)",
-                                         urlparse(lien).path, re.I))
-        # Les liens de fiches sont prioritaires ; limiter les requêtes.
-        liens.sort(key=lambda lien: (0 if re.search(r"gravel|rando|course", lien, re.I) else 1, len(lien)))
-        examines = 0
-        for lien in liens[:80]:
-            try:
-                fiche, type_contenu = telecharger(lien, MAX_OCTETS_PAGE)
-                if type_contenu and "html" not in type_contenu:
-                    continue
-                analyser_page_decouverte("Miles Republic", lien, fiche,
-                                        observations, connus, lieux_connus)
-                examines += 1
-            except Exception as erreur:
-                print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
-        print(f"Miles Republic : {examines} pages liées examinées")
+    except HTTPError as erreur:
+        if erreur.code == 429:
+            print("Miles Republic : accès limité (HTTP 429), aucune relance pour respecter le site")
+            return
+        print(f"Miles Republic : rubrique inaccessible : {erreur}")
+        return
     except Exception as erreur:
         print(f"Miles Republic : rubrique inaccessible : {erreur}")
+        return
 
+    liens = sorted(lien for lien in extraire_liens(contenu, base)
+                   if urlparse(lien).netloc == "fr.milesrepublic.com"
+                   and lien.rstrip("/") != base.rstrip("/")
+                   and not re.search(r"/(?:connexion|login|inscription|profil|blog|contact)(?:/|$)",
+                                     urlparse(lien).path, re.I))
+    liens.sort(key=lambda lien: (0 if re.search(r"gravel|rando|course", lien, re.I) else 1, len(lien)))
+    examines = 0
+    for lien in liens[:12]:
+        try:
+            fiche, type_contenu = telecharger(lien, MAX_OCTETS_PAGE)
+            if type_contenu and "html" not in type_contenu:
+                continue
+            analyser_page_decouverte("Miles Republic", lien, fiche,
+                                    observations, connus, lieux_connus)
+            examines += 1
+        except HTTPError as erreur:
+            if erreur.code == 429:
+                print("Miles Republic : arrêt des requêtes après HTTP 429")
+                break
+            print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
+        except Exception as erreur:
+            print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
+    print(f"Miles Republic : {examines} pages liées examinées")
+
+
+print("Pistes gravel à retrouver avec date confirmée : " + ", ".join(PISTES_GRAVEL))
 
 for nom, url in SOURCES.items():
     if nom == "Miles Republic":
