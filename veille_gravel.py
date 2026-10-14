@@ -751,4 +751,4 @@ FICHIER.write_text(
 print(f"Total observations conservées : {len(observations)}")
 
 # Inventaire conservé indépendamment des observations découvertes sur le Web.
-inventaire_valide()
+inventaire_valide(observations)
