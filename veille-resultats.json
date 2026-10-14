@@ -23,7 +23,8 @@
       "lieu": "Saubens (31)",
       "rayon_recherche_km": 200,
       "controle_zone": "dans_zone",
-      "distance_toulouse_km": 15.5
+      "distance_toulouse_km": 15.5,
+      "titre": "La Ronde Saubenoise"
     },
     {
       "source": "VTT31 / Vélo Occitanie",
@@ -33,7 +34,10 @@
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier"
+      "controle_zone": "dans_zone",
+      "lieu": "Venerque (31)",
+      "titre": "39ème Randonnée de Venerque",
+      "distance_toulouse_km": 18.8
     },
     {
       "source": "VTT31 / Vélo Occitanie",
@@ -43,7 +47,10 @@
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier"
+      "controle_zone": "dans_zone",
+      "lieu": "Saint-Lys (31)",
+      "titre": "5ème Nocturne du Lys",
+      "distance_toulouse_km": 22.1
     },
     {
       "source": "Fontenilles VTT",
@@ -53,7 +60,10 @@
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier"
+      "controle_zone": "dans_zone",
+      "lieu": "Fontenilles (31)",
+      "titre": "Côtes Gasconnes 2026",
+      "distance_toulouse_km": 20.1
     },
     {
       "rayon_recherche_km": 200,
@@ -82,25 +92,16 @@
     },
     {
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "FSGT 31",
-      "url": "https://cyclismefsgt31.fr/images/cyclisme_fsgt31/route/calendrier/2026/Calendrier_route_FSGT2026_110626.pdf",
-      "extrait": "Dimanc he 6 septembre Roquettes (31) V.C.Roquettes O 07 60 08 33 27 Dimanc he 13 septembre Pins Justaret (31) CPRS 06 15 38 94 46 Samdi 19 septembre Montespan (31) A.S. Muret 06 08 52 28 39 Dimanc he 20 septembre Gravel St André (31) matin et après-midi A.C. Le Fousseret 06 50 61 39 10 Dimanc he 27 septembre Fabas (82) ASC Gagnac Cyclisme 07 63 66 84 84 CALENDRIER ROUTE/VTT/GRAVEL 2026 Occitanie-Pyrénées Mise à jour le 11/06/2026 => ANNULATION de tous les CANDIE suite à refus de Toulouse Métropo",
-      "date_evenement": "2026-06-11",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_ambigu_ou_inconnu",
+      "controle_zone": "dans_zone",
       "source": "FSGT 31",
       "url": "https://cyclismefsgt31.fr/images/cyclisme_fsgt31/route/calendrier/2026/Calendrier_route_FSGT2026_110626.pdf",
       "extrait": "Gravel St André — 20 septembre 2026 — gravel. Dimanc he 20 septembre Gravel St André (31) matin et après-midi A.C. Le Fousseret 06 50 61 39 10",
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "lieu": "St André (31)",
-      "titre": "Gravel St André"
+      "lieu": "Saint-André (31)",
+      "titre": "Gravel Saint-André",
+      "distance_toulouse_km": 60.5
     }
   ]
 }

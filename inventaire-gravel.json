@@ -29,6 +29,16 @@
       "statut": "valide"
     },
     {
+      "date": "2026-04-11",
+      "title": "5ème Nocturne du Lys",
+      "location": "Saint-Lys (31)",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 22.1,
+      "statut": "a_verifier"
+    },
+    {
       "date": "2026-04-12",
       "title": "Gravel du Drac",
       "location": "Salviac (46)",
@@ -117,6 +127,16 @@
       "source": "",
       "validation_gravel": "utilisateur",
       "statut": "valide"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "39ème Randonnée de Venerque",
+      "location": "Venerque (31)",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 18.8,
+      "statut": "a_verifier"
     },
     {
       "date": "2026-09-20",
