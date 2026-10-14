@@ -89,6 +89,18 @@
       "date_evenement": "2026-06-11",
       "date_detection": "2026-10-14",
       "statut": "a_verifier"
+    },
+    {
+      "rayon_recherche_km": 200,
+      "controle_zone": "lieu_ambigu_ou_inconnu",
+      "source": "FSGT 31",
+      "url": "https://cyclismefsgt31.fr/images/cyclisme_fsgt31/route/calendrier/2026/Calendrier_route_FSGT2026_110626.pdf",
+      "extrait": "Gravel St André — 20 septembre 2026 — gravel. Dimanc he 20 septembre Gravel St André (31) matin et après-midi A.C. Le Fousseret 06 50 61 39 10",
+      "date_evenement": "2026-09-20",
+      "date_detection": "2026-10-14",
+      "statut": "a_verifier",
+      "lieu": "St André (31)",
+      "titre": "Gravel St André"
     }
   ]
 }
