@@ -7,7 +7,7 @@ from datetime import datetime, timezone, date, timedelta
 from html import unescape
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urldefrag, urlencode, unquote
+from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit, urldefrag, urlencode, unquote, quote
 from urllib.request import Request, urlopen
 
 from pypdf import PdfReader
@@ -147,9 +147,29 @@ def normaliser(texte):
     return re.sub(r"\s+", " ", texte).strip().casefold()
 
 
+def url_http_valide(url):
+    """Encode les accents et espaces dans les URL sans toucher aux paramètres existants."""
+    morceaux = urlsplit(url)
+    if morceaux.scheme not in ("http", "https"):
+        raise ValueError("URL non HTTP(S)")
+    return urlunsplit((morceaux.scheme, morceaux.netloc,
+                       quote(morceaux.path, safe="/%:@!$&'()*+,;=-._~"),
+                       quote(morceaux.query, safe="=&%:@!$'()*+,;/?-._~"), ""))
+
+
+def pdf_utile(url):
+    """Évite les archives de résultats sportifs et les documents administratifs."""
+    chemin = normaliser(unquote(urlparse(url).path))
+    if re.search(r"/(?:resultats?|classements?|podiums?|assemblee_generale|commission)/", chemin):
+        return False
+    if re.search(r"(?:classement|podium|challenge_du_printemps|challenge_dautomne)", chemin):
+        return False
+    return True
+
+
 def telecharger(url, limite=MAX_PDF + 1):
     requete = Request(
-        url,
+        url_http_valide(url),
         headers={"User-Agent": "Mozilla/5.0 (compatible; GravelAgenda/1.0)"},
     )
     with urlopen(requete, timeout=25) as reponse:
@@ -467,6 +487,13 @@ def nettoyer_observations(items):
         if distance is not None:
             item["distance_toulouse_km"] = distance
         resultat.append(item)
+    # Les lieux inconnus restent visibles pour examen humain, jamais publiés.
+    comptes = {}
+    for item in resultat:
+        etat = item.get("controle_zone", "indetermine")
+        comptes[etat] = comptes.get(etat, 0) + 1
+    print("Contrôle géographique : " + ", ".join(
+        f"{etat}={nombre}" for etat, nombre in sorted(comptes.items())))
     return resultat
 
 
@@ -749,6 +776,8 @@ def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus)
         try:
             contenu, type_contenu = telecharger(page, MAX_OCTETS_PAGE)
             if "pdf" in type_contenu:
+                if not pdf_utile(page):
+                    continue
                 pdf_a_consulter.setdefault(page, (nom, page))
                 nb_pdf += 1
                 continue
@@ -760,7 +789,7 @@ def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus)
             liens = extraire_liens(contenu, page)
             pdf_liens = sorted(
                 lien for lien in liens
-                if est_pdf(lien) and urlparse(lien).netloc.lower() == hote
+                if est_pdf(lien) and pdf_utile(lien) and urlparse(lien).netloc.lower() == hote
             )
             for lien in pdf_liens:
                 if lien not in pdf_a_consulter and nb_pdf < MAX_PDF_PAR_SITE:
@@ -947,7 +976,7 @@ else:
 
 observations = nettoyer_observations([
     item for item in donnees.get("observations", [])
-    if item.get("source") != "Gravel Passion"
+    if item.get("source") not in ("Gravel Passion", "Battistrada")
 ])
 connus = {
     cle_observation(item.get("url", ""), item.get("extrait", ""))
@@ -992,6 +1021,8 @@ except Exception as erreur:
     print(f"Erreur calendrier Vetete : {erreur}")
 
 for url, (nom, _) in pdf_a_consulter.items():
+    if not pdf_utile(url):
+        continue
     try:
         contenu, type_contenu = telecharger(url)
         if len(contenu) > MAX_PDF:
