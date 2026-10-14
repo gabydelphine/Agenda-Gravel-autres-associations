@@ -57,7 +57,7 @@
     },
     {
       "rayon_recherche_km": 200,
-      "controle_zone": "lieu_ambigu_ou_inconnu",
+      "controle_zone": "dans_zone",
       "source": "Vetete",
       "url": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
       "extrait": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable",
@@ -65,29 +65,8 @@
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
       "lieu": "revel",
-      "titre": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Cyclotourisme 31",
-      "url": "https://www.cyclotourisme-31.com/500+saubens.html",
-      "extrait": "Page title theme 600 — 18 octobre 2026 — gravel. Page title theme 600 Corps de la page Saubens Dimanche 18 Octobre 2026 La ronde SAUBENO ISE Saubens Cyclo 31 4 Circuits Vert - 27 km - Bleu - 71 km - Rouge - 94 km - Circuits gravel non fléché (GPS Obligatoire) Gravel - 47 km La saucisse au",
-      "date_evenement": "2026-10-18",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Page title theme 600"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Vetete",
-      "url": "https://vetete.com/",
-      "extrait": "Au vert le dimanche. — 16 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
-      "date_evenement": "2026-10-16",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Au vert le dimanche."
+      "titre": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026",
+      "distance_toulouse_km": 47.1
     },
     {
       "rayon_recherche_km": 200,
@@ -100,72 +79,6 @@
       "statut": "a_verifier",
       "lieu": "chalain d uzore",
       "titre": "Croix d'Automne rando VTT/GRAVEL (23 ème édition) à Chalain-d'Uzore le samedi 17 octobre 2026"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Vetete",
-      "url": "https://vetete.com/drome-bike-festival-vtt-gravel-route-4eme-edition-a-allan-les-samedi-17-et-dimanche-18-octobre-2026",
-      "extrait": "Drôme Bike Festival - VTT - GRAVEL - ROUTE (4 ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026 — 18 octobre 2026 — gravel. Drôme Bike Festival - VTT - GRAVEL - ROUTE (4ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité dimi",
-      "date_evenement": "2026-10-18",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Drôme Bike Festival - VTT - GRAVEL - ROUTE (4 ème édition) à Allan les samedi 17 et dimanche 18 octobre 2026"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Vetete",
-      "url": "https://vetete.com",
-      "extrait": "Au vert le dimanche. — 16 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
-      "date_evenement": "2026-10-16",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Au vert le dimanche."
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Vetete",
-      "url": "https://vetete.com/?week_page=3",
-      "extrait": "Au vert le dimanche. — 30 octobre 2026 — gravel. Au vert le dimanche. Un VTT ne s'épanouit qu'en pleine nature. Il est donc indispensable de consulter ce site chaque semaine pour lui dénicher de belles occasions de se dégourdir les pédales. Filtrez notre carte pour débusquer le circuit à",
-      "date_evenement": "2026-10-30",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Au vert le dimanche."
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Gravel Agenda",
-      "url": "https://gravelagenda.com/blog/",
-      "extrait": "Conseils, préparation et culture gravel — 5 octobre 2026 — gravel. 5 octobre 2026 Gravel Tour Montanha de Haute-Loire : 182 km et 4 295 m de dénivelé à organiser en cinq jours La Haute-Loire dispose depuis 2026 d’une itinérance gravel documentée par l’office de tourisme du département : le Gravel Tour Mont",
-      "date_evenement": "2026-10-05",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Conseils, préparation et culture gravel"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Gravel Agenda",
-      "url": "https://gravelagenda.com/pays/france/",
-      "extrait": "Calendrier gravel France 2026-2027 : 313 événements — 16 octobre 2026 — gravel. Découvrez les randonnées, courses, ultras et autres événements gravel à venir en France. Le calendrier affiche actuellement 313 événements avec leurs dates, lieux et liens utiles. 16 octobre 2026 GravelMan Orléans Loiret (45) France Orléans",
-      "date_evenement": "2026-10-16",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Calendrier gravel France 2026-2027 : 313 événements"
-    },
-    {
-      "rayon_recherche_km": 200,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Gravel Passion",
-      "url": "https://www.gravelpassion.fr/actus-velo/",
-      "extrait": "Toutes les actus vélo — 13 octobre 2026 — gravel. Toutes les actualités du monde du vélo - Gravelpassion.fr Aller au contenu Toutes les actus vélo Nouveautés Actus Business 52 mm de dégagement, UDH, Lefty : le Topstone alu change de dimension Vélo 1299 € – 2699 € Plage de prix : 1299€ à 26",
-      "date_evenement": "2026-10-13",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier",
-      "titre": "Toutes les actus vélo"
     },
     {
       "rayon_recherche_km": 200,
