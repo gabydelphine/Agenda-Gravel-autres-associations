@@ -74,7 +74,7 @@ def main():
         if fiche.get('controle_zone') != 'dans_zone':
             raise SystemExit('Zone non confirmée dans les 150 km : publication bloquée')
         distance = fiche.get('distance_toulouse_km')
-        if isinstance(distance, bool) or not isinstance(distance, (int, float)) or not 0 <= distance <= 150:
+        if isinstance(distance, bool) or not isinstance(distance, (int, float)) or not 0 <= distance <= 200:
             raise SystemExit('Distance absente ou hors rayon : publication bloquée')
         calendrier = charger(CALENDRIER)
         # Empêcher les doublons, même si l'intitulé diffère légèrement.
