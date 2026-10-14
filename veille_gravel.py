@@ -24,6 +24,7 @@ SOURCES = {
     "Fontenilles VTT": "https://fontenilles-vtt.fr/",
     "Cahors Cyclisme": "https://www.cahorscyclisme.com/",
     "Gravel du Drac": "https://sport.ikinoa.com/fr/evt/graveldudrac2026",
+    "Miles Republic": "https://fr.milesrepublic.com/rando-gravel/occitanie",
 }
 
 # Pages événementielles ciblées (elles complètent les sites généraux).
@@ -991,7 +992,42 @@ pdf_a_consulter = {
     url: (nom, url) for nom, url in PDF_CONNUS.items()
 }
 
+def analyser_miles_republic(observations, connus, lieux_connus):
+    """Explore uniquement les fiches liées à la rubrique gravel Occitanie.
+
+    Une fiche n'est conservée que si date, gravel et commune dans le rayon
+    sont confirmés par les contrôles existants. Jamais de publication directe.
+    """
+    base = SOURCES["Miles Republic"]
+    try:
+        contenu, _ = telecharger(base, MAX_OCTETS_PAGE)
+        liens = sorted(lien for lien in extraire_liens(contenu, base)
+                       if urlparse(lien).netloc == "fr.milesrepublic.com"
+                       and lien.rstrip("/") != base.rstrip("/")
+                       and not re.search(r"/(?:connexion|login|inscription|profil|blog|contact)(?:/|$)",
+                                         urlparse(lien).path, re.I))
+        # Les liens de fiches sont prioritaires ; limiter les requêtes.
+        liens.sort(key=lambda lien: (0 if re.search(r"gravel|rando|course", lien, re.I) else 1, len(lien)))
+        examines = 0
+        for lien in liens[:80]:
+            try:
+                fiche, type_contenu = telecharger(lien, MAX_OCTETS_PAGE)
+                if type_contenu and "html" not in type_contenu:
+                    continue
+                analyser_page_decouverte("Miles Republic", lien, fiche,
+                                        observations, connus, lieux_connus)
+                examines += 1
+            except Exception as erreur:
+                print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
+        print(f"Miles Republic : {examines} pages liées examinées")
+    except Exception as erreur:
+        print(f"Miles Republic : rubrique inaccessible : {erreur}")
+
+
 for nom, url in SOURCES.items():
+    if nom == "Miles Republic":
+        analyser_miles_republic(observations, connus, lieux_connus)
+        continue
     try:
         contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
         texte = nettoyer_html(contenu)
