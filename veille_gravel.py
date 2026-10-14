@@ -559,6 +559,63 @@ def explorer_site(nom, url, pdf_a_consulter):
     print(f"Site consulté : {nom} ({len(pages_vues)} pages, {nb_pdf} PDF repérés)")
 
 
+# Manifestations explicitement validées par l'utilisateur.
+# Les dates et lieux sont conservés comme base de recensement ; les sources
+# manquantes sont signalées, jamais inventées.
+MANIFESTATIONS_VALIDEES = [
+    ("2026-03-08", "Mondonville", "Mondonville (31)", "", ""),
+    ("2026-03-22", "Cugnaux", "Cugnaux (31)", "", ""),
+    ("2026-04-11", "5e Nocturne du Lys", "Saint-Lys (31)", "", ""),
+    ("2026-04-12", "Gravel du Drac", "Salviac (46)", "45, 65 et 85 km", "https://sport.ikinoa.com/fr/evt/graveldudrac2026"),
+    ("2026-05-02", "Coupe de France Gravel — Albi", "Albi (81)", "", "https://competitions.ffc.fr/calendrier/competition/2026/5181246011/coupe-de-france-gravel-albi/"),
+    ("2026-05-24", "Quercy Gravel Challenge", "Cahors (46)", "250 km", "https://www.helloasso.com/associations/cahors-cyclisme/evenements/quercy-gravel-challenge-1"),
+    ("2026-06-14", "Brax", "Brax (31)", "", ""),
+    ("2026-06-14", "Randonnée Gravel/Route de Plaisance-du-Touch", "Plaisance-du-Touch (31)", "", ""),
+    ("2026-06-20", "Gravel'Nore", "Villegly (11)", "20–21 juin ; 40 et 90 km", ""),
+    ("2026-06-28", "Mez'insolite", "Mézens (81)", "35 et 60 km", "https://velo-occitanie.fr/gravels-81/mezinsolite-2026"),
+    ("2026-07-05", "Gravel de Caussade", "Caussade (82)", "Annulé ; conserver dans l'historique", ""),
+    ("2026-09-13", "Gravel Saint-Michéloise", "Cours, Bellefont-La Rauze (46)", "60, 90 et 120 km", "https://www.jds.fr/cahors/sports/gravel-saint-micheloise-1743629_A"),
+    ("2026-09-20", "39e Randonnée de Venerque", "Venerque (31)", "", ""),
+    ("2026-09-20", "Côtes Gasconnes", "Fontenilles (31)", "", ""),
+    ("2026-09-20", "Gravel Saint-André", "Saint-André (31)", "", "https://gravelagenda.com/lieux-gravel/saint-andre/"),
+    ("2026-09-27", "Boucles Brax Bouconne", "Brax (31)", "", ""),
+    ("2026-10-04", "Dralha Blanca", "Bagat-en-Quercy (46)", "34, 58, 83 et 103 km", "https://www.cahorscyclisme.com/dralhablanca"),
+    ("2026-10-17", "La Rêv'd'Autan", "Revel (31)", "40 km ; 800 m D+", ""),
+    ("2026-10-18", "19e Raid du Lys", "Saint-Lys (31)", "60 et 95 km", "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026"),
+    ("2026-10-18", "La Ronde Saubenoise", "Saubens (31)", "47 km ; 721 m D+", "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf"),
+    ("2026-10-25", "La Lauragaise", "Escalquens (31)", "", "https://www.intramuros.org/escalquens/agenda/893310"),
+]
+
+def inventaire_valide():
+    """Fusion non destructive avec events.json ; aucun ajout automatique à la publication."""
+    fiches = []
+    if Path("events.json").exists():
+        try:
+            brut = json.loads(Path("events.json").read_text(encoding="utf-8"))
+            fiches = brut.get("events", []) if isinstance(brut, dict) else []
+        except (ValueError, OSError) as exc:
+            print(f"Lecture events.json impossible : {exc}")
+    # On exclut l'association ÔGravel du calendrier des autres associations.
+    fiches = [f for f in fiches if "occitanie 600" not in normaliser(f.get("title", ""))]
+    def cle(f):
+        return (f.get("date", ""), normaliser(f.get("title", "")))
+    cles = {cle(f) for f in fiches}
+    for jour, titre, lieu, details, source in MANIFESTATIONS_VALIDEES:
+        if date.fromisoformat(jour) < date.today() - timedelta(days=365):
+            continue
+        entree = {"date": jour, "title": titre, "location": lieu,
+                  "details": ("Parcours gravel confirmé par l'organisateur / utilisateur. " + details).strip(),
+                  "source": source, "validation_gravel": "utilisateur",
+                  "statut": "annule" if "Annulé" in details else "valide"}
+        if cle(entree) not in cles:
+            fiches.append(entree)
+            cles.add(cle(entree))
+    fiches.sort(key=lambda f: (f.get("date", ""), f.get("title", "")))
+    Path("inventaire-gravel.json").write_text(
+        json.dumps({"updated": date.today().isoformat(), "events": fiches}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8")
+    print(f"Inventaire de travail : {len(fiches)} fiches (events.json inchangé)")
+
 if FICHIER.exists():
     donnees = json.loads(FICHIER.read_text(encoding="utf-8"))
 else:
@@ -637,3 +694,6 @@ FICHIER.write_text(
     encoding="utf-8",
 )
 print(f"Total observations conservées : {len(observations)}")
+
+# Inventaire conservé indépendamment des observations découvertes sur le Web.
+inventaire_valide()
