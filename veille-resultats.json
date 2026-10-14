@@ -8,7 +8,8 @@
       "date_detection": "2026-10-13",
       "statut": "a_verifier",
       "lieu": "SAINT LYS",
-      "rayon_recherche_km": 150
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_ambigu_ou_inconnu"
     },
     {
       "source": "Circuit Gravel Saubens 2026",
@@ -18,16 +19,9 @@
       "date_detection": "2026-10-13",
       "statut": "a_verifier",
       "lieu": "Saubens (31)",
-      "rayon_recherche_km": 150
-    },
-    {
-      "source": "Velo Occitanie",
-      "url": "https://www.velo-occitanie.fr/",
-      "extrait": "Détails Ô Gravel Occitanie 600 2027 Sam. 03 Avril 2027 9:30 pm 9:30 pm Garidech Gravel 1 parcours",
-      "date_evenement": "2027-04-03",
-      "date_detection": "2026-10-13",
-      "statut": "a_verifier",
-      "lieu": "Garidech"
+      "rayon_recherche_km": 150,
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 15.5
     },
     {
       "source": "VTT31 / Vélo Occitanie",
@@ -35,7 +29,9 @@
       "extrait": "39ème Randonnée de Venerque 31 — 20 septembre 2026 — Gravel.  39ème Randonnée de Venerque 31-VTT (31) Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynam",
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier"
     },
     {
       "source": "VTT31 / Vélo Occitanie",
@@ -43,7 +39,9 @@
       "extrait": "5ème Nocturne du Lys — 11 avril 2026 — Gravel.  5ème Nocturne du Lys-VTT (31) Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la",
       "date_evenement": "2026-04-11",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier"
     },
     {
       "source": "Fontenilles VTT",
@@ -51,47 +49,42 @@
       "extrait": "Fontenilles VTT — 20 septembre 2026 — Gravel.  Côtes Gasconnes 2026 | Fontenilles VTT Fontenilles VTT Fontenilles VTT – Les oranges roulent des mécaniques ! Accueil Cotes Gasconnes Côtes Gasconnes 2026 le règlement Le Club La vie du club Les rece",
       "date_evenement": "2026-09-20",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "rayon_recherche_km": 150,
+      "controle_zone": "lieu_a_verifier"
     },
     {
       "rayon_recherche_km": 150,
-      "controle_zone": "lieu_a_verifier",
+      "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/la-6eme-randonnee-vtt-octobre-rose-a-portes-les-valence-le-samedi-17-octobre-2026",
       "extrait": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée.",
       "date_evenement": "2026-10-17",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "lieu": "portes les valence"
     },
     {
       "rayon_recherche_km": 150,
-      "controle_zone": "lieu_a_verifier",
+      "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
       "extrait": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable",
       "date_evenement": "2026-10-17",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "lieu": "revel"
     },
     {
       "rayon_recherche_km": 150,
-      "controle_zone": "lieu_a_verifier",
-      "source": "Vetete",
-      "url": "https://vetete.com/ronde-des-7-clochers-25eme-edition-a-chinon-le-samedi-17-octobre-2026",
-      "extrait": "Ronde des 7 Clochers (25ème édition) à Chinon le samedi 17 octobre 2026 | vetete.com — 17 octobre 2026 — parcours gravel. Ronde des 7 Clochers (25ème édition) à Chinon le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie",
-      "date_evenement": "2026-10-17",
-      "date_detection": "2026-10-14",
-      "statut": "a_verifier"
-    },
-    {
-      "rayon_recherche_km": 150,
-      "controle_zone": "lieu_a_verifier",
+      "controle_zone": "lieu_ambigu_ou_inconnu",
       "source": "Vetete",
       "url": "https://vetete.com/trans-revermont-vtt-29eme-edition-a-simandre-sur-suran-le-dimanche-25-octobre-2026",
       "extrait": "Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com — 25 octobre 2026 — parcours gravel. Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminu",
       "date_evenement": "2026-10-25",
       "date_detection": "2026-10-14",
-      "statut": "a_verifier"
+      "statut": "a_verifier",
+      "lieu": "simandre sur suran"
     }
   ]
 }
