@@ -192,7 +192,8 @@
       "location": "Toulouse (31)",
       "details": "Manifestation fictive pour tester les boutons Valider et Refuser",
       "source": "",
-      "statut": "a_verifier"
+      "statut": "refuse",
+      "date_decision": "2026-10-14"
     }
   ]
 }
