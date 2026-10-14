@@ -78,7 +78,7 @@ def verifier_commune(lieu):
     departement = match_dept.group(1).upper() if match_dept else None
     nom = re.sub(r"\s*\(\d{2,3}[AB]?\)\s*$", "", lieu, flags=re.I).strip()
     # Lever les ambiguïtés pour les communes déjà identifiées localement.
-    departements_connus = {"revel": "31", "saint lys": "31", "saubens": "31", "fontenilles": "31", "venerque": "31"}
+    departements_connus = {"revel": "31", "saint lys": "31", "saubens": "31", "fontenilles": "31", "venerque": "31", "saint andre": "31", "st andre": "31"}
     cle_locale = re.sub(r"[^a-z0-9]+", " ", normaliser(nom)).strip()
     departement = departement or departements_connus.get(cle_locale)
     if not nom or len(nom) > 65:
@@ -86,6 +86,9 @@ def verifier_commune(lieu):
     def cle_nom(texte):
         return re.sub(r"[^a-z0-9]+", " ", normaliser(texte)).strip()
 
+    # Développer les abréviations de communes présentes dans les calendriers.
+    if cle_nom(nom) == "st andre" and departement == "31":
+        nom = "Saint-André"
     cle = (cle_nom(nom), departement)
     if cle in _cache_communes:
         return _cache_communes[cle]
@@ -296,6 +299,8 @@ def identite_manifestation(item):
         nom = "nocturne-du-lys"
     elif "cotes gasconnes" in texte:
         nom = "cotes-gasconnes"
+    elif ("gravel st andre" in texte or "gravel saint andre" in texte):
+        nom = "gravel-saint-andre"
     else:
         return None
     # Une date absente ne doit pas créer un second événement.
@@ -327,6 +332,8 @@ def regrouper_observations(items):
         # Conserver la fiche la plus complète et les données déjà vérifiées.
         if not precedent.get("date_evenement") and date_item:
             precedent["date_evenement"] = date_item
+        if not precedent.get("titre") and item.get("titre"):
+            precedent["titre"] = item["titre"]
         if not precedent.get("lieu") and item.get("lieu"):
             precedent["lieu"] = item["lieu"]
         if precedent.get("distance_toulouse_km") is None and item.get("distance_toulouse_km") is not None:
@@ -366,6 +373,26 @@ def nettoyer_observations(items):
     """Conserve 365 jours glissants d’historique et toutes les dates futures dans la zone."""
     resultat = []
     for item in regrouper_observations(items):
+        # Supprimer l'ancienne fausse observation issue de la date de mise à jour
+        # du calendrier FSGT, sans supprimer les vrais événements du PDF.
+        if ("Calendrier_route_FSGT2026_110626.pdf" in item.get("url", "")
+                and item.get("date_evenement") == "2026-06-11"
+                and "gravel st andre" in normaliser(item.get("extrait", ""))):
+            continue
+        # Compléter uniquement les manifestations dont le lieu est confirmé
+        # dans le recensement validé par l'utilisateur.
+        identite = identite_manifestation(item)
+        lieux_confirmes = {
+            "randonnee-venerque": ("Venerque (31)", "39ème Randonnée de Venerque"),
+            "nocturne-du-lys": ("Saint-Lys (31)", "5ème Nocturne du Lys"),
+            "cotes-gasconnes": ("Fontenilles (31)", "Côtes Gasconnes 2026"),
+            "ronde-saubenoise": ("Saubens (31)", "La Ronde Saubenoise"),
+            "gravel-saint-andre": ("Saint-André (31)", "Gravel Saint-André"),
+        }
+        if identite in lieux_confirmes:
+            lieu_confirme, titre_confirme = lieux_confirmes[identite]
+            item["lieu"] = lieu_confirme
+            item["titre"] = titre_confirme
         if est_page_generique(item):
             continue
         nom = identite_manifestation(item)
@@ -914,6 +941,10 @@ for url, (nom, _) in pdf_a_consulter.items():
             print(f"Calendrier PDF : {nb_calendrier} entrée(s) exploitables — {url}")
             continue
         for i, ligne in enumerate(lignes):
+            # Les calendriers multi-événements sont analysés ligne par ligne
+            # par analyser_pdf_calendrier, pas par une date prise dans le voisinage.
+            if "Calendrier_route_FSGT2026_110626.pdf" in url:
+                continue
             if not re.search(r"\b(?:gravel|gravier)\b", ligne, re.I):
                 continue
             extrait = " ".join(lignes[max(0, i - 3):i + 4])
