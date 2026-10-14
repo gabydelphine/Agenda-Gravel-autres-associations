@@ -1,0 +1,186 @@
+{
+  "updated": "2026-10-14",
+  "events": [
+    {
+      "date": "2026-03-08",
+      "title": "Mondonville",
+      "location": "Mondonville (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-03-22",
+      "title": "Cugnaux",
+      "location": "Cugnaux (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-04-11",
+      "title": "5e Nocturne du Lys",
+      "location": "Saint-Lys (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-04-12",
+      "title": "Gravel du Drac",
+      "location": "Salviac (46)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 45, 65 et 85 km",
+      "source": "https://sport.ikinoa.com/fr/evt/graveldudrac2026",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-05-02",
+      "title": "Coupe de France Gravel — Albi",
+      "location": "Albi (81)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "https://competitions.ffc.fr/calendrier/competition/2026/5181246011/coupe-de-france-gravel-albi/",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-05-24",
+      "title": "Quercy Gravel Challenge",
+      "location": "Cahors (46)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 250 km",
+      "source": "https://www.helloasso.com/associations/cahors-cyclisme/evenements/quercy-gravel-challenge-1",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-06-14",
+      "title": "Brax",
+      "location": "Brax (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-06-14",
+      "title": "Randonnée Gravel/Route de Plaisance-du-Touch",
+      "location": "Plaisance-du-Touch (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-06-20",
+      "title": "Gravel'Nore",
+      "location": "Villegly (11)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 20–21 juin ; 40 et 90 km",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-06-28",
+      "title": "Mez'insolite",
+      "location": "Mézens (81)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 35 et 60 km",
+      "source": "https://velo-occitanie.fr/gravels-81/mezinsolite-2026",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-07-05",
+      "title": "Gravel de Caussade",
+      "location": "Caussade (82)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. Annulé ; conserver dans l'historique",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "annule"
+    },
+    {
+      "date": "2026-09-13",
+      "title": "Gravel Saint-Michéloise",
+      "location": "Cours, Bellefont-La Rauze (46)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 60, 90 et 120 km",
+      "source": "https://www.jds.fr/cahors/sports/gravel-saint-micheloise-1743629_A",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "39e Randonnée de Venerque",
+      "location": "Venerque (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "Côtes Gasconnes",
+      "location": "Fontenilles (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "Gravel Saint-André",
+      "location": "Saint-André",
+      "details": "Manifestation gravel confirmée",
+      "source": ""
+    },
+    {
+      "date": "2026-09-27",
+      "title": "Boucles Brax Bouconne",
+      "location": "Brax (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-10-04",
+      "title": "Dralha Blanca",
+      "location": "Bagat-en-Quercy (46)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 34, 58, 83 et 103 km",
+      "source": "https://www.cahorscyclisme.com/dralhablanca",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-10-17",
+      "title": "La Rêv'd'Autan",
+      "location": "Revel (31)",
+      "details": "Parcours gravel confirmé par l'organisateur / utilisateur. 40 km ; 800 m D+",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-10-18",
+      "title": "19e Raid du Lys",
+      "location": "Saint-Lys (31)",
+      "details": "Gravel : 60 et 95 km · GPS nécessaire",
+      "source": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026"
+    },
+    {
+      "date": "2026-10-18",
+      "title": "La Ronde Saubenoise",
+      "location": "Saubens (31)",
+      "details": "Gravel : 47 km · 721 m D+",
+      "source": "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf"
+    },
+    {
+      "date": "2026-10-25",
+      "title": "La Lauragaise",
+      "location": "Escalquens (31)",
+      "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
+      "source": "https://www.intramuros.org/escalquens/agenda/893310"
+    }
+  ]
+}
