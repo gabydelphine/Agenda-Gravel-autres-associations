@@ -9,7 +9,8 @@
       "statut": "a_verifier",
       "lieu": "SAINT LYS",
       "rayon_recherche_km": 150,
-      "controle_zone": "lieu_ambigu_ou_inconnu"
+      "controle_zone": "lieu_ambigu_ou_inconnu",
+      "titre": "19ème Raid du Lys"
     },
     {
       "source": "Circuit Gravel Saubens 2026",
@@ -62,7 +63,8 @@
       "date_evenement": "2026-10-17",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "lieu": "portes les valence"
+      "lieu": "portes les valence",
+      "titre": "La 6ème Randonnée VTT Octobre ROSE à Portes-lès-Valence le samedi 17 octobre 2026"
     },
     {
       "rayon_recherche_km": 150,
@@ -73,7 +75,8 @@
       "date_evenement": "2026-10-17",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "lieu": "revel"
+      "lieu": "revel",
+      "titre": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026"
     },
     {
       "rayon_recherche_km": 150,
@@ -84,7 +87,8 @@
       "date_evenement": "2026-10-25",
       "date_detection": "2026-10-14",
       "statut": "a_verifier",
-      "lieu": "simandre sur suran"
+      "lieu": "simandre sur suran",
+      "titre": "Trans-Revermont VTT (29ème édition) à Simandre-sur-Suran le dimanche 25 octobre 2026"
     }
   ]
 }
