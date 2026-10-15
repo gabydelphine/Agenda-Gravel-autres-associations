@@ -312,8 +312,9 @@
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 145.0,
       "fiabilite_lieu": "probable",
-      "statut": "a_verifier",
-      "date_detection": "2026-10-15"
+      "statut": "valide",
+      "date_detection": "2026-10-15",
+      "date_decision": "2026-10-15"
     },
     {
       "date": "2027-06-15",

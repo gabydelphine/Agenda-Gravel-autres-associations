@@ -193,6 +193,14 @@
       "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/2seo-la-murataise-2025",
       "end_date": "2027-06-09",
       "statut": "valide"
+    },
+    {
+      "date": "2027-06-13",
+      "title": "Wish One Millau Grands Causses",
+      "location": "Millau (12)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://competitions.ffc.fr/calendrier/competition/2027/C5112001001/wish-one-millau-grands-causses/",
+      "statut": "valide"
     }
   ]
 }
