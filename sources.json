@@ -116,6 +116,11 @@
       "suivre_liens": true
     },
     {
+      "nom": "FFVélo 32 (CoDep Gers) – calendrier",
+      "url": "https://codep32-ffvelo.blogspot.com/p/calendrier_13.html",
+      "suivre_liens": false
+    },
+    {
       "nom": "Saubens Cyclo",
       "url": "https://saubenscyclo31.fr/",
       "suivre_liens": true
