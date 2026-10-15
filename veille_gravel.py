@@ -237,10 +237,11 @@ def extraire_liens(html, base):
 
 
 RE_PAGE_RUBRIQUE = re.compile(
-    r"/(?:lieu|produits?|types?|categor\w*|tags?|regions?|pays|author|auteur|page)/", re.I)
+    r"/(?:lieu|produits?|types?|categor\w*|tags?|regions?|pays|author|auteur|page|magasins?[\w-]*)/", re.I)
 RE_TITRE_RUBRIQUE = re.compile(
-    r"^(?:accueil|categories?|vtt|cyclos?|gravels?|route|calendrier|agenda|evenements?|"
-    r"actualites?|blog|resultats?)(?: \d{2})?$|la liste des|epreuves en france|\d+ epreuves")
+    r"^(?:accueil|categories?|vtt|cyclos?|gravels?|route|evenements?|"
+    r"actualites?|blog|resultats?)(?: \d{2})?$|^(?:calendrier|agenda|magasin)\b|"
+    r"la liste des|epreuves en france|\d+ epreuves")
 
 
 def page_rubrique(url, titre):
@@ -448,7 +449,7 @@ RE_DATE_ISO = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})")
 # « Dimanche 28/2 » (calendriers FSGT) : jour de la semaine obligatoire, sans année.
 RE_DATE_COURTE = re.compile(r"\b" + _JOURS + r"(\d{1,2})\s*/\s*(\d{1,2})(?!\s*/|\d)")
 RE_CONTEXTE_FAUX = re.compile(
-    r"(?:publi|mis a jour|mise a jour|modifi|cree le|poste|ecrit le|actualis|"
+    r"(?:publi|mis a jour|mise a jour|modifi|cree le|poste|ecrit le|actualis|version|"
     r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$")
 
 
@@ -701,10 +702,8 @@ class Collecte:
             _, debut, fin = d[0]
         elif liste:
             return True  # page à plusieurs dates : seules les lignes comptent
-        if not debut:
-            m = re.search(r"(?is)<time\b[^>]*datetime=[\"']([^\"']+)", principal)
-            debut = date_iso(m.group(1)) if m else None
-            debut = debut if debut and date_plausible(debut) else None
+        # (Les balises <time> donnent en général la date de publication d'un
+        # article, pas celle de l'épreuve : on ne s'en sert pas.)
         if not debut and dates_page:
             _, debut, fin = dates_page[0]
         if not debut:
@@ -820,7 +819,7 @@ def lire_pdf(contenu):
     return "\n".join(page.extract_text() or "" for page in lecteur.pages[:25])
 
 
-def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None):
+def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None, motif_liens=None):
     hote = urlparse(depart).netloc.lower().removeprefix("www.")
     max_pages = max_pages or limites["pages_par_site"]
     a_voir = [(100, depart, 0)]
@@ -872,6 +871,8 @@ def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None):
                 if lien not in pdf_vus and len(pdf_vus) < limites["pdf_par_site"] and pdf_interessant(lien, texte):
                     pdf_vus.add(lien)
                     a_voir.append((50, lien, profondeur + 1))
+                continue
+            if motif_liens and not re.search(motif_liens, lien):
                 continue
             s = score_lien(lien, texte)
             if s >= (1 if profondeur == 0 else 3):
@@ -1061,7 +1062,8 @@ def main():
         try:
             pages = explorer(site["nom"], site["url"], collecte, tel, limites,
                              suivre=site.get("suivre_liens", True),
-                             max_pages=site.get("pages_max"))
+                             max_pages=site.get("pages_max"),
+                             motif_liens=site.get("motif_liens"))
         except Exception as e:
             journal(f"Erreur sur {site['nom']} : {e}")
             pages = 0
