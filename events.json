@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-14",
+  "updated": "2026-10-15",
   "events": [
     {
       "date": "2026-03-08",
@@ -183,6 +183,15 @@
       "location": "Escalquens (31)",
       "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
       "source": "https://www.intramuros.org/escalquens/agenda/893310",
+      "statut": "valide"
+    },
+    {
+      "date": "2027-06-07",
+      "title": "2SEO_LA MURATAISE",
+      "location": "Murat-sur-Vèbre (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/2seo-la-murataise-2025",
+      "end_date": "2027-06-09",
       "statut": "valide"
     }
   ]
