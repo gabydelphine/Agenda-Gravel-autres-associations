@@ -14,6 +14,7 @@ from urllib.request import Request, urlopen
 
 INVENTAIRE = Path("inventaire-gravel.json")
 HISTORIQUE = Path("veille-notifications.json")
+RESULTATS = Path("veille-resultats.json")
 
 DEPOT = os.environ.get(
     "GITHUB_REPOSITORY",
@@ -162,7 +163,16 @@ def main():
 
         nouveautes.append(fiche)
 
-    if not nouveautes:
+    # Annonces gravel datées dont la commune n'a pas été reconnue :
+    # elles sont signalées pour un coup d'œil, sans bouton de décision.
+    pistes = []
+    for piste in charger(RESULTATS, {}).get("a_examiner", []):
+        cle_piste = "piste:" + str(piste.get("date")) + "|" + str(piste.get("source"))
+        if cle_piste not in deja_envoyes:
+            pistes.append((cle_piste, piste))
+    pistes = pistes[:40]
+
+    if not nouveautes and not pistes:
         print("Aucune nouvelle manifestation à notifier.")
         return
 
@@ -171,7 +181,8 @@ def main():
         '<div style="font-family:Arial,sans-serif;'
         'max-width:650px;margin:auto;">',
         "<h2>Veille Gravel Toulouse</h2>",
-        "<p>Voici les nouvelles manifestations à examiner.</p>",
+        "<p>Voici les nouvelles manifestations à examiner.</p>"
+        if nouveautes else "<p>Aucune nouvelle fiche complète cette semaine.</p>",
         "<p><strong>Aucune publication automatique.</strong> "
         "Chaque bouton ouvre GitHub : il faudra "
         "confirmer la création de la demande.</p>"
@@ -238,6 +249,25 @@ def main():
             ""
         ])
 
+    if pistes:
+        morceaux_html.append(
+            '<h2 style="margin-top:30px;">Pistes à regarder (lieu non reconnu)</h2>'
+            "<p>Annonces gravel datées trouvées par la veille, mais dont la commune "
+            "n'a pas pu être identifiée. Si l'une d'elles vous intéresse, ajoutez-la "
+            "à la main dans events.json.</p><ul>"
+        )
+        lignes_texte.extend(["", "PISTES À REGARDER (lieu non reconnu)", ""])
+        for _, piste in pistes:
+            morceaux_html.append(
+                '<li style="margin-bottom:8px;">{} — <a href="{}">{}</a>{}</li>'.format(
+                    echapper(piste.get("date")), echapper(piste.get("source")),
+                    echapper(piste.get("title")),
+                    (" (" + echapper(piste.get("raison")) + ")") if piste.get("raison") else ""
+                )
+            )
+            lignes_texte.append(f"{piste.get('date')} — {piste.get('title')} — {piste.get('source')}")
+        morceaux_html.append("</ul>")
+
     morceaux_html.extend([
         "<p>Veille Gravel Toulouse</p>",
         "</div></body></html>"
@@ -254,6 +284,7 @@ def main():
         "subject": (
             f"Veille Gravel - "
             f"{len(nouveautes)} manifestation(s) à valider"
+            + (f", {len(pistes)} piste(s)" if pistes else "")
         ),
         "htmlContent": "\n".join(morceaux_html),
         "textContent": "\n".join(lignes_texte)
@@ -286,6 +317,7 @@ def main():
         "gravel:" + identifiant(fiche)
         for fiche in nouveautes
     )
+    deja_envoyes.update(cle for cle, _ in pistes)
 
     HISTORIQUE.write_text(
         json.dumps(
