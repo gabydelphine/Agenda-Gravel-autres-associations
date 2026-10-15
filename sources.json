@@ -1,0 +1,61 @@
+{
+  "_aide": "Fichier de réglage de la veille. Pour ajouter un site : copier une ligne de 'sites' et changer le nom et l'adresse. 'suivre_liens' : true si la page est une liste d'événements dont il faut ouvrir chaque fiche.",
+  "centre": {"nom": "Toulouse", "lat": 43.6047, "lon": 1.4442},
+  "rayon_km": 200,
+  "departements_communes": ["09", "11", "12", "15", "19", "24", "31", "32", "33", "34", "40", "46", "47", "48", "64", "65", "66", "81", "82"],
+  "exclure": ["ogravel", "o gravel", "ô gravel", "occitanie 600"],
+
+  "recherche_web": {
+    "_aide": "Requêtes envoyées chaque jour à Brave Search (clé BRAVE_API_KEY). {annee} est remplacé par l'année de la saison à venir (l'année suivante à partir de septembre), {departement} par chaque nom de la liste.",
+    "departements": ["Haute-Garonne", "Gers", "Ariège", "Aude", "Tarn", "Tarn-et-Garonne", "Lot", "Hautes-Pyrénées", "Aveyron", "Hérault", "Lot-et-Garonne", "Pyrénées-Orientales", "Pyrénées-Atlantiques", "Landes"],
+    "requetes_par_departement": ["rando gravel {departement} {annee}"],
+    "requetes_generales": [
+      "randonnée gravel Occitanie {annee}",
+      "gravel {annee} inscription Toulouse",
+      "rando VTT gravel {annee} club Occitanie",
+      "gravel {annee} site:helloasso.com",
+      "gravel {annee} site:klikego.com",
+      "gravel {annee} site:njuko.net",
+      "gravel {annee} site:sport.ikinoa.com",
+      "gravel {annee} site:velo-occitanie.fr",
+      "gravel {annee} site:vetete.com",
+      "gravel {annee} site:openrunner.com"
+    ],
+    "resultats_par_requete": 20
+  },
+
+  "sites": [
+    {"nom": "Vélo Occitanie", "url": "https://www.velo-occitanie.fr/", "suivre_liens": true},
+    {"nom": "Vélo Occitanie – VTT 31", "url": "https://velo-occitanie.fr/vtt-31", "suivre_liens": true},
+    {"nom": "Vélo Occitanie – Gravels 81", "url": "https://velo-occitanie.fr/gravels-81", "suivre_liens": true},
+    {"nom": "Miles Republic – Occitanie", "url": "https://fr.milesrepublic.com/rando-gravel/occitanie", "suivre_liens": true},
+    {"nom": "Miles Republic – Haute-Garonne", "url": "https://fr.milesrepublic.com/rando-gravel/haute-garonne", "suivre_liens": true},
+    {"nom": "Miles Republic – Nouvelle-Aquitaine", "url": "https://fr.milesrepublic.com/rando-gravel/nouvelle-aquitaine", "suivre_liens": true},
+    {"nom": "Gravel Passion – Haute-Garonne", "url": "https://www.gravelpassion.fr/lieu/haute-garonne-31/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Gers", "url": "https://www.gravelpassion.fr/lieu/gers-32/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Tarn", "url": "https://www.gravelpassion.fr/lieu/tarn-81/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Ariège", "url": "https://www.gravelpassion.fr/lieu/ariege-09/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Aude", "url": "https://www.gravelpassion.fr/lieu/aude-11/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Lot", "url": "https://www.gravelpassion.fr/lieu/lot-46/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Tarn-et-Garonne", "url": "https://www.gravelpassion.fr/lieu/tarn-et-garonne-82/", "suivre_liens": true},
+    {"nom": "Gravel Passion – Hautes-Pyrénées", "url": "https://www.gravelpassion.fr/lieu/hautes-pyrenees-65/", "suivre_liens": true},
+    {"nom": "Gravel Agenda", "url": "https://gravelagenda.com/", "suivre_liens": true},
+    {"nom": "Vetete", "url": "https://vetete.com/", "suivre_liens": true},
+    {"nom": "FSGT 31", "url": "https://cyclismefsgt31.fr/", "suivre_liens": true},
+    {"nom": "FFVélo 31", "url": "https://haute-garonne.ffvelo.fr/", "suivre_liens": true},
+    {"nom": "Cyclotourisme 31", "url": "https://www.cyclotourisme-31.com/", "suivre_liens": true},
+    {"nom": "FFVélo 82", "url": "https://cyclotourisme82-ffct.fr/", "suivre_liens": true},
+    {"nom": "Saubens Cyclo", "url": "https://saubenscyclo31.fr/", "suivre_liens": true},
+    {"nom": "Fontenilles VTT", "url": "https://fontenilles-vtt.fr/", "suivre_liens": true},
+    {"nom": "Cahors Cyclisme", "url": "https://www.cahorscyclisme.com/", "suivre_liens": true}
+  ],
+
+  "limites": {
+    "pages_par_site": 60,
+    "fiches_par_liste": 40,
+    "pages_par_resultat_web": 12,
+    "pages_total": 900,
+    "pdf_par_site": 8,
+    "delai_par_site_s": 1.0
+  }
+}
