@@ -72,7 +72,7 @@ def main():
     if args.decision == 'valider':
         # Pour publier, une vérification géographique positive est obligatoire.
         if fiche.get('controle_zone') != 'dans_zone':
-            raise SystemExit('Zone non confirmée dans les 150 km : publication bloquée')
+            raise SystemExit('Zone non confirmée dans les 200 km : publication bloquée')
         distance = fiche.get('distance_toulouse_km')
         if isinstance(distance, bool) or not isinstance(distance, (int, float)) or not 0 <= distance <= 200:
             raise SystemExit('Distance absente ou hors rayon de 200 km : publication bloquée')
