@@ -738,15 +738,27 @@ class Collecte:
                     cellules = cellules[1:]
                     break
             ligne = " | ".join(cellules)
-            if not mois or not MOTIF_GRAVEL.search(normaliser(ligne)):
+            if not MOTIF_GRAVEL.search(normaliser(ligne)):
                 continue
-            m = re.search(r"\b(?:lu|ma|me|je|ve|sa|di)[a-z]*\.?\s+(\d{1,2})\b", normaliser(ligne))
-            if not m:
-                continue
-            try:
-                debut = date(annee_page, mois, int(m.group(1))) if annee_page else _annee_probable(mois, int(m.group(1)))
-            except ValueError:
-                continue
+            debut = None
+            # Ligne avec une date complète (« Dimanche 16 août | Club | MAUVEZIN | … »).
+            m = RE_DATE_TEXTE.search(normaliser(ligne))
+            if m:
+                j1, _, nom_mois, annee = m.groups()
+                try:
+                    an = int(annee) if annee else annee_page
+                    debut = date(an, MOIS[nom_mois], int(j1)) if an else _annee_probable(MOIS[nom_mois], int(j1))
+                except ValueError:
+                    continue
+            elif mois:
+                # Mois sur une ligne à part (« juil » puis « di 16 | … »).
+                m = re.search(r"\b(?:lu|ma|me|je|ve|sa|di)[a-z]*\.?\s+(\d{1,2})\b", normaliser(ligne))
+                if not m:
+                    continue
+                try:
+                    debut = date(annee_page, mois, int(m.group(1))) if annee_page else _annee_probable(mois, int(m.group(1)))
+                except ValueError:
+                    continue
             if not debut:
                 continue
             commune, etat = None, None
@@ -756,7 +768,10 @@ class Collecte:
                     commune, etat = c, e
                     break
                 commune, etat = commune or c, etat or e
-            titre = cellules[-1] if len(cellules) >= 2 else ligne
+            # Titre : la cellule la plus « nom de manifestation » (ni date, ni lien, ni disciplines).
+            noms = [c for c in cellules if not trouver_dates(c) and not re.fullmatch(
+                r"(?i)(?:site|facebook|mail|renseignements|[-–\s]|route|vtt|gravel|marche|,)+", c)]
+            titre = noms[-1] if noms else ligne
             if commune and commune["nom"] not in titre:
                 titre = f"{titre} ({commune['nom']})"
             self.ajouter(titre=titre, debut=debut, commune=commune, etat=etat, url=url,
