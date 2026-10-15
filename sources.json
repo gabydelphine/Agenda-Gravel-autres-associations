@@ -1,5 +1,5 @@
 {
-  "_aide": "Fichier de réglage de la veille. Pour ajouter un site : copier une ligne de 'sites' et changer le nom et l'adresse. 'suivre_liens' : true si la page est une liste d'événements dont il faut ouvrir chaque fiche. 'pages_max' (facultatif) : nombre maximum de pages lues sur ce site. Les sites de clubs passent en premier. Miles Republic a été retiré : il bloque les robots (erreur 429). 'ffc' : true pour lire le calendrier officiel FFC (discipline Gravel).",
+  "_aide": "Fichier de réglage de la veille. Pour ajouter un site : copier une ligne de 'sites' et changer le nom et l'adresse. 'suivre_liens' : true si la page est une liste d'événements dont il faut ouvrir chaque fiche. 'pages_max' (facultatif) : nombre maximum de pages lues sur ce site. Les sites de clubs passent en premier. Miles Republic a été retiré : il bloque les robots (erreur 429). 'ffc' : true pour lire le calendrier officiel FFC (discipline Gravel). 'motif_liens' (facultatif) : ne suivre que les liens dont l'adresse contient ce motif.",
   "centre": {
     "nom": "Toulouse",
     "lat": 43.6047,
@@ -164,49 +164,57 @@
       "nom": "Gravel Passion – Haute-Garonne",
       "url": "https://www.gravelpassion.fr/lieu/haute-garonne-31/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Gers",
       "url": "https://www.gravelpassion.fr/lieu/gers-32/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Tarn",
       "url": "https://www.gravelpassion.fr/lieu/tarn-81/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Ariège",
       "url": "https://www.gravelpassion.fr/lieu/ariege-09/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Aude",
       "url": "https://www.gravelpassion.fr/lieu/aude-11/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Lot",
       "url": "https://www.gravelpassion.fr/lieu/lot-46/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Tarn-et-Garonne",
       "url": "https://www.gravelpassion.fr/lieu/tarn-et-garonne-82/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Passion – Hautes-Pyrénées",
       "url": "https://www.gravelpassion.fr/lieu/hautes-pyrenees-65/",
       "suivre_liens": true,
-      "pages_max": 15
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
       "nom": "Gravel Agenda",
