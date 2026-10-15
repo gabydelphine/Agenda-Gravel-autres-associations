@@ -214,6 +214,16 @@
       "statut": "valide"
     },
     {
+      "date": "2026-10-10",
+      "title": "Les Coustous (20e édition)",
+      "location": "Villasavary (11)",
+      "details": "Rando VTT avec trace gravel de 65 km. Départ du stade de Villasavary. Organisée par Lous Pounpils.",
+      "source": "https://www.lous-pounpils.net/",
+      "validation_gravel": "utilisateur",
+      "statut": "valide",
+      "date_decision": "2026-10-15"
+    },
+    {
       "date": "2026-10-11",
       "title": "RANDO DES 2 RIVIERES - Gravel Agenda",
       "location": "Rivières (81)",
