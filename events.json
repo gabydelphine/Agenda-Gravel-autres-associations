@@ -3,7 +3,7 @@
   "events": [
     {
       "date": "2026-03-08",
-      "title": "Mondonville",
+      "title": "FSGT-Mondonville",
       "location": "Mondonville (31)",
       "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
       "source": "",
@@ -11,7 +11,7 @@
     },
     {
       "date": "2026-03-22",
-      "title": "Cugnaux",
+      "title": "FSGT-CUGNAUX",
       "location": "Cugnaux (31)",
       "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
       "source": "",
@@ -22,14 +22,6 @@
       "title": "5e Nocturne du Lys",
       "location": "Saint-Lys (31)",
       "details": "Parcours gravel confirmé par l'organisateur / utilisateur.",
-      "source": "",
-      "statut": "valide"
-    },
-    {
-      "date": "2026-04-11",
-      "title": "5ème Nocturne du Lys",
-      "location": "Saint-Lys (31)",
-      "details": "Parcours gravel à vérifier avant publication",
       "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
       "statut": "valide"
     },
@@ -126,14 +118,6 @@
       "title": "39e Randonnée de Venerque",
       "location": "Venerque (31)",
       "details": "Parcours gravel confirmé.",
-      "source": "",
-      "statut": "valide"
-    },
-    {
-      "date": "2026-09-20",
-      "title": "39ème Randonnée de Venerque",
-      "location": "Venerque (31)",
-      "details": "Parcours gravel à vérifier avant publication",
       "source": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
       "statut": "valide"
     },
