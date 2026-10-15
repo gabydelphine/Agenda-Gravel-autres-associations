@@ -452,8 +452,13 @@ RE_CONTEXTE_FAUX = re.compile(
     r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$")
 
 
+# Fenêtre de recherche : les 365 derniers jours (rubrique « passés » de l'agenda)
+# et jusqu'à environ 20 mois à l'avance.
+JOURS_PASSES = 365
+
+
 def date_plausible(d):
-    return AUJOURDHUI - timedelta(days=30) <= d <= AUJOURDHUI + timedelta(days=600)
+    return AUJOURDHUI - timedelta(days=JOURS_PASSES) <= d <= AUJOURDHUI + timedelta(days=600)
 
 
 def _annee_probable(mois, jour):
@@ -547,7 +552,7 @@ class Collecte:
         titre = re.sub(r"\s+", " ", titre or "").strip(" -–—:|·,")[:140]
         if not titre or self.exclu(titre + " " + url):
             return
-        if not date_plausible(debut) or debut < AUJOURDHUI - timedelta(days=7):
+        if not date_plausible(debut):
             return
         extrait = re.sub(r"\s+", " ", extrait or "").strip()[:400]
         if commune and etat in ("sur", "souple") or distance is not None:
@@ -717,6 +722,10 @@ class Collecte:
         """Calendriers en tableau où le mois est sur une ligne et le jour sur les
         suivantes (« juil | di 16 | Cardeilhac | Boucle VTT/Gravel »)."""
         mois = None
+        # Année du calendrier (« Calendrier 2026 ») : sinon une date passée
+        # serait reportée à tort sur l'année suivante.
+        annees = re.findall(r"(?i)calendrier\D{0,20}(20\d\d)", html_vers_texte(html)) or re.findall(r"\b(20[2-3]\d)\b", html)
+        annee_page = int(max(set(annees), key=annees.count)) if annees else None
         for tr in re.findall(r"(?is)<tr\b[^>]*>(.*?)</tr>", html):
             cellules = [re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", c))).strip()
                         for c in re.findall(r"(?is)<t[dh]\b[^>]*>(.*?)</t[dh]>", tr)]
@@ -735,7 +744,10 @@ class Collecte:
             m = re.search(r"\b(?:lu|ma|me|je|ve|sa|di)[a-z]*\.?\s+(\d{1,2})\b", normaliser(ligne))
             if not m:
                 continue
-            debut = _annee_probable(mois, int(m.group(1)))
+            try:
+                debut = date(annee_page, mois, int(m.group(1))) if annee_page else _annee_probable(mois, int(m.group(1)))
+            except ValueError:
+                continue
             if not debut:
                 continue
             commune, etat = None, None
@@ -1067,10 +1079,11 @@ def main():
 
     # Les pistes sans lieu reconnu sont conservées d'une exécution à l'autre.
     anciens = charger_json(RESULTATS, {})
+    limite = (AUJOURDHUI - timedelta(days=JOURS_PASSES)).isoformat()
     pistes = {(p["date"], p["source"]): p for p in anciens.get("a_examiner", [])
-              if p.get("date", "") >= AUJOURDHUI.isoformat()}
+              if p.get("date", "") >= limite}
     for cle, p in collecte.a_examiner.items():
-        if p["date"] >= AUJOURDHUI.isoformat() and not any(
+        if p["date"] >= limite and not any(
                 c["date"] == p["date"] and c["source"] == p["source"] for c in candidats):
             pistes.setdefault(cle, dict(p, date_detection=AUJOURDHUI.isoformat()))
 
