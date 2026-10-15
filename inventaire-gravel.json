@@ -67,6 +67,20 @@
       "statut": "valide"
     },
     {
+      "date": "2026-06-11",
+      "title": "Calendrier Route",
+      "location": "Toulouse (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://cyclismefsgt31.fr/route/calendrier-route",
+      "source_nom": "FSGT 31",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 1.0,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
+    },
+    {
       "date": "2026-06-14",
       "title": "Brax",
       "location": "Brax (31)",
@@ -110,6 +124,48 @@
       "source": "",
       "validation_gravel": "utilisateur",
       "statut": "annule"
+    },
+    {
+      "date": "2026-08-16",
+      "title": "1ère Boucle VTT/Gravel en forêt (Cardeilhac)",
+      "location": "Cardeilhac (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://haute-garonne.ffvelo.fr/calendrier/",
+      "source_nom": "FFVélo 31",
+      "trouve_par": "tableau",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 76.7,
+      "fiabilite_lieu": "probable",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
+    },
+    {
+      "date": "2026-08-24",
+      "title": "Magasin Giant Albi : tous les gravel en stock chez ce vélociste",
+      "location": "Albi (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/magasins-gravel-france/giant-albi/",
+      "source_nom": "Gravel Passion – Tarn",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 66.0,
+      "fiabilite_lieu": "probable",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
+    },
+    {
+      "date": "2026-09-06",
+      "title": "la Mailhocoise",
+      "location": "Mailhoc (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/la-mailhocoise-2026",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 67.3,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
     },
     {
       "date": "2026-09-13",
