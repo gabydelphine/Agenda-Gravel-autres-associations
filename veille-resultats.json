@@ -185,7 +185,7 @@
       "source_nom": "FSGT 31",
       "trouve_par": "fiche",
       "controle_zone": "dans_zone",
-      "distance_toulouse_km": 1.0,
+      "distance_toulouse_km": 1,
       "fiabilite_lieu": "certaine",
       "extrait": "Calendrier Route Calendrier Prévisionnel Route 2027 Calendrier prévisionnel Calendrier Prévisionnel Route-VTT-Gravel 2026 Calendrier : Version du 11 juin 2026 => ANNULATION de tous les CANDIE. pour cause de refus de Toulouse Métropole"
     },
@@ -198,7 +198,7 @@
       "source_nom": "Vélo Occitanie",
       "trouve_par": "fiche",
       "controle_zone": "dans_zone",
-      "distance_toulouse_km": 27.0,
+      "distance_toulouse_km": 27,
       "fiabilite_lieu": "certaine",
       "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
     },
@@ -224,7 +224,7 @@
       "source_nom": "Gravel Passion – Tarn",
       "trouve_par": "fiche",
       "controle_zone": "dans_zone",
-      "distance_toulouse_km": 66.0,
+      "distance_toulouse_km": 66,
       "fiabilite_lieu": "probable",
       "extrait": "J’ai besoin de changer mon conteur sur un vieux vélo éléctrique Giant. Voici le n°de série: City/Trekking Bicycles EN:14764 Electric Bicycles: EN 16194. Je suis passée l’autre jour au magasin vous m’avez confirmé que c’était possible d’en commander un neuf. Je vous remercie par avance, j’attends votre retour. Bonne fin de journée. Viviane Rayssac. Répondre Laisser un commentaire Annuler la réponse"
     },
@@ -368,264 +368,10 @@
       "source_nom": "FFC",
       "trouve_par": "ffc",
       "controle_zone": "dans_zone",
-      "distance_toulouse_km": 145.0,
+      "distance_toulouse_km": 145,
       "fiabilite_lieu": "probable",
       "extrait": "Gravel National Le 13/06/2027 Aveyron WISH ONE MILLAU GRANDS CAUSSES — département Aveyron"
     }
   ],
-  "a_examiner": [
-    {
-      "date": "2025-10-29",
-      "title": "Gravel à moins de 3000€ : tous les modèles en 2026 !",
-      "source": "https://www.gravelpassion.fr/comment-choisir-mon-velo-de-gravel/quel-est-mon-budget-pour-le-gravel/gravel-entre-1500-et-3000-euros/",
-      "source_nom": "Gravel Passion – Tarn",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "bonjour, je cherche des infos sur les cycles temple. si vous connaissez, n’h »sites pas à me donner des pistes de réflexion , qualité de fabrication, SAV, etc… merci beaucoup Répondre",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2025-12-24",
-      "title": "Gravel Specialized : découvrez tous les modèles 2026 !",
-      "source": "https://www.gravelpassion.fr/gravel-specialized/",
-      "source_nom": "Gravel Passion – Aude",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Aller au contenu Comparateur Analyse de la gamme Gravel de chez Specialized Rédigé avec ❤️ par Hugo le 15 avril 2022 et mis à jour il y a 5 mois La gamme de gravel Specialized est très certainement l’une des plus belles. Néanmoins, si vous recherchez avant tout un super rapport composants / prix, passez votre chemin. S’offrir un Specialized, c’est accepter que pour le même tarif, on puisse bénéfic",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-03-09",
-      "title": "FFC, UFOLEP, FSGT : quelle fédération choisir pour courir en route ou en gravel ?",
-      "source": "https://www.gravelpassion.fr/inscription-course-cycliste/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Salut à toute la communauté. Un grand merci à Hugo pour ce super Article qui permet d’y voir plus clair. J’avais en tête de me lancer depuis quelques temps sur la compétition, ton article m’a grandement éclairé, j’ai créé grâce à toi mon accès FFC aujourd’hui et transmis une demande d’adhésion par le club cyclisme local de référence. A bientôt sur les routes et chemins Répondre Merci beaucoup Pasc",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-03-14",
-      "title": "Check-list gravel : tout le matériel que je laisse en permanence sur mon vélo",
-      "source": "https://www.gravelpassion.fr/checklist-sortie-gravel/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Des articles trés intéressants. Répondre Merci beaucoup Alain pour votre commentaire ! Répondre Merci pour les conseils surtout pour moi, nouveau dans la pratique. J’ai reçu mon Megamo West aujourd’hui !! Répondre Génial, bonnes balades avec Laurent ! Répondre Merci pour cet article 🙂 Je préconise dans la trousse d’urgence : seringue pré-remplie d’adrénaline, antihistaminique, cortisone. Un petit",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-07-07",
-      "title": "Le pneu gravel parfait n’existe pas, et la gamme Vittoria le montre très bien",
-      "source": "https://www.gravelpassion.fr/guide-pneus-vittoria-terreno-gravel/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Excellent article Hugo ! J en ai profité pour relire ton article sur les meilleurs pneus gravel. Il y a un point qu on voit peu je trouve dans les tests c est la solidité du pneu qui je trouve apporte de la sérénité dans une sortie. De ce que j ai compris un pneu plus solide sera plus lourd, moins confort, parfois aussi avec un rendement inférieur? Lors du choix de pneus c est ce que je trouve dél",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-07-08",
-      "title": "Décryptage et avis de tous les vélos de gravel Cannondale",
-      "source": "https://www.gravelpassion.fr/gravel-cannondale/",
-      "source_nom": "Gravel Passion – Aude",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Aller au contenu Comparateur 🙋‍♀️ Féminin La gamme complète de Gravel Cannondale décryptée Rédigé avec ❤️ par Hugo le 10 février 2022 et mis à jour il y a 5 mois Cannondale est une marque emblématique dans le monde du vélo et du gravel. Avec une gamme complète pour (presque) toutes les bourses, les modèles dédiés au gravel bike sont nombreux. Tour d’horizon complet, du Topstone 4 au Topstone Lefty",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-09-21",
-      "title": "Le textile gravel Scott mise sur le confort plutôt que la performance pure",
-      "source": "https://www.gravelpassion.fr/test-vetements-gravel-scott/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Aller au contenu Tests Scott Vêtements Test vêtements gravel Scott : du confort et du style Rédigé avec ❤️ par Césane E. le 21 septembre 2026 et mis à jour il y a 3 semaines Scott a lancé sa nouvelle gamme textile gravel dans le sillage du nouvel Addict Gravel. Le lien visuel est évident : couleurs, graphismes, continuité avec l’univers vélo et accessoires Syncros. Rien n’a été posé là par hasard.",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-09-25",
-      "title": "Pourquoi il faut aller à Gérone en septembre ?",
-      "source": "https://www.gravelpassion.fr/sea-otter-europe-2026-girone/",
-      "source_nom": "Gravel Passion – Lot",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Aller au contenu Actu Sea Otter Europe 2026 : à Gérone, le vélo déborde largement du salon Rédigé avec ❤️ par Césane E. le 25 septembre 2026 et mis à jour il y a 3 semaines Avant de parler de stands, de nouveautés et de tendances, il faut parler de Gérone. Parce que la Sea Otter Europe ne se vit pas comme un salon posé au hasard dans une ville d’accueil. Ici, le vélo est déjà partout. En arrivant,",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-09-25",
-      "title": "Un cadre chinois à 3 000 € peut-il encore être une bonne affaire ?",
-      "source": "https://www.gravelpassion.fr/marques-chinoises-velo/",
-      "source_nom": "Gravel Passion – Lot",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Salut, très bel et bon article sur les marques de vélos chinoises VD européennes: tout est dits : bravo. Un ajout concernant les marques européennes : la marque Cube propose un assortiment de vélos musculaires et électriques pour les plus sportifs au plus dilettants à un rapport qualité/prix de fou. Nous vendons cette marque en Suisse et connaissons un énorme succès. Leur usine en Allemagne est à",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-09-27",
-      "title": "Test Elitewheels Drive G42 : plus de vitesse et de répondant en gravel",
-      "source": "https://www.gravelpassion.fr/test-elitewheels-drive-g42/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Merci pour cet essai. Attention :il y a une petite faute: « Les G42 ne le transforme pas en machine de course radicale ». Répondre Merci Didier ! Mais sauf erreur de ma part, le sujet étant « Les G42 », il me semble que « transforment » est bien au pluriel 🙂 Répondre Autant pour moi. Cela me paraissait étrange à la lecture… Merci pour vos articles. Répondre",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-09-29",
-      "title": "Pourquoi les femmes sont encore si peu nombreuses sur les événements vélo ?",
-      "source": "https://www.gravelpassion.fr/etude-femmes-evenements-velo/",
-      "source_nom": "Gravel Passion – Aude",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Très bon article ! Répondre Très bien. En effet c’est pas trés facile en tant que femme… Répondre Très bon article. J’ai participé à quelques événements. Plus facile si on le fait à plusieurs. Merci pour votre travail Répondre Excellent article. Je rajouterais que le cyclisme sur route (le seul que je connaisse, le gravel c’est pour bientôt) est plutôt très conservateur avec des moyennes d’âge ass",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-01",
-      "title": "Ce casque aéro Limar est beau, ventilé… mais un détail gêne vraiment en gravel",
-      "source": "https://www.gravelpassion.fr/test-limar-air-atlas-uap-reverb/",
-      "source_nom": "Gravel Passion – Aude",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Aller au contenu Tests Limar Casques Test Limar Air Atlas UAP Reverb : beau casque aéro, détails perfectibles Rédigé avec ❤️ par Césane E. le 1 octobre 2026 et mis à jour il y a 2 semaines Le Limar Air Atlas UAP Reverb arrive avec une promesse assez séduisante : un casque aéro pensé pour la route rapide, mais aussi revendiqué comme compatible avec l’esprit gravel. Dans cette édition spéciale Rever",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-04",
-      "title": "Cette selle San Marco mise tout sur le confort gravel longue distance",
-      "source": "https://www.gravelpassion.fr/test-selle-san-marco-shortfit-allroad-supercomfort-racing/",
-      "source_nom": "Gravel Passion – Gers",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Bonjour Avant tout je vous remercie pour vos articles et test, j’aime vraiment lire vos articles et évaluations. Je voudrais juste vous signaler que dans le Test San Marco Shortfit Allroad Supercomfort Racing, le lien vers le prix n’arrive pas sur la selle testée, plein de San Marco mais pas celle ci. Merci encore Cordialement Carlos Répondre Bonjour Carlos, Merci beaucoup pour votre message et po",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-04",
-      "title": "32ème Randonnée des Vendages",
-      "source": "https://gravelagenda.com/evenements-gravel/32eme-randonnee-des-vendages/",
-      "source_nom": "Gravel Agenda",
-      "trouve_par": "fiche",
-      "lieu_suppose": "Colombiers (34)",
-      "raison": "lieu ambigu",
-      "extrait": "32ème Randonnée des Vendages est programmé le 04/10/2026 à Les Ormes. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. Type Randonnée gravel Date 4 octobre 2026 Lieu COLOMBIERS 86490, France Organisateur ASAC cyclo-VTT et Colombipat Localisation Lieu de départ Les Ormes, Les Ormes, 86220 Carte in",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-04",
-      "title": "32ème Randonnée des Vendages",
-      "source": "https://gravelagenda.com/evenements-gravel/32eme-randonnee-des-vendages-2/",
-      "source_nom": "Gravel Agenda",
-      "trouve_par": "fiche",
-      "lieu_suppose": "Colombiers (34)",
-      "raison": "lieu ambigu",
-      "extrait": "32ème Randonnée des Vendages est programmé le 04/10/2026 à Les Ormes. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. Type Randonnée gravel Date 4 octobre 2026 Lieu COLOMBIERS 86490, France Organisateur ASAC cyclo-VTT et Colombipat Localisation Lieu de départ Les Ormes, Les Ormes, 86220 Carte in",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-04",
-      "title": "7e Randonnée POMMIERS VTT",
-      "source": "https://gravelagenda.com/evenements-gravel/7e-randonnee-pommiers-vtt/",
-      "source_nom": "Gravel Agenda",
-      "trouve_par": "fiche",
-      "lieu_suppose": "Pommiers (30)",
-      "raison": "lieu ambigu",
-      "extrait": "7e Randonnée POMMIERS VTT est programmé le 04/10/2026 à Pommiers. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. Type Randonnée gravel Date 4 octobre 2026 Lieu POMMIERS, France Organisateur CLUB POMMIERS VTT Localisation Lieu de départ Pommiers, Pommiers, 69480 Carte interactive en cours de cha",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-04",
-      "title": "7e Randonnée POMMIERS VTT",
-      "source": "https://gravelagenda.com/evenements-gravel/7e-randonnee-pommiers-vtt-2/",
-      "source_nom": "Gravel Agenda",
-      "trouve_par": "fiche",
-      "lieu_suppose": "Pommiers (30)",
-      "raison": "lieu ambigu",
-      "extrait": "7e Randonnée POMMIERS VTT est programmé le 04/10/2026 à Pommiers. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. Type Randonnée gravel Date 4 octobre 2026 Lieu POMMIERS, France Organisateur CLUB POMMIERS VTT Localisation Lieu de départ Pommiers, Pommiers, 69480 Carte interactive en cours de cha",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-10",
-      "title": "J'ai testé ce compteur GPS qui veut remplacer les références Garmin et Wahoo",
-      "source": "https://www.gravelpassion.fr/test-igpsport-binavi-ultra/",
-      "source_nom": "Gravel Passion – Ariège",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "hello pas facile le morvan lol ,je connait bien je suis a la limite en cote d or,merci pour ce test,peut on exporter des parcours gpx depuis strava?y a t il le live track ?pas possible du coup de descendre volume de la detection voiture d un varia,?merci Répondre Bonjour, en effet ça ne manque pas de D+ et de technicité gravel le Morvan. Oui, il est possible d’importer les traces Strava sur l’appl",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-12",
-      "title": "Hammerhead Karoo 3 : le GPS qui donne envie de quitter Garmin ?",
-      "source": "https://www.gravelpassion.fr/test-hammerhead-karoo-3/",
-      "source_nom": "Gravel Passion – Ariège",
-      "trouve_par": "fiche",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "C’est curieux je me trouve également dans la même situation du changement du wahoo elemnt roam v1 (batterie HS). J’ai essayé le V3 mais j’ai été déçu par l’écran : peu visible dans certaines situations et l’ajout des informations par rapport au V1 ne sont pas lisibles en usage gravel. Dommage car les fonctionnalités me satisfaisaient. Concernant la visualisation de l’ensemble de l’itinéraire : si",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-17",
-      "title": "Croix d'Automne rando VTT/GRAVEL (23ème édition)",
-      "source": "https://vetete.com/croix-d-automne-rando-vtt-gravel-23eme-edition-a-chalain-d-uzore-le-samedi-17-octobre-2026",
-      "source_nom": "Vetete",
-      "trouve_par": "donnees_structurees",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Croix d'Automne rando VTT/GRAVEL (23ème édition) à Chalain-d'Uzore le samedi 17 octobre 2026 | rando VTT",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-18",
-      "title": "Groupe Cyclos, VTT, Gravel, Marche Occitanie",
-      "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
-      "source_nom": "Vélo Occitanie",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "La plateforme VELO OCCITANIE a été conçue pour faciliter l’organisation de vos sorties sportives. Son interface intuitive Lire la suite: Avant de vous rendre à une manifestation, n’hésitez pas à contacter l’organisateur pour savoir si celle-ci a toujours lieu. Groupe Cyclos, VTT, Gravel, Marche Occitanie 18 Oct",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-18",
-      "title": "Groupe Cyclos, VTT, Gravel, Marche Occitanie",
-      "source": "https://velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
-      "source_nom": "Vélo Occitanie – VTT 31",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "La plateforme VELO OCCITANIE a été conçue pour faciliter l’organisation de vos sorties sportives. Son interface intuitive Lire la suite: Avant de vous rendre à une manifestation, n’hésitez pas à contacter l’organisateur pour savoir si celle-ci a toujours lieu. Groupe Cyclos, VTT, Gravel, Marche Occitanie 18 Oct",
-      "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-11-11",
-      "title": "DU DDC PARC à L'ABBAYE DE RIEUNETTE",
-      "source": "https://competitions.ffc.fr/calendrier/competition/2026/C5111001093/du-ddc-parc-a-labbaye-de-rieunette/",
-      "source_nom": "FFC",
-      "trouve_par": "ffc",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Gravel Régional Le 11/11/2026 Aude DU DDC PARC à L'ABBAYE DE RIEUNETTE — département Aude",
-      "date_detection": "2026-10-15"
-    }
-  ]
+  "a_examiner": []
 }
