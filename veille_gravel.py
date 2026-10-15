@@ -125,6 +125,7 @@ class Telechargeur:
         self.nombre = 0
         self.erreurs = 0
         self.robots = {}
+        self.vus = set()  # pages déjà lues pendant cette exécution, tous sites confondus
 
     def autorise(self, url):
         """Respecte le fichier robots.txt de chaque site."""
@@ -216,7 +217,7 @@ def titre_page(html):
         m = re.search(motif, html)
         if m:
             t = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
-            t = re.sub(r"\s*[|\-–—]\s*(?:vetete\.com|miles republic|helloasso|klikego|njuko|gravel passion).*$", "", t, flags=re.I)
+            t = re.sub(r"\s*[|\-–—]\s*(?:vetete\.com|miles republic|helloasso|klikego|njuko|gravel passion|gravel agenda).*$", "", t, flags=re.I)
             if 4 <= len(t) <= 200:
                 return t
     return ""
@@ -233,6 +234,24 @@ def extraire_liens(html, base):
             texte = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
             liens.append((absolu, texte[:200]))
     return liens
+
+
+RE_PAGE_RUBRIQUE = re.compile(
+    r"/(?:lieu|produits?|types?|categor\w*|tags?|regions?|pays|author|auteur|page)/", re.I)
+RE_TITRE_RUBRIQUE = re.compile(
+    r"^(?:accueil|categories?|vtt|cyclos?|gravels?|route|calendrier|agenda|evenements?|"
+    r"actualites?|blog|resultats?)(?: \d{2})?$|la liste des|epreuves en france|\d+ epreuves")
+
+
+def page_rubrique(url, titre):
+    """Pages d'accueil, de catégorie ou de département : jamais une manifestation."""
+    chemin = urlparse(url).path.rstrip("/")
+    if not chemin or RE_PAGE_RUBRIQUE.search(chemin + "/"):
+        return True
+    t = cle_nom(titre)
+    if RE_TITRE_RUBRIQUE.search(t):
+        return True
+    return bool(re.fullmatch(r"[a-z ]{2,20}\(\s*\d{2}\s*\)", normaliser(titre)))
 
 
 def objets_jsonld(html):
@@ -265,6 +284,8 @@ def objets_jsonld(html):
 # ---------------------------------------------------------------------------
 
 class Communes:
+    rayon = 200
+
     def __init__(self, liste):
         self.liste = liste
         self.par_nom = {}
@@ -277,37 +298,41 @@ class Communes:
 
     @classmethod
     def charger(cls, config, telechargeur):
+        """Toutes les communes de France : on reconnaît aussi les lieux hors zone,
+        pour écarter un événement à Orléans au lieu de le garder « à examiner »."""
+        rayon = config["rayon_km"]
         cache = charger_json(CACHE_COMMUNES, None)
-        frais = (cache and cache.get("rayon_km") == config["rayon_km"]
+        frais = (cache and cache.get("version") == 2
                  and cache.get("date", "") >= (AUJOURDHUI - timedelta(days=120)).isoformat())
-        if frais:
-            return cls(cache["communes"])
-        centre = config["centre"]
-        communes = []
-        try:
-            for dep in config["departements_communes"]:
-                url = ("https://geo.api.gouv.fr/departements/" + dep + "/communes?"
+        if not frais:
+            try:
+                url = ("https://geo.api.gouv.fr/communes?"
                        + urlencode({"fields": "nom,codesPostaux,centre,codeDepartement",
                                     "format": "json", "geometry": "centre"}))
-                contenu, _, _ = telechargeur.get(url, 20_000_000, compter=False)
+                contenu, _, _ = telechargeur.get(url, 60_000_000, compter=False)
+                lignes = []
                 for c in json.loads(contenu):
                     coord = (c.get("centre") or {}).get("coordinates") or []
-                    if len(coord) != 2:
-                        continue
-                    d = distance_km(centre["lat"], centre["lon"], coord[1], coord[0])
-                    if d <= config["rayon_km"]:
-                        communes.append({"nom": c["nom"], "dep": c["codeDepartement"],
-                                         "cp": c.get("codesPostaux", []),
-                                         "lat": coord[1], "lon": coord[0], "km": d})
-        except Exception as erreur:
-            if cache:
+                    if len(coord) == 2:
+                        lignes.append([c["nom"], c["codeDepartement"], c.get("codesPostaux", []),
+                                       round(coord[1], 4), round(coord[0], 4)])
+                cache = {"version": 2, "date": AUJOURDHUI.isoformat(), "communes": lignes}
+                chemin = CACHE_COMMUNES
+                chemin.parent.mkdir(parents=True, exist_ok=True)
+                chemin.write_text(json.dumps(cache, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+            except Exception as erreur:
+                if not (cache and cache.get("version") == 2):
+                    raise SystemExit(f"Impossible de charger la base des communes : {erreur}")
                 journal(f"Base des communes non actualisée ({erreur}) : ancienne version utilisée")
-                return cls(cache["communes"])
-            raise SystemExit(f"Impossible de charger la base des communes : {erreur}")
-        ecrire_json(CACHE_COMMUNES, {"date": AUJOURDHUI.isoformat(), "rayon_km": config["rayon_km"],
-                                     "communes": communes})
-        journal(f"Base des communes : {len(communes)} communes à moins de {config['rayon_km']} km")
-        return cls(communes)
+        centre = config["centre"]
+        communes = [{"nom": n, "dep": d, "cp": cp, "lat": la, "lon": lo,
+                     "km": distance_km(centre["lat"], centre["lon"], la, lo)}
+                    for n, d, cp, la, lo in cache["communes"]]
+        instance = cls(communes)
+        instance.rayon = rayon
+        journal(f"Base des communes : {len(communes)} communes, dont "
+                f"{sum(1 for c in communes if c['km'] <= rayon)} à moins de {rayon} km")
+        return instance
 
     # -- recherche dans un texte ------------------------------------------
 
@@ -319,6 +344,8 @@ class Communes:
             trouves = [c for c in self.par_nom.get(k, []) if not dep or c["dep"] == dep]
             if len(trouves) == 1:
                 return trouves[0]
+            if len(trouves) > 1:
+                return None
         return None
 
     def trouver(self, texte, souple=False):
@@ -347,6 +374,7 @@ class Communes:
         indices = {"a", "au", "depart", "lieu", "commune", "fetes", "stade", "village",
                    "rdv", "rendez", "vous", "organise", "deroulera", "de", "du", "d"}
         ambigu = None
+        hors = None
         i = 0
         while i < len(mots):
             trouve = False
@@ -363,9 +391,15 @@ class Communes:
                 if not (precede or souple):
                     break
                 candidats = self.par_nom[k]
-                if len(candidats) == 1:
-                    return candidats[0], "sur" if precede else "souple"
-                ambigu = ambigu or candidats[0]
+                proches = [c for c in candidats if c["km"] <= self.rayon]
+                if not proches:
+                    # Commune connue mais hors zone : on retient, et on continue
+                    # à chercher une commune de la zone plus loin dans le texte.
+                    hors = hors or min(candidats, key=lambda c: c["km"])
+                elif len(candidats) == 1 or (len(proches) == 1 and self._departement_cite(texte, proches[0]["dep"])):
+                    return proches[0], "sur" if precede else "souple"
+                else:
+                    ambigu = ambigu or proches[0]
                 i += n
                 trouve = True
                 break
@@ -373,7 +407,26 @@ class Communes:
                 i += 1
         if ambigu:
             return ambigu, "ambigu"
+        if hors:
+            return hors, "sur"
         return None, None
+
+    @staticmethod
+    def _departement_cite(texte, dep):
+        t = cle_nom(texte)
+        nom = NOMS_DEPARTEMENTS.get(dep)
+        if re.search(r"\(\s*" + re.escape(dep) + r"\s*\)", texte or ""):
+            return True
+        return bool(nom and re.search(r"\b" + nom + r"\b(?! et garonne)", t))
+
+
+NOMS_DEPARTEMENTS = {
+    "09": "ariege", "11": "aude", "12": "aveyron", "15": "cantal", "19": "correze",
+    "24": "dordogne", "31": "haute garonne", "32": "gers", "33": "gironde", "34": "herault",
+    "40": "landes", "46": "lot", "47": "lot et garonne", "48": "lozere",
+    "64": "pyrenees atlantiques", "65": "hautes pyrenees", "66": "pyrenees orientales",
+    "81": "tarn", "82": "tarn et garonne",
+}
 
 
 def libelle_lieu(c):
@@ -392,6 +445,8 @@ RE_DATE_TEXTE = re.compile(
     r"\s+(" + _MOIS_RE + r")\.?(?:\s+(20\d{2}))?\b")
 RE_DATE_NUM = re.compile(r"(?<![\d/.])(\d{1,2})[/.](\d{1,2})[/.](20\d{2}|\d{2})(?![\d/.])")
 RE_DATE_ISO = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})")
+# « Dimanche 28/2 » (calendriers FSGT) : jour de la semaine obligatoire, sans année.
+RE_DATE_COURTE = re.compile(r"\b" + _JOURS + r"(\d{1,2})\s*/\s*(\d{1,2})(?!\s*/|\d)")
 RE_CONTEXTE_FAUX = re.compile(
     r"(?:publi|mis a jour|mise a jour|modifi|cree le|poste|ecrit le|actualis|"
     r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$")
@@ -449,6 +504,13 @@ def trouver_dates(texte, annee_implicite=True):
             trouvees.append((m.start(), date(*(int(x) for x in m.groups())), None))
         except ValueError:
             continue
+    if annee_implicite:
+        for m in RE_DATE_COURTE.finditer(t):
+            j, mo = int(m.group(1)), int(m.group(2))
+            if 1 <= mo <= 12:
+                d = _annee_probable(mo, j)
+                if d:
+                    trouvees.append((m.start(), d, None))
     return sorted((p, d, f) for p, d, f in trouvees if date_plausible(d))
 
 
@@ -562,6 +624,7 @@ class Collecte:
     def titre_de_ligne(ligne, fenetre):
         t = re.sub(r"(?i)\b(?:lun|mar|mer|jeu|ven|sam|dim)[a-z]*\.?\s+\d{1,2}(?:er)?\s+\w+\.?(?:\s+20\d\d)?", " ", ligne)
         t = re.sub(r"\b\d{1,2}[/.]\d{1,2}[/.]\d{2,4}\b", " ", t)
+        t = re.sub(r"(?i)\b(?:lun|mar|mer|jeu|ven|sam|dim)[a-z]*\.?\s+\d{1,2}\s*/\s*\d{1,2}\b", " ", t)
         t = re.sub(r"\s+", " ", t).strip(" -–—:|·,")
         avant = fenetre[:fenetre.index(ligne)]
         if avant and MOTIF_GRAVEL.search(normaliser(avant[-1])) and 6 <= len(avant[-1]) <= 120:
@@ -619,8 +682,11 @@ class Collecte:
         if liste:
             # Page calendrier : chaque ligne gravel datée est une piste.
             self.analyser_lignes(texte, url, source)
+        self.analyser_tableaux(principal, url, source)
 
         # b) Fiche simple : gravel dans le titre ou au début du contenu
+        if page_rubrique(url, titre):
+            return liste or nb_lignes_gravel > 0
         titre_gravel = bool(MOTIF_GRAVEL.search(normaliser(titre)))
         if not (titre_gravel or (not liste and MOTIF_GRAVEL.search(t_norm[:5000]))):
             return liste or nb_lignes_gravel > 0
@@ -646,6 +712,44 @@ class Collecte:
         self.ajouter(titre=titre or source, debut=debut, fin=fin, commune=commune, etat=etat,
                      url=url, source=source, trouve_par=trouve_par, extrait=texte[:400])
         return liste
+
+    def analyser_tableaux(self, html, url, source):
+        """Calendriers en tableau où le mois est sur une ligne et le jour sur les
+        suivantes (« juil | di 16 | Cardeilhac | Boucle VTT/Gravel »)."""
+        mois = None
+        for tr in re.findall(r"(?is)<tr\b[^>]*>(.*?)</tr>", html):
+            cellules = [re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", c))).strip()
+                        for c in re.findall(r"(?is)<t[dh]\b[^>]*>(.*?)</t[dh]>", tr)]
+            cellules = [c for c in cellules if c]
+            if not cellules:
+                continue
+            premiere = cle_nom(cellules[0]).replace(" ", "")
+            for nom_mois, numero in MOIS.items():
+                if premiere.startswith(nom_mois[:3]) and premiere in (nom_mois, nom_mois[:3], nom_mois[:4]):
+                    mois = numero
+                    cellules = cellules[1:]
+                    break
+            ligne = " | ".join(cellules)
+            if not mois or not MOTIF_GRAVEL.search(normaliser(ligne)):
+                continue
+            m = re.search(r"\b(?:lu|ma|me|je|ve|sa|di)[a-z]*\.?\s+(\d{1,2})\b", normaliser(ligne))
+            if not m:
+                continue
+            debut = _annee_probable(mois, int(m.group(1)))
+            if not debut:
+                continue
+            commune, etat = None, None
+            for cellule in cellules:
+                c, e = self.communes.trouver(cellule, souple=True)
+                if c and e != "ambigu":
+                    commune, etat = c, e
+                    break
+                commune, etat = commune or c, etat or e
+            titre = cellules[-1] if len(cellules) >= 2 else ligne
+            if commune and commune["nom"] not in titre:
+                titre = f"{titre} ({commune['nom']})"
+            self.ajouter(titre=titre, debut=debut, commune=commune, etat=etat, url=url,
+                         source=source, trouve_par="tableau", extrait=ligne)
 
     def analyser_ics(self, texte, url, source):
         for bloc in re.findall(r"(?s)BEGIN:VEVENT(.*?)END:VEVENT", texte.replace("\r\n ", "")):
@@ -713,9 +817,10 @@ def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None):
     while a_voir and pages < max_pages:
         a_voir.sort(key=lambda x: -x[0])
         _, url, profondeur = a_voir.pop(0)
-        if url in vus:
+        if url in vus or url in tel.vus:
             continue
         vus.add(url)
+        tel.vus.add(url)
         try:
             contenu, type_contenu, finale = tel.get(url)
         except HTTPError as e:
@@ -759,6 +864,69 @@ def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None):
             s = score_lien(lien, texte)
             if s >= (1 if profondeur == 0 else 3):
                 a_voir.append((s, lien, profondeur + 1))
+    return pages
+
+
+# ---------------------------------------------------------------------------
+# Calendrier officiel FFC (discipline Gravel)
+# ---------------------------------------------------------------------------
+
+DEPARTEMENTS_ZONE = {
+    "Haute-Garonne": "31", "Gers": "32", "Ariège": "09", "Aude": "11", "Tarn-et-Garonne": "82",
+    "Tarn": "81", "Lot-et-Garonne": "47", "Lot": "46", "Hautes-Pyrénées": "65", "Aveyron": "12",
+    "Hérault": "34", "Pyrénées-Orientales": "66", "Pyrénées-Atlantiques": "64", "Landes": "40",
+    "Gironde": "33", "Dordogne": "24", "Corrèze": "19", "Cantal": "15", "Lozère": "48",
+}
+
+
+def source_ffc(collecte, tel, communes, mois=12):
+    """Parcourt le calendrier FFC par tranches de 14 jours (limite du site)."""
+    base = "https://competitions.ffc.fr/calendrier/"
+    vus = set()
+    noms = sorted(DEPARTEMENTS_ZONE, key=len, reverse=True)
+    motif = re.compile(r"(?:Le|Du)\s+(\d{2})/(\d{2})/(\d{4})(?:\s+au\s+(\d{2})/(\d{2})/(\d{4}))?\s+(.*)$")
+    jour = AUJOURDHUI
+    pages = 0
+    while jour <= AUJOURDHUI + timedelta(days=30 * mois):
+        url = base + "?" + urlencode({"discipline": 16, "nbjours": 14, "debut": jour.strftime("%d/%m/%Y")})
+        jour += timedelta(days=14)
+        try:
+            contenu, type_contenu, _ = tel.get(url)
+        except Exception as e:
+            journal(f"  FFC : {url} → {e}")
+            continue
+        pages += 1
+        html = decoder(contenu, type_contenu)
+        for lien, texte in extraire_liens(html, base):
+            if "/calendrier/competition/" not in lien or lien in vus:
+                continue
+            vus.add(lien)
+            if re.search(r"\bannul", normaliser(texte)):
+                continue
+            m = motif.search(texte)
+            if not m:
+                continue
+            reste = m.group(7)
+            dep_nom = next((n for n in noms if reste.startswith(n)), None)
+            if not dep_nom:
+                continue  # département hors zone
+            dep = DEPARTEMENTS_ZONE[dep_nom]
+            titre = reste[len(dep_nom):].strip()
+            debut = date(int(m.group(3)), int(m.group(2)), int(m.group(1)))
+            fin = date(int(m.group(6)), int(m.group(5)), int(m.group(4))) if m.group(4) else None
+            commune, etat = communes.trouver(f"{titre} ({dep})", souple=True)
+            if commune and commune["dep"] != dep:
+                commune, etat = None, None
+            if not commune:
+                for mot in re.split(r"\s+-\s+|\s*–\s*", titre):
+                    c = communes._par_suffixe(mot, dep)
+                    if c:
+                        commune, etat = c, "sur"
+                        break
+            collecte.ajouter(titre=titre.title() if titre.isupper() else titre, debut=debut, fin=fin,
+                             commune=commune, etat=etat, url=lien, source="FFC", trouve_par="ffc",
+                             extrait=f"{texte} — département {dep_nom}")
+    journal(f"FFC : {pages} pages de calendrier lues, {len(vus)} épreuves gravel examinées")
     return pages
 
 
@@ -880,13 +1048,17 @@ def main():
         avant = len(collecte.candidats) + len(collecte.a_examiner)
         try:
             pages = explorer(site["nom"], site["url"], collecte, tel, limites,
-                             suivre=site.get("suivre_liens", True))
+                             suivre=site.get("suivre_liens", True),
+                             max_pages=site.get("pages_max"))
         except Exception as e:
             journal(f"Erreur sur {site['nom']} : {e}")
             pages = 0
         trouves = len(collecte.candidats) + len(collecte.a_examiner) - avant
         stats["sites"][site["nom"]] = {"pages_lues": pages, "pistes": trouves}
         journal(f"{site['nom']} : {pages} pages lues, {trouves} pistes")
+
+    if config.get("ffc", True):
+        stats["ffc_pages"] = source_ffc(collecte, tel, communes)
 
     stats["recherche_web_pages"], stats["recherche_web_explorees"] = recherche_brave(config, collecte, tel, limites)
 
