@@ -217,6 +217,42 @@
       "nom": "Vetete",
       "url": "https://vetete.com/",
       "suivre_liens": true
+    },
+    {
+      "nom": "Vetete – mois +1",
+      "url": "https://vetete.com/?month_page=2",
+      "suivre_liens": true,
+      "pages_max": 25
+    },
+    {
+      "nom": "Vetete – mois +2",
+      "url": "https://vetete.com/?month_page=3",
+      "suivre_liens": true,
+      "pages_max": 25
+    },
+    {
+      "nom": "Vetete – mois +3",
+      "url": "https://vetete.com/?month_page=4",
+      "suivre_liens": true,
+      "pages_max": 25
+    },
+    {
+      "nom": "Vetete – mois +4",
+      "url": "https://vetete.com/?month_page=5",
+      "suivre_liens": true,
+      "pages_max": 25
+    },
+    {
+      "nom": "Vetete – mois +5",
+      "url": "https://vetete.com/?month_page=6",
+      "suivre_liens": true,
+      "pages_max": 25
+    },
+    {
+      "nom": "Vetete – mois +6",
+      "url": "https://vetete.com/?month_page=7",
+      "suivre_liens": true,
+      "pages_max": 25
     }
   ],
   "limites": {
