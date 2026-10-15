@@ -246,6 +246,17 @@
     },
     {
       "date": "2026-10-18",
+      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
+      "location": "mourens",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 175.6,
+      "statut": "refuse",
+      "date_decision": "2026-10-14"
+    },
+    {
+      "date": "2026-10-18",
       "title": "LA CASTRAISE",
       "location": "Castres (81)",
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
@@ -257,17 +268,6 @@
       "fiabilite_lieu": "certaine",
       "statut": "a_verifier",
       "date_detection": "2026-10-15"
-    },
-    {
-      "date": "2026-10-18",
-      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
-      "location": "mourens",
-      "details": "Parcours gravel à vérifier avant publication",
-      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 175.6,
-      "statut": "refuse",
-      "date_decision": "2026-10-14"
     },
     {
       "date": "2026-10-18",
@@ -312,6 +312,16 @@
       "fiabilite_lieu": "probable",
       "statut": "a_verifier",
       "date_detection": "2026-10-15"
+    },
+    {
+      "date": "2026-11-29",
+      "title": "L'Isloise",
+      "location": "L'Isle-Jourdain (32)",
+      "details": "Annoncée sur Facebook. Vérifier les informations auprès de l’organisateur.",
+      "source": "",
+      "validation_gravel": "utilisateur",
+      "statut": "valide",
+      "date_decision": "2026-10-15"
     },
     {
       "date": "2027-06-07",
