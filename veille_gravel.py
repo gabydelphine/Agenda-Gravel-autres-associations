@@ -1,1123 +1,922 @@
+#!/usr/bin/env python3
+"""Veille automatique des manifestations gravel autour de Toulouse.
+
+Principe (version 5) :
+  1. Les sites à surveiller sont décrits dans sources.json (aucun événement
+     n'est écrit dans ce programme).
+  2. Une recherche web quotidienne (Brave Search, clé BRAVE_API_KEY) découvre
+     les pages que personne n'a signalées.
+  3. Chaque page est lue : données structurées (schema.org Event, iCal) en
+     priorité, sinon lecture du texte ligne par ligne.
+  4. Le lieu est reconnu à partir de la base officielle des communes
+     (geo.api.gouv.fr), mise en cache dans cache/communes-zone.json.
+  5. Rien n'est publié : les nouveautés entrent dans inventaire-gravel.json
+     avec le statut « a_verifier » et partent dans l'e-mail du dimanche.
+     Les annonces gravel datées dont le lieu n'est pas reconnu restent dans
+     veille-resultats.json (rubrique « a_examiner ») au lieu d'être jetées.
+"""
 import json
 import math
+import os
 import re
+import sys
+import time
 import unicodedata
-from collections import deque
-from datetime import datetime, timezone, date, timedelta
+from datetime import date, datetime, timedelta, timezone
 from html import unescape
 from io import BytesIO
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urlsplit, urlunsplit, urldefrag, urlencode, unquote, quote
-from urllib.request import Request, urlopen
 from urllib.error import HTTPError
+from urllib.parse import (quote, unquote, urldefrag, urlencode, urljoin,
+                          urlparse, urlsplit, urlunsplit)
+from urllib.request import Request, urlopen
+from urllib.robotparser import RobotFileParser
 
-from pypdf import PdfReader
+CONFIG = Path("sources.json")
+INVENTAIRE = Path("inventaire-gravel.json")
+CALENDRIER = Path("events.json")
+RESULTATS = Path("veille-resultats.json")
+CACHE_COMMUNES = Path("cache/communes-zone.json")
 
-SOURCES = {
-    "FSGT 31": "https://cyclismefsgt31.fr/",
-    "FFVelo 31": "https://haute-garonne.ffvelo.fr/",
-    "Cyclotourisme 31": "https://www.cyclotourisme-31.com/",
-    "FFVelo 82": "https://cyclotourisme82-ffct.fr/",
-    "Velo Occitanie": "https://www.velo-occitanie.fr/",
-    "Saubens Cyclo": "https://saubenscyclo31.fr/",
-    "Vetete": "https://vetete.com/",
-    "Gravel Agenda": "https://gravelagenda.com/",
-    "Fontenilles VTT": "https://fontenilles-vtt.fr/",
-    "Cahors Cyclisme": "https://www.cahorscyclisme.com/",
-    "Gravel du Drac": "https://sport.ikinoa.com/fr/evt/graveldudrac2026",
-    "Miles Republic": "https://fr.milesrepublic.com/rando-gravel/occitanie",
-}
-
-# Pages événementielles ciblées (elles complètent les sites généraux).
-PAGES_CIBLEES = {
-    "VTT31 / Vélo Occitanie": [
-        "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026",
-        "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
-        "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
-    ],
-    "Fontenilles VTT": [
-        "https://fontenilles-vtt.fr/wp/?page_id=4553",
-    ],
-}
-# Facebook VTT31 : lien exact non encore confirmé. Ne pas simuler
-# un accès automatique à des publications Facebook non publiques.
-FACEBOOK_VTT31 = None
-
-PDF_CONNUS = {
-    "Circuit Gravel Saubens 2026": (
-        "https://www.cyclotourisme-31.com/"
-        "uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf"
-    ),
-}
-
-FICHIER = Path("veille-resultats.json")
-
-# Distance à vol d'oiseau, et non distance routière.
-RAYON_KM = 200
-TOULOUSE_LAT, TOULOUSE_LON = 43.6047, 1.4442
-_cache_communes = {}
-
-
-def distance_km(lat, lon):
-    """Distance à vol d'oiseau entre Toulouse et une commune."""
-    r = 6371.0088
-    p1, p2 = math.radians(TOULOUSE_LAT), math.radians(lat)
-    dp = p2 - p1
-    dl = math.radians(lon - TOULOUSE_LON)
-    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
-    return round(2 * r * math.asin(min(1, math.sqrt(a))), 1)
-
-
-def verifier_commune(lieu):
-    """Renvoie (distance, état). En cas de doute, ne rejette jamais l'annonce.
-
-    La base publique des communes est interrogée seulement pour les lieux explicites.
-    Un nom de commune ambigu n'est pas utilisé pour exclure un événement.
-    """
-    if not lieu:
-        return None, "lieu_a_verifier"
-    lieu = re.sub(r"\s+", " ", lieu).strip()
-    match_dept = re.search(r"\((\d{2,3}[AB]?)\)\s*$", lieu, re.I)
-    departement = match_dept.group(1).upper() if match_dept else None
-    nom = re.sub(r"\s*\(\d{2,3}[AB]?\)\s*$", "", lieu, flags=re.I).strip()
-    # Lever les ambiguïtés pour les communes déjà identifiées localement.
-    departements_connus = {"revel": "31", "saint lys": "31", "saubens": "31", "fontenilles": "31", "venerque": "31", "saint andre": "31", "st andre": "31"}
-    cle_locale = re.sub(r"[^a-z0-9]+", " ", normaliser(nom)).strip()
-    departement = departement or departements_connus.get(cle_locale)
-    if not nom or len(nom) > 65:
-        return None, "lieu_a_verifier"
-    def cle_nom(texte):
-        return re.sub(r"[^a-z0-9]+", " ", normaliser(texte)).strip()
-
-    # Développer les abréviations de communes présentes dans les calendriers.
-    if cle_nom(nom) == "st andre" and departement == "31":
-        nom = "Saint-André"
-    cle = (cle_nom(nom), departement)
-    if cle in _cache_communes:
-        return _cache_communes[cle]
-    try:
-        params = urlencode({"nom": nom, "fields": "nom,codeDepartement,centre", "format": "json", "geometry": "centre", "limit": 30})
-        contenu, _ = telecharger("https://geo.api.gouv.fr/communes?" + params, 250_000)
-        resultats = json.loads(contenu)
-        exacts = [c for c in resultats if cle_nom(c.get("nom")) == cle_nom(nom)
-                  and (not departement or c.get("codeDepartement") == departement)]
-        if len(exacts) != 1:
-            resultat = (None, "lieu_ambigu_ou_inconnu")
-        else:
-            coord = exacts[0].get("centre", {}).get("coordinates", [])
-            if len(coord) != 2:
-                resultat = (None, "coordonnees_indisponibles")
-            else:
-                distance = distance_km(coord[1], coord[0])
-                resultat = (distance, "dans_zone" if distance <= RAYON_KM else "hors_zone")
-    except Exception as erreur:
-        print(f"Vérification géographique impossible pour {lieu}: {erreur}")
-        resultat = (None, "geolocalisation_indisponible")
-    _cache_communes[cle] = resultat
-    return resultat
+AUJOURDHUI = date.today()
+UA = "Mozilla/5.0 (compatible; VeilleGravelToulouse/5.0; +https://github.com/gabydelphine/Agenda-Gravel-autres-associations)"
+MAX_OCTETS_PAGE = 3_000_000
+MAX_OCTETS_PDF = 10_000_000
 
 MOIS = {
-    "janvier": 1, "fevrier": 2, "mars": 3, "avril": 4,
-    "mai": 5, "juin": 6, "juillet": 7, "aout": 8,
-    "septembre": 9, "octobre": 10, "novembre": 11, "decembre": 12,
+    "janvier": 1, "janv": 1, "fevrier": 2, "fevr": 2, "fev": 2, "mars": 3,
+    "avril": 4, "avr": 4, "mai": 5, "juin": 6, "juillet": 7, "juil": 7,
+    "aout": 8, "septembre": 9, "sept": 9, "octobre": 10, "oct": 10,
+    "novembre": 11, "nov": 11, "decembre": 12, "dec": 12,
+}
+NOMS_MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
+             "août", "septembre", "octobre", "novembre", "décembre"]
+
+# Mots qui sont aussi des noms de communes mais ne désignent presque jamais
+# un lieu dans une annonce : on ne les accepte qu'avec un code postal ou (dd).
+MOTS_AMBIGUS = {
+    "gravel", "vtt", "route", "marche", "club", "velo", "rando", "sport",
+    "depart", "salle", "lac", "foret", "bois", "ville", "centre", "eglise",
+    "stade", "mairie", "prix", "place", "mur", "mas", "bas", "port", "mont",
+    "pont", "pin", "sol", "fa", "ger", "lys", "bon", "beaucoup", "vers",
+    "orange", "plan", "sorties", "fontaine", "moulin", "castel", "auch",
+    "la salle", "les cabanes", "le pin", "le vernet", "la croix",
 }
 
-MAX_PDF = 10_000_000
-MAX_PDF_PAR_SITE = 8
-MAX_PAGES_PAR_SITE = 40
-MAX_PROFONDEUR = 3
-MAX_OCTETS_PAGE = 2_000_000
+MOTIF_GRAVEL = re.compile(r"\bgravels?\b|\bgravier\b")
 
-MOTS_PAGES_PRIORITAIRES = (
-    "agenda", "calendrier", "evenement", "manifestation", "randonnee",
-    "gravel", "gravier", "circuit", "sortie", "interclubs", "cyclotourisme",
-    "2026", "2027", "rando", "raid", "epreuve", "parcours",
-)
 
-MOTS_DOCUMENTS_A_EXCLURE = (
-    "assemblee generale", "rapport d activite", "rapport d'activité",
-    "participations aux", "tableau des medailles", "tableau des médailles",
-    "reglement", "règlement", "challenge", "saison 2023", "saison 2024",
-    "saison 2025", "bilan", "historique de mes inscriptions",
-    "informations historiques", "statistiques",
-)
-
+# ---------------------------------------------------------------------------
+# Outils généraux
+# ---------------------------------------------------------------------------
 
 def normaliser(texte):
-    texte = unicodedata.normalize("NFKD", texte or "")
+    texte = unicodedata.normalize("NFKD", str(texte or ""))
     texte = "".join(c for c in texte if not unicodedata.combining(c))
     return re.sub(r"\s+", " ", texte).strip().casefold()
 
 
-def url_http_valide(url):
-    """Encode les accents et espaces dans les URL sans toucher aux paramètres existants."""
-    morceaux = urlsplit(url)
-    if morceaux.scheme not in ("http", "https"):
-        raise ValueError("URL non HTTP(S)")
-    return urlunsplit((morceaux.scheme, morceaux.netloc,
-                       quote(morceaux.path, safe="/%:@!$&'()*+,;=-._~"),
-                       quote(morceaux.query, safe="=&%:@!$'()*+,;/?-._~"), ""))
+def cle_nom(texte):
+    """Clé de comparaison des communes : « St-Lys » et « Saint Lys » → « saint lys »."""
+    t = re.sub(r"[^a-z0-9]+", " ", normaliser(texte)).strip()
+    t = re.sub(r"\bste\b", "sainte", t)
+    t = re.sub(r"\bst\b", "saint", t)
+    return t
 
 
-def pdf_utile(url):
-    """Ne télécharge que les calendriers récents et les documents gravel pertinents."""
-    chemin = normaliser(unquote(urlparse(url).path))
-    if re.search(r"/(?:resultats?|classements?|podiums?|assemblee_generale|commission|archives?|challenges?|suivie_categorie|cyclocross|circuits_route)/", chemin):
-        return False
-    if re.search(r"(?:classement|podium|reglement|challenge|montees|descentes|fiche.circuit.route)", chemin):
-        return False
-    annees = [int(x) for x in re.findall(r"(?<!\d)20(?:1\d|2\d|3\d)(?!\d)", chemin)]
-    if annees and max(annees) < date.today().year:
-        return False
-    return bool(re.search(r"gravel|calendrier|randonnee|randonn|evenement|programme|saubens", chemin))
+def cle_titre(texte):
+    t = cle_nom(texte)
+    t = re.sub(r"\b(?:\d+(?:e|eme|er|ere)?|edition|la|le|les|de|du|des|d|l|a|en|et|randonnee|rando|gravel|vtt|20\d\d)\b", " ", t)
+    return re.sub(r"\s+", "", t)
 
 
-def telecharger(url, limite=MAX_PDF + 1):
-    requete = Request(
-        url_http_valide(url),
-        headers={"User-Agent": "Mozilla/5.0 (compatible; GravelAgenda/1.0)"},
-    )
-    with urlopen(requete, timeout=25) as reponse:
-        contenu = reponse.read(limite)
-        type_contenu = reponse.headers.get("Content-Type", "").lower()
-    return contenu, type_contenu
+def charger_json(chemin, defaut):
+    if not chemin.exists():
+        return defaut
+    return json.loads(chemin.read_text(encoding="utf-8"))
 
 
-def nettoyer_html(contenu):
-    html = contenu.decode("utf-8", errors="replace")
-    html = re.sub(
-        r"(?is)<(script|style|nav|footer|header)\b[^>]*>.*?</\1>",
-        " ", html,
-    )
-    html = re.sub(
-        r"(?i)</(?:div|article|li|p|h[1-6]|tr|section)>", "\n", html
-    )
-    html = re.sub(r"<[^>]+>", " ", html)
-    return unescape(html)
+def ecrire_json(chemin, donnees):
+    chemin.parent.mkdir(parents=True, exist_ok=True)
+    chemin.write_text(json.dumps(donnees, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def extraire_liens(contenu, base):
-    html = contenu.decode("utf-8", errors="replace")
-    liens = re.findall(r"""(?is)\bhref\s*=\s*["']([^"']+)["']""", html)
-    resultats = set()
-    for lien in liens:
-        lien = unescape(lien.strip())
-        if not lien or lien.startswith(("mailto:", "tel:", "javascript:", "#")):
+def distance_km(lat1, lon1, lat2, lon2):
+    r = 6371.0088
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    a = (math.sin((p2 - p1) / 2) ** 2
+         + math.cos(p1) * math.cos(p2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2)
+    return round(2 * r * math.asin(min(1, math.sqrt(a))), 1)
+
+
+def journal(message):
+    print(message, flush=True)
+
+
+# ---------------------------------------------------------------------------
+# Téléchargement poli (un délai par site, compteur global)
+# ---------------------------------------------------------------------------
+
+class Telechargeur:
+    def __init__(self, delai, maximum):
+        self.delai = delai
+        self.maximum = maximum
+        self.dernier = {}
+        self.nombre = 0
+        self.erreurs = 0
+        self.robots = {}
+
+    def autorise(self, url):
+        """Respecte le fichier robots.txt de chaque site."""
+        p = urlparse(url)
+        racine = f"{p.scheme}://{p.netloc}"
+        if racine not in self.robots:
+            rp = RobotFileParser()
+            try:
+                contenu, _, _ = self.get(racine + "/robots.txt", 500_000, compter=False, verifier=False)
+                rp.parse(decoder(contenu).splitlines())
+            except Exception:
+                rp = None  # pas de robots.txt lisible : accès autorisé
+            self.robots[racine] = rp
+        rp = self.robots[racine]
+        return rp is None or rp.can_fetch("VeilleGravelToulouse", url)
+
+    @staticmethod
+    def url_valide(url):
+        m = urlsplit(url)
+        if m.scheme not in ("http", "https"):
+            raise ValueError("URL non HTTP(S)")
+        return urlunsplit((m.scheme, m.netloc,
+                           quote(m.path, safe="/%:@!$&'()*+,;=-._~"),
+                           quote(m.query, safe="=&%:@!$'()*+,;/?-._~"), ""))
+
+    def get(self, url, limite=MAX_OCTETS_PAGE, entetes=None, compter=True, verifier=True):
+        if compter and self.nombre >= self.maximum:
+            raise RuntimeError("limite globale de pages atteinte")
+        if verifier and compter and not self.autorise(url):
+            raise PermissionError("refusé par robots.txt")
+        hote = urlparse(url).netloc.lower()
+        attente = self.delai - (time.time() - self.dernier.get(hote, 0))
+        if attente > 0:
+            time.sleep(attente)
+        h = {"User-Agent": UA, "Accept-Language": "fr-FR,fr;q=0.9"}
+        h.update(entetes or {})
+        try:
+            with urlopen(Request(self.url_valide(url), headers=h), timeout=25) as rep:
+                contenu = rep.read(limite)
+                type_contenu = rep.headers.get("Content-Type", "").lower()
+                finale = rep.geturl()
+        finally:
+            self.dernier[hote] = time.time()
+            if compter:
+                self.nombre += 1
+        return contenu, type_contenu, finale
+
+
+def decoder(contenu, type_contenu=""):
+    m = re.search(r"charset=([\w-]+)", type_contenu or "")
+    if not m:
+        m = re.search(rb"<meta[^>]+charset=[\"']?([\w-]+)", contenu[:3000], re.I)
+        enc = m.group(1).decode("ascii", "ignore") if m else "utf-8"
+    else:
+        enc = m.group(1)
+    try:
+        return contenu.decode(enc, errors="replace")
+    except LookupError:
+        return contenu.decode("utf-8", errors="replace")
+
+
+# ---------------------------------------------------------------------------
+# Lecture du HTML
+# ---------------------------------------------------------------------------
+
+def html_vers_texte(html):
+    html = re.sub(r"(?is)<(script|style|noscript|svg|nav|footer|header|form|aside)\b[^>]*>.*?</\1>", " ", html)
+    html = re.sub(r"(?is)<!--.*?-->", " ", html)
+    html = re.sub(r"(?i)<br\s*/?>", "\n", html)
+    html = re.sub(r"(?i)</(?:div|article|li|p|h[1-6]|tr|td|th|section|dd|dt|a)>", "\n", html)
+    texte = unescape(re.sub(r"<[^>]+>", " ", html))
+    lignes = [re.sub(r"[ \t ]+", " ", l).strip() for l in texte.splitlines()]
+    return "\n".join(l for l in lignes if l)
+
+
+def contenu_principal(html):
+    for balise in ("main", "article"):
+        m = re.search(rf"(?is)<{balise}\b[^>]*>(.*)</{balise}>", html)
+        if m and len(m.group(1)) > 500:
+            return m.group(1)
+    m = re.search(r"(?is)<body\b[^>]*>(.*)</body>", html)
+    return m.group(1) if m else html
+
+
+def titre_page(html):
+    for motif in (r"(?is)<meta[^>]+property=[\"']og:title[\"'][^>]+content=([\"'])(.*?)\1",
+                  r"(?is)<h1\b[^>]*()>(.*?)</h1>",
+                  r"(?is)<title\b[^>]*()>(.*?)</title>"):
+        m = re.search(motif, html)
+        if m:
+            t = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
+            t = re.sub(r"\s*[|\-–—]\s*(?:vetete\.com|miles republic|helloasso|klikego|njuko|gravel passion).*$", "", t, flags=re.I)
+            if 4 <= len(t) <= 200:
+                return t
+    return ""
+
+
+def extraire_liens(html, base):
+    liens = []
+    for m in re.finditer(r"""(?is)<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>(.*?)</a>""", html):
+        href = unescape(m.group(1).strip())
+        if not href or href.startswith(("mailto:", "tel:", "javascript:", "#")):
             continue
-        absolu = urldefrag(urljoin(base, lien))[0]
+        absolu = urldefrag(urljoin(base, href))[0]
         if urlparse(absolu).scheme in ("http", "https"):
-            resultats.add(absolu)
+            texte = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
+            liens.append((absolu, texte[:200]))
+    return liens
+
+
+def objets_jsonld(html):
+    """Renvoie les objets schema.org de type Event trouvés dans la page."""
+    resultats = []
+
+    def parcourir(obj):
+        if isinstance(obj, list):
+            for o in obj:
+                parcourir(o)
+        elif isinstance(obj, dict):
+            types = obj.get("@type", "")
+            types = types if isinstance(types, list) else [types]
+            if any(isinstance(t, str) and t.endswith("Event") for t in types):
+                resultats.append(obj)
+            for cle in ("@graph", "itemListElement", "item", "subEvent", "event", "events"):
+                if cle in obj:
+                    parcourir(obj[cle])
+
+    for m in re.finditer(r"(?is)<script[^>]+application/ld\+json[^>]*>(.*?)</script>", html):
+        try:
+            parcourir(json.loads(m.group(1).strip()))
+        except (ValueError, RecursionError):
+            continue
     return resultats
 
 
-def est_pdf(url):
-    chemin = urlparse(url).path.casefold()
-    return chemin.endswith(".pdf") or ".pdf/" in chemin
+# ---------------------------------------------------------------------------
+# Communes de la zone
+# ---------------------------------------------------------------------------
 
+class Communes:
+    def __init__(self, liste):
+        self.liste = liste
+        self.par_nom = {}
+        self.par_cp = {}
+        for c in liste:
+            self.par_nom.setdefault(cle_nom(c["nom"]), []).append(c)
+            for cp in c.get("cp", []):
+                self.par_cp.setdefault(cp, []).append(c)
+        self.longueur_max = max((len(k.split()) for k in self.par_nom), default=1)
 
-def lire_pdf(contenu):
-    lecteur = PdfReader(BytesIO(contenu))
-    return "\n".join(page.extract_text() or "" for page in lecteur.pages[:15])
+    @classmethod
+    def charger(cls, config, telechargeur):
+        cache = charger_json(CACHE_COMMUNES, None)
+        frais = (cache and cache.get("rayon_km") == config["rayon_km"]
+                 and cache.get("date", "") >= (AUJOURDHUI - timedelta(days=120)).isoformat())
+        if frais:
+            return cls(cache["communes"])
+        centre = config["centre"]
+        communes = []
+        try:
+            for dep in config["departements_communes"]:
+                url = ("https://geo.api.gouv.fr/departements/" + dep + "/communes?"
+                       + urlencode({"fields": "nom,codesPostaux,centre,codeDepartement",
+                                    "format": "json", "geometry": "centre"}))
+                contenu, _, _ = telechargeur.get(url, 20_000_000, compter=False)
+                for c in json.loads(contenu):
+                    coord = (c.get("centre") or {}).get("coordinates") or []
+                    if len(coord) != 2:
+                        continue
+                    d = distance_km(centre["lat"], centre["lon"], coord[1], coord[0])
+                    if d <= config["rayon_km"]:
+                        communes.append({"nom": c["nom"], "dep": c["codeDepartement"],
+                                         "cp": c.get("codesPostaux", []),
+                                         "lat": coord[1], "lon": coord[0], "km": d})
+        except Exception as erreur:
+            if cache:
+                journal(f"Base des communes non actualisée ({erreur}) : ancienne version utilisée")
+                return cls(cache["communes"])
+            raise SystemExit(f"Impossible de charger la base des communes : {erreur}")
+        ecrire_json(CACHE_COMMUNES, {"date": AUJOURDHUI.isoformat(), "rayon_km": config["rayon_km"],
+                                     "communes": communes})
+        journal(f"Base des communes : {len(communes)} communes à moins de {config['rayon_km']} km")
+        return cls(communes)
 
+    # -- recherche dans un texte ------------------------------------------
 
-def trouver_date(texte):
-    texte_n = normaliser(texte)
-    motif = r"\b(\d{1,2})\s+(" + "|".join(MOIS) + r")\s+(20\d{2})\b"
-    match = re.search(motif, texte_n)
-    if not match:
-        numerique = re.search(r"\b(\d{1,2})[/.\-](\d{1,2})[/.\-](20\d{2})\b", texte_n)
-        if numerique:
-            try:
-                return date(int(numerique.group(3)), int(numerique.group(2)), int(numerique.group(1))).isoformat()
-            except ValueError:
-                return None
-        iso = re.search(r"\b(20\d{2})-(\d{2})-(\d{2})\b", texte_n)
-        if iso:
-            try:
-                return date.fromisoformat(iso.group()).isoformat()
-            except ValueError:
-                return None
+    def _par_suffixe(self, phrase, dep=None):
+        """« Rando de Saint-Lys » → Saint-Lys (essaie les 1 à 6 derniers mots)."""
+        mots = cle_nom(phrase).split()
+        for n in range(min(6, len(mots)), 0, -1):
+            k = " ".join(mots[-n:])
+            trouves = [c for c in self.par_nom.get(k, []) if not dep or c["dep"] == dep]
+            if len(trouves) == 1:
+                return trouves[0]
         return None
-    jour, mois, annee = match.groups()
+
+    def trouver(self, texte, souple=False):
+        """Renvoie (commune, etat). etat : 'sur', 'ambigu' ou None.
+
+        sur : code postal ou (département) explicite, ou nom précédé d'un
+        indice de lieu (« à », « départ de », « salle des fêtes de »…).
+        souple : accepte aussi un nom seul, s'il est unique dans la zone.
+        """
+        if not texte:
+            return None, None
+        # 1. « 31470 Saint-Lys »
+        for m in re.finditer(r"\b(\d{5})\b[\s,]*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\- ]{1,60})", texte):
+            suite = cle_nom(m.group(2))
+            for c in self.par_cp.get(m.group(1), []):
+                if (suite + " ").startswith(cle_nom(c["nom"]) + " "):
+                    return c, "sur"
+        # 2. « Saint-Lys (31) », « Saint-Lys, 31 », « Saint-Lys - Haute-Garonne (31) »
+        for m in re.finditer(r"([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ'’\- ]{1,60}?)\s*(?:\(|,|–|-)\s*(?:[A-Za-zÀ-ÿ\- ]{3,25}\s*\()?(\d{2}|2[ABab])\s*\)?(?!\d)", texte):
+            c = self._par_suffixe(m.group(1), m.group(2).upper())
+            if c:
+                return c, "sur"
+        # 3. Nom précédé d'un indice de lieu, ou nom seul (mode souple)
+        mots_originaux = re.findall(r"[A-Za-zÀ-ÿ0-9]+", texte)
+        mots = [cle_nom(w) for w in mots_originaux]
+        indices = {"a", "au", "depart", "lieu", "commune", "fetes", "stade", "village",
+                   "rdv", "rendez", "vous", "organise", "deroulera", "de", "du", "d"}
+        ambigu = None
+        i = 0
+        while i < len(mots):
+            trouve = False
+            for n in range(min(self.longueur_max, len(mots) - i), 0, -1):
+                k = " ".join(mots[i:i + n])
+                if k not in self.par_nom:
+                    continue
+                if len(k) < 4 or k in MOTS_AMBIGUS:
+                    break
+                # Un nom propre commence par une majuscule dans le texte d'origine.
+                if not mots_originaux[i][:1].isupper():
+                    break
+                precede = i > 0 and mots[i - 1] in indices
+                if not (precede or souple):
+                    break
+                candidats = self.par_nom[k]
+                if len(candidats) == 1:
+                    return candidats[0], "sur" if precede else "souple"
+                ambigu = ambigu or candidats[0]
+                i += n
+                trouve = True
+                break
+            if not trouve:
+                i += 1
+        if ambigu:
+            return ambigu, "ambigu"
+        return None, None
+
+
+def libelle_lieu(c):
+    return f"{c['nom']} ({c['dep']})"
+
+
+# ---------------------------------------------------------------------------
+# Dates
+# ---------------------------------------------------------------------------
+
+_MOIS_RE = "|".join(sorted(MOIS, key=len, reverse=True))
+_JOURS = r"(?:lun(?:di)?|mar(?:di)?|mer(?:credi)?|jeu(?:di)?|ven(?:dredi)?|sam(?:edi)?|dim(?:anche)?)\.?\s+"
+RE_DATE_TEXTE = re.compile(
+    r"\b(?:" + _JOURS + r")?(\d{1,2})(?:er|e)?"
+    r"(?:\s*(?:et|au|-|–|/|&)\s*(?:" + _JOURS + r")?(\d{1,2})(?:er|e)?)?"
+    r"\s+(" + _MOIS_RE + r")\.?(?:\s+(20\d{2}))?\b")
+RE_DATE_NUM = re.compile(r"(?<![\d/.])(\d{1,2})[/.](\d{1,2})[/.](20\d{2}|\d{2})(?![\d/.])")
+RE_DATE_ISO = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})")
+RE_CONTEXTE_FAUX = re.compile(
+    r"(?:publi|mis a jour|mise a jour|modifi|cree le|poste|ecrit le|actualis|"
+    r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$")
+
+
+def date_plausible(d):
+    return AUJOURDHUI - timedelta(days=30) <= d <= AUJOURDHUI + timedelta(days=600)
+
+
+def _annee_probable(mois, jour):
+    for annee in (AUJOURDHUI.year, AUJOURDHUI.year + 1):
+        try:
+            d = date(annee, mois, jour)
+        except ValueError:
+            return None
+        if d >= AUJOURDHUI - timedelta(days=30):
+            return d
+    return None
+
+
+def trouver_dates(texte, annee_implicite=True):
+    """Liste de (position, debut, fin) des dates plausibles, dans l'ordre du texte."""
+    t = normaliser(texte)
+    trouvees = []
+    for m in RE_DATE_TEXTE.finditer(t):
+        if RE_CONTEXTE_FAUX.search(t[max(0, m.start() - 45):m.start()]):
+            continue
+        j1, j2, mois, annee = m.groups()
+        try:
+            if annee:
+                debut = date(int(annee), MOIS[mois], int(j1))
+            elif annee_implicite:
+                debut = _annee_probable(MOIS[mois], int(j1))
+                if not debut:
+                    continue
+            else:
+                continue
+            fin = None
+            if j2 and int(j2) > int(j1):
+                fin = date(debut.year, debut.month, int(j2))
+        except ValueError:
+            continue
+        trouvees.append((m.start(), debut, fin))
+    for m in RE_DATE_NUM.finditer(t):
+        if RE_CONTEXTE_FAUX.search(t[max(0, m.start() - 45):m.start()]):
+            continue
+        j, mo, a = (int(x) for x in m.groups())
+        a = a + 2000 if a < 100 else a
+        try:
+            trouvees.append((m.start(), date(a, mo, j), None))
+        except ValueError:
+            continue
+    for m in RE_DATE_ISO.finditer(t):
+        try:
+            trouvees.append((m.start(), date(*(int(x) for x in m.groups())), None))
+        except ValueError:
+            continue
+    return sorted((p, d, f) for p, d, f in trouvees if date_plausible(d))
+
+
+def date_iso(valeur):
+    m = RE_DATE_ISO.search(str(valeur or ""))
+    if not m:
+        return None
     try:
-        return date(int(annee), MOIS[mois], int(jour)).isoformat()
+        return date(*(int(x) for x in m.groups()))
     except ValueError:
         return None
 
 
-def extraire_lieu(bloc):
-    match = re.search(
-        r"(?:\d{1,2}:\d{2}\s*(?:am|pm)\s*){2}(.+?)\s+(?:VTT|Gravel|Gravier|Route|Marche)\b",
-        bloc, re.I,
-    )
-    if not match:
-        return None
-    lieu = re.sub(r"\s+", " ", match.group(1)).strip()
-    if not 2 <= len(lieu) <= 60:
-        return None
-    if re.search(r"\b(?:parcours|details|connexion|inscription)\b", normaliser(lieu)):
-        return None
-    return lieu
+# ---------------------------------------------------------------------------
+# Détection des manifestations
+# ---------------------------------------------------------------------------
 
+class Collecte:
+    def __init__(self, config, communes):
+        self.config = config
+        self.communes = communes
+        self.exclure = [re.compile(r"\b" + re.escape(normaliser(x)) + r"\b")
+                        for x in config.get("exclure", [])]
+        self.candidats = {}      # (date, commune) -> fiche
+        self.a_examiner = {}     # (date, url) -> piste
+        self.hors_zone = 0
 
-def extrait_a_exclure(extrait):
-    texte = normaliser(extrait)
-    return any(normaliser(mot) in texte for mot in MOTS_DOCUMENTS_A_EXCLURE)
+    def exclu(self, texte):
+        t = normaliser(texte)
+        return any(x.search(t) for x in self.exclure)
 
-
-def est_candidat_evenement(extrait, date_evenement=None, pdf_connu=False):
-    texte = normaliser(extrait)
-    if not re.search(r"\b(?:gravel|gravier)\b", texte):
-        return False
-    if extrait_a_exclure(extrait):
-        return False
-    if pdf_connu and "saubenoise" in texte:
-        return True
-    if not date_evenement:
-        return False
-    try:
-        jour = date.fromisoformat(date_evenement)
-    except (TypeError, ValueError):
-        return False
-    if jour < date.today() - timedelta(days=365):
-        return False
-    return True
-
-
-def cle_observation(url, extrait):
-    return url + "|" + normaliser(extrait)
-
-
-def cle_evenement_approximative(url, extrait):
-    texte = normaliser(extrait)
-    titre_match = re.search(
-        r"(?:details\s+)?(.{3,90}?)\s+"
-        r"(?:dim|lun|mar|mer|jeu|ven|sam)\.?\s+\d{1,2}\s+"
-        r"[a-z]+\s+20\d{2}",
-        texte,
-    )
-    date_evenement = trouver_date(extrait)
-    if titre_match and date_evenement:
-        titre = titre_match.group(1).strip(" -:")
-        lieu_match = re.search(
-            r"\b([a-z][a-z '\-]{2,45})\s+(?:vtt|gravel|gravier|route|marche)\b",
-            texte,
-        )
-        lieu = lieu_match.group(1).strip() if lieu_match else ""
-        return f"event|{date_evenement}|{titre}|{lieu}"
-    return cle_observation(url, extrait)
-
-
-# Regroupement des annonces d'un même événement provenant de plusieurs sources.
-# Les trois manifestations confirmées (Venerque, Nocturne du Lys,
-# Côtes Gasconnes) restent conservées.
-def identite_manifestation(item):
-    texte = normaliser(item.get("extrait", ""))
-    url = normaliser(item.get("url", ""))
-    if "raid du lys" in texte:
-        nom = "raid-du-lys"
-    elif "saubenoise" in texte or "saubensgravel2026.pdf" in url:
-        nom = "ronde-saubenoise"
-    elif "occitanie 600" in texte:
-        nom = "occitanie-600"
-    elif "venerque" in texte and "randonnee" in texte:
-        nom = "randonnee-venerque"
-    elif "nocturne du lys" in texte:
-        nom = "nocturne-du-lys"
-    elif "cotes gasconnes" in texte:
-        nom = "cotes-gasconnes"
-    elif ("gravel st andre" in texte or "gravel saint andre" in texte):
-        nom = "gravel-saint-andre"
-    else:
-        return None
-    # Une date absente ne doit pas créer un second événement.
-    return nom
-
-
-def regrouper_observations(items):
-    resultat = []
-    indices = {}
-    for item in items:
-        identite = identite_manifestation(item)
-        if not identite:
-            resultat.append(item)
-            continue
-        date_item = item.get("date_evenement")
-        # Ne pas fusionner deux éditions d'années différentes.
-        annee = (date_item or "")[:4] or "inconnue"
-        if annee == "inconnue":
-            for (nom, an), idx in indices.items():
-                if nom == identite:
-                    annee = an
-                    break
-        cle = (identite, annee)
-        if cle not in indices:
-            indices[cle] = len(resultat)
-            resultat.append(item)
-            continue
-        precedent = resultat[indices[cle]]
-        # Conserver la fiche la plus complète et les données déjà vérifiées.
-        if not precedent.get("date_evenement") and date_item:
-            precedent["date_evenement"] = date_item
-        if not precedent.get("titre") and item.get("titre"):
-            precedent["titre"] = item["titre"]
-        if not precedent.get("lieu") and item.get("lieu"):
-            precedent["lieu"] = item["lieu"]
-        if precedent.get("distance_toulouse_km") is None and item.get("distance_toulouse_km") is not None:
-            precedent["distance_toulouse_km"] = item["distance_toulouse_km"]
-            precedent["controle_zone"] = item.get("controle_zone", "lieu_a_verifier")
-        if not precedent.get("rayon_recherche_km"):
-            precedent["rayon_recherche_km"] = RAYON_KM
-    return resultat
-
-
-def lieu_depuis_vetete(url):
-    """Lit la commune dans l'adresse des fiches Vetete (…-a-revel-le-…)."""
-    chemin = unquote(urlparse(url).path).strip("/")
-    match = re.search(r"-a-(.+?)-le-(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)-", chemin, re.I)
-    if not match:
-        return None
-    return match.group(1).replace("-", " ").strip()
-
-
-def lieu_depuis_fiche(titre, texte):
-    """Repère uniquement des communes explicites, jamais une région déduite."""
-    motifs = (
-        r"\b(?:a|à)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,3})\s+(?:le|les)\s+(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche)",
-        r"\b(?:depart|départ|au départ|rendez[- ]vous)\s+(?:de|du|à|a)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})\b",
-        r"\b(?:à|a)\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})\s*\((\d{2,3}[AB]?)\)",
-    )
-    for fragment in (titre, texte[:1000]):
-        for motif in motifs:
-            m = re.search(motif, fragment, re.I)
-            if m:
-                lieu = m.group(1).strip(' -,.')
-                if len(m.groups()) > 1 and m.group(2):
-                    lieu += ' (' + m.group(2) + ')'
-                if 3 <= len(lieu) <= 60:
-                    distance, etat = verifier_commune(lieu)
-                    if etat in ('dans_zone', 'hors_zone'):
-                        return lieu
-    # Les fiches d'inscription indiquent souvent « 46340 Salviac ».
-    for m in re.finditer(r"\b(?:0[1-9]|[1-8]\d|9[0-5])\d{3}\s+([A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+(?:[ -][A-ZÀ-Ÿ][A-Za-zÀ-ÿ'’-]+){0,2})", texte[:1400]):
-        lieu = m.group(1).strip(' -,.')
-        distance, etat = verifier_commune(lieu)
-        if etat in ('dans_zone', 'hors_zone'):
-            return lieu
-    return None
-
-
-def est_page_generique(item):
-    """Écarte les rubriques et pages d'index, sans toucher à l'inventaire validé."""
-    titre = normaliser(item.get("titre", "")).strip()
-    generiques = (
-        "au vert le dimanche", "page title theme 600", "toutes les actus velo",
-        "conseils preparation et culture gravel", "calendrier gravel france",
-    )
-    titre_cle = re.sub(r"[^a-z0-9]+", " ", titre).strip()
-    # Pages de rubriques, auteurs, pays et régions ne sont pas des événements.
-    chemin = urlparse(item.get("url", "")).path.lower()
-    if re.search(r"/(?:regions|pays|lieu|author|tests-gravel|agenda|calendrier)(?:/|$)", chemin):
-        return True
-    if re.search(r"^(?:calendrier|agenda|tous nos articles|tous les articles|pays|lieu)\b", titre_cle):
-        return True
-    if any(titre_cle.startswith(g) for g in generiques):
-        return True
-    url = urlparse(item.get("url", ""))
-    if url.netloc in ("vetete.com", "www.vetete.com") and not url.path.strip("/"):
-        return True
-    return False
-
-
-def nettoyer_observations(items):
-    """Conserve 365 jours glissants d’historique et toutes les dates futures dans la zone."""
-    resultat = []
-    deja_titres = set()
-    for item in regrouper_observations(items):
-        # Supprimer l'ancienne fausse observation issue de la date de mise à jour
-        # du calendrier FSGT, sans supprimer les vrais événements du PDF.
-        if ("Calendrier_route_FSGT2026_110626.pdf" in item.get("url", "")
-                and item.get("date_evenement") == "2026-06-11"
-                and "gravel st andre" in normaliser(item.get("extrait", ""))):
-            continue
-        # Compléter uniquement les manifestations dont le lieu est confirmé
-        # dans le recensement validé par l'utilisateur.
-        identite = identite_manifestation(item)
-        lieux_confirmes = {
-            "randonnee-venerque": ("Venerque (31)", "39ème Randonnée de Venerque"),
-            "nocturne-du-lys": ("Saint-Lys (31)", "5ème Nocturne du Lys"),
-            "cotes-gasconnes": ("Fontenilles (31)", "Côtes Gasconnes 2026"),
-            "ronde-saubenoise": ("Saubens (31)", "La Ronde Saubenoise"),
-            "gravel-saint-andre": ("Saint-André (31)", "Gravel Saint-André"),
-        }
-        if identite in lieux_confirmes:
-            lieu_confirme, titre_confirme = lieux_confirmes[identite]
-            item["lieu"] = lieu_confirme
-            item["titre"] = titre_confirme
-        if est_page_generique(item):
-            continue
-        nom = identite_manifestation(item)
-        if nom == "occitanie-600":
-            continue  # Sortie officielle ÔGravel, hors calendrier des autres associations.
-        jour = item.get("date_evenement")
-        if not jour:
-            continue
-        try:
-            if date.fromisoformat(jour) < date.today() - timedelta(days=365):
-                continue
-        except ValueError:
-            continue
-        lieu = item.get("lieu") or (lieu_depuis_vetete(item.get("url", "")) if item.get("source") == "Vetete" else None)
-        if lieu and not item.get("lieu"):
-            item["lieu"] = lieu
-        distance, etat = verifier_commune(lieu)
-        if etat == "hors_zone":
-            print(f"Hors rayon de {RAYON_KM} km : {lieu} ({distance} km)")
-            continue
-        # Les découvertes de la V4 sans commune vérifiée sont du bruit :
-        # préserver cependant les observations V3, y compris celles à examiner.
-        if (etat != "dans_zone" and item.get("date_detection", "") >= "2026-10-14"
-                and item.get("source") in ("Gravel Agenda", "Gravel du Drac", "Velo Occitanie")
-                and not identite):
-            continue
-        # Une fiche peut être citée par plusieurs sites : une seule observation.
-        titre_cle = re.sub(r"[^a-z0-9]+", "", normaliser(item.get("titre", "")))
-        if titre_cle and len(titre_cle) >= 8:
-            cle_doublon = (jour, titre_cle)
-            if cle_doublon in deja_titres:
-                continue
-            deja_titres.add(cle_doublon)
-        item["rayon_recherche_km"] = RAYON_KM
-        item["controle_zone"] = etat
-        if distance is not None:
-            item["distance_toulouse_km"] = distance
-        resultat.append(item)
-    # Les lieux inconnus restent visibles pour examen humain, jamais publiés.
-    comptes = {}
-    for item in resultat:
-        etat = item.get("controle_zone", "indetermine")
-        comptes[etat] = comptes.get(etat, 0) + 1
-    print("Contrôle géographique : " + ", ".join(
-        f"{etat}={nombre}" for etat, nombre in sorted(comptes.items())))
-    return resultat
-
-
-def analyser_pdf_calendrier(nom, url, lignes, observations, connus, lieux_connus):
-    """Repère des lignes d'événements, sans prendre la date de mise à jour du PDF.
-
-    Ne déduit l'année du nom de fichier que si elle est unique et explicite.
-    Une date et un lieu doivent appartenir à la même entrée de calendrier.
-    """
-    nom_fichier = unquote(urlparse(url).path.rsplit("/", 1)[-1])
-    annees = set(re.findall(r"(?<!\d)20(?:2[5-9]|3\d)(?!\d)", nom_fichier))
-    annee_fichier = int(next(iter(annees))) if len(annees) == 1 else None
-    mois_pattern = "|".join(MOIS)
-    date_ligne = re.compile(
-        r"\b(?:lun(?:di)?|mar(?:di)?|mer(?:credi)?|jeu(?:di)?|ven(?:dredi)?|"
-        r"sam(?:edi)?|dim(?:anche)?)?\s*(\d{1,2})\s+(" + mois_pattern +
-        r")(?:\s+(20\d{2}))?\b", re.I)
-    nombre = 0
-    for ligne in lignes:
-        if not re.search(r"\b(?:gravel|gravier)\b", normaliser(ligne)):
-            continue
-        m = date_ligne.search(normaliser(ligne))
-        if not m:
-            continue
-        annee = int(m.group(3)) if m.group(3) else annee_fichier
-        if annee is None:
-            continue
-        try:
-            jour = date(annee, MOIS[m.group(2)], int(m.group(1)))
-        except ValueError:
-            continue
-        if jour < date.today() - timedelta(days=365):
-            continue
-        # Une entrée comme « Dimanche 20 septembre Gravel St André (31) ».
-        suite = ligne[m.end():].strip()
-        lieu = None
-        titre = None
-        match = re.search(r"\b(?:gravel|gravier)\s+(.{2,60}?)\s*\((\d{2,3}[AB]?)\)", suite, re.I)
-        if match:
-            lieu = match.group(1).strip(" -–,.") + " (" + match.group(2) + ")"
-            titre = "Gravel " + match.group(1).strip(" -–,.")
-        else:
-            # « Dimanche 18 octobre Saubens (31) ... Gravel ».
-            match = re.match(r"\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' -]{1,55}?)\s*\((\d{2,3}[AB]?)\)", suite)
-            if match:
-                lieu = match.group(1).strip() + " (" + match.group(2) + ")"
-                titre = "Manifestation gravel à " + match.group(1).strip()
-        if not lieu or not titre:
-            continue
-        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month - 1]} {jour.year} — gravel. {ligne}"
-        enregistrer(nom, url, extrait, observations, connus, lieux_connus,
-                    lieu=lieu, titre=titre)
-        nombre += 1
-    return nombre
-
-
-def enregistrer(nom, url, extrait, observations, connus, lieux_connus,
-                lieu=None, pdf_connu=False, titre=None):
-    extrait = re.sub(r"\s+", " ", extrait or "").strip()[:500]
-    if len(extrait) < 30:
-        return
-    date_evenement = trouver_date(extrait)
-    if not est_candidat_evenement(extrait, date_evenement, pdf_connu=pdf_connu):
-        return
-
-    identifiant = cle_observation(url, extrait)
-    cle_event = cle_evenement_approximative(url, extrait)
-    nouvelle_identite = identite_manifestation({"url": url, "extrait": extrait})
-    if nouvelle_identite:
-        for existante in observations:
-            if identite_manifestation(existante) == nouvelle_identite:
-                ancienne_date = existante.get("date_evenement")
-                if ancienne_date and date_evenement and ancienne_date[:4] != date_evenement[:4]:
-                    continue
-                if not ancienne_date:
-                    existante["date_evenement"] = date_evenement
-                if lieu and not existante.get("lieu"):
-                    existante["lieu"] = lieu
-                if titre and not existante.get("titre"):
-                    existante["titre"] = titre
+    def ajouter(self, *, titre, debut, fin=None, commune=None, etat=None, url, source,
+                trouve_par, extrait="", distance=None, lieu_texte=None):
+        titre = re.sub(r"\s+", " ", titre or "").strip(" -–—:|·,")[:140]
+        if not titre or self.exclu(titre + " " + url):
+            return
+        if not date_plausible(debut) or debut < AUJOURDHUI - timedelta(days=7):
+            return
+        extrait = re.sub(r"\s+", " ", extrait or "").strip()[:400]
+        if commune and etat in ("sur", "souple") or distance is not None:
+            if commune:
+                distance = commune["km"]
+                lieu = libelle_lieu(commune)
+            else:
+                lieu = lieu_texte or "Lieu à préciser"
+            if distance > self.config["rayon_km"]:
+                self.hors_zone += 1
                 return
-    if identifiant in connus or cle_event in lieux_connus:
-        if lieu:
-            for observation in observations:
-                if cle_observation(
-                    observation.get("url", ""), observation.get("extrait", "")
-                ) == identifiant:
-                    if not observation.get("lieu"):
-                        observation["lieu"] = lieu
-                    if titre and not observation.get("titre"):
-                        observation["titre"] = titre
-        return
-
-    distance, controle_zone = verifier_commune(lieu)
-    # Ne pas supprimer silencieusement les événements hors zone : ils restent
-    # dans la revue humaine, signalés explicitement.
-    observation = {
-        "rayon_recherche_km": RAYON_KM,
-        "controle_zone": controle_zone,
-        "source": nom,
-        "url": url,
-        "extrait": extrait,
-        "date_evenement": date_evenement,
-        "date_detection": datetime.now(timezone.utc).date().isoformat(),
-        "statut": "a_verifier",
-    }
-    if lieu:
-        observation["lieu"] = lieu
-    if titre:
-        observation["titre"] = titre
-    if distance is not None:
-        observation["distance_toulouse_km"] = distance
-    observations.append(observation)
-    connus.add(identifiant)
-    lieux_connus.add(cle_event)
-    print(f"Nouvelle observation : {nom} — {extrait[:120]}")
-
-
-def analyser_velo_occitanie(texte, url, observations, connus, lieux_connus):
-    texte_normalise = re.sub(r"\s+", " ", texte)
-    motif_date = (
-        r"\b(?:Lun|Mar|Mer|Jeu|Ven|Sam|Dim)\.?\s+"
-        r"\d{1,2}\s+[A-Za-zÀ-ÿ]+\s+20\d{2}\b"
-    )
-    dates = list(re.finditer(motif_date, texte_normalise, re.I))
-    for i, match in enumerate(dates):
-        fin = dates[i + 1].start() if i + 1 < len(dates) else len(texte_normalise)
-        bloc = re.split(
-            r"\bDétails\b", texte_normalise[match.end():fin],
-            maxsplit=1, flags=re.I
-        )[0]
-        if not re.search(r"\b(?:Gravel|Gravier)\b", bloc, re.I):
-            continue
-        avant = texte_normalise[max(0, match.start() - 120):match.start()]
-        titre = re.split(r"\bDétails\b", avant, flags=re.I)[-1].strip()
-        if not titre or len(titre) > 100:
-            continue
-        extrait = f"Détails {titre} {match.group()} {bloc}"
-        enregistrer(
-            "Velo Occitanie", url, extrait, observations, connus,
-            lieux_connus, lieu=extraire_lieu(bloc), titre=titre,
-        )
-        print(f"Annonce Gravel examinée : {titre}")
-
-
-def analyser_vetete(url, observations, connus, lieux_connus):
-    """Ne retient que les fiches avec mention explicite d'un parcours gravel."""
-    try:
-        contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
-        texte = nettoyer_html(contenu)
-        if not re.search(r"\b(?:circuit|parcours|rando)\s+(?:gravel|gravier)\b|\b(?:gravel|gravier)\s+(?:nocturne|km|de|du|des)\b", normaliser(texte)):
+            cle = (debut.isoformat(), cle_nom(lieu))
+            fiche = {
+                "date": debut.isoformat(), "title": titre, "location": lieu,
+                "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+                "source": url, "source_nom": source, "trouve_par": trouve_par,
+                "controle_zone": "dans_zone", "distance_toulouse_km": distance,
+                "fiabilite_lieu": "certaine" if etat != "souple" else "probable",
+                "extrait": extrait,
+            }
+            if fin and fin > debut:
+                fiche["end_date"] = fin.isoformat()
+            ancien = self.candidats.get(cle)
+            # Une fiche d'événement est plus fiable qu'une ligne de calendrier.
+            if not ancien or (ancien["trouve_par"] == "ligne" and trouve_par != "ligne"):
+                self.candidats[cle] = fiche
             return
-        jour_iso = trouver_date(texte)
-        if not jour_iso or date.fromisoformat(jour_iso) < date.today() - timedelta(days=365):
-            return
-        titre = re.search(r"(?is)<title[^>]*>(.*?)</title>", contenu.decode("utf-8", errors="replace"))
-        titre = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", titre.group(1)))).strip() if titre else "Événement Vetete"
-        jour = date.fromisoformat(jour_iso)
-        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — parcours gravel. " + re.sub(r"\s+", " ", texte)[:220]
-        enregistrer("Vetete", url, extrait, observations, connus, lieux_connus, lieu=lieu_depuis_vetete(url), titre=re.sub(r"\s*\|\s*vetete\.com.*$", "", titre, flags=re.I))
-        print(f"Fiche Vetete examinée : {titre}")
-    except Exception as erreur:
-        print(f"Erreur fiche Vetete {url} : {erreur}")
+        cle = (debut.isoformat(), url)
+        if cle not in self.a_examiner:
+            self.a_examiner[cle] = {
+                "date": debut.isoformat(), "title": titre, "source": url,
+                "source_nom": source, "trouve_par": trouve_par,
+                "lieu_suppose": libelle_lieu(commune) if commune else None,
+                "raison": "lieu ambigu" if etat == "ambigu" else "lieu non reconnu",
+                "extrait": extrait,
+            }
 
+    # -- lecture ligne à ligne (calendriers, listes, PDF, extraits web) ---
 
-def analyser_page_ciblee(nom, url, observations, connus, lieux_connus):
-    """Recherche une date gravel sur une fiche ciblée, sans publication automatique."""
-    try:
-        contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
-        html = contenu.decode("utf-8", errors="replace")
-        texte = nettoyer_html(contenu)
-        if not re.search(r"\b(?:gravel|gravier)\b", normaliser(texte)):
-            print(f"Page sans gravel explicite : {url}")
-            return
-        titre_match = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
-        if not titre_match:
-            titre_match = re.search(r"(?is)<title\b[^>]*>(.*?)</title>", html)
-        titre = nettoyer_html(titre_match.group(1).encode()) if titre_match else nom
-        titre = re.sub(r"\s+", " ", titre).strip()[:120]
-        # Plusieurs dates peuvent apparaître dans les menus / articles liés :
-        # la première date n'est qu'une observation à contrôler.
-        date_evenement = trouver_date(texte)
-        if not date_evenement:
-            m = re.search(r"\b(\d{1,2})[/.](\d{1,2})[/.](20\d{2})\b", texte)
-            if m:
-                try:
-                    date_evenement = date(int(m.group(3)), int(m.group(2)), int(m.group(1))).isoformat()
-                except ValueError:
-                    pass
-        if not date_evenement:
-            print(f"Date non déterminée : {url}")
-            return
-        jour = date.fromisoformat(date_evenement)
-        if jour < date.today() - timedelta(days=365):
-            return
-        extrait = f"{titre} — {jour.day} {list(MOIS)[jour.month-1]} {jour.year} — Gravel. " + re.sub(r"\s+", " ", texte)[:200]
-        # Les événements passés ne sont plus ajoutés à la liste active.
-        if jour < date.today():
-            identifiant = cle_observation(url, extrait)
-            if identifiant not in connus:
-                observations.append({"rayon_recherche_km": RAYON_KM,
-                                     "controle_zone": "lieu_a_verifier",
-                                     "source": nom, "url": url, "extrait": extrait[:500],
-                                     "date_evenement": date_evenement,
-                                     "date_detection": datetime.now(timezone.utc).date().isoformat(),
-                                     "statut": "a_verifier"})
-                connus.add(identifiant)
-        else:
-            enregistrer(nom, url, extrait, observations, connus, lieux_connus, titre=titre)
-        print(f"Fiche examinée : {nom} — {titre}")
-    except Exception as erreur:
-        print(f"Erreur fiche ciblée {url} : {erreur}")
-
-def analyser_page_decouverte(nom, url, contenu, observations, connus, lieux_connus):
-    """Inspecte une fiche événement, sans confondre un calendrier global avec une fiche.
-
-    Les données incomplètes restent des observations ; jamais de publication directe.
-    """
-    html = contenu.decode("utf-8", errors="replace")
-    h1 = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
-    if not h1:
-        return
-    titre = re.sub(r"\s+", " ", nettoyer_html(h1.group(1).encode("utf-8"))).strip()[:140]
-    if not 8 <= len(titre) <= 140:
-        return
-    if est_page_generique({"titre": titre, "url": url}):
-        return
-    # Évite les pages d'accueil, catégories et calendriers généraux.
-    if re.search(r"\b(accueil|calendrier|agenda|actualites|evenements|resultats)\b", normaliser(titre)) and not re.search(r"\bgravel\b", normaliser(titre)):
-        return
-    article = re.search(r"(?is)<article\b[^>]*>(.*?)</article>", html)
-    if not article:
-        article = re.search(r"(?is)<main\b[^>]*>(.*?)</main>", html)
-    corps = nettoyer_html((article.group(1) if article else html).encode("utf-8"))
-    texte = re.sub(r"\s+", " ", corps).strip()
-    # Le mot gravel doit se trouver dans le contenu de la fiche, et non dans un menu.
-    if not re.search(r"\b(?:gravel|gravier)\b", normaliser(texte[:6000])):
-        return
-    # Priorité aux dates structurées, puis au texte du début de la fiche.
-    date_struct = re.search(r'(?is)<time\b[^>]*datetime=["\']([^"\']+)', html)
-    jour = trouver_date(date_struct.group(1)) if date_struct else None
-    if not jour:
-        jour = trouver_date(texte[:1800])
-    if not jour:
-        return
-    if date.fromisoformat(jour) < date.today() - timedelta(days=365):
-        return
-    d = date.fromisoformat(jour)
-    extrait = f"{titre} — {d.day} {list(MOIS)[d.month-1]} {d.year} — gravel. {texte[:240]}"
-    lieu = lieu_depuis_vetete(url) if "vetete.com" in urlparse(url).netloc else None
-    if not lieu:
-        lieu = lieu_depuis_fiche(titre, texte)
-    if not lieu:
-        return  # Pas de commune fiable : ne pas créer de faux candidat.
-    distance, etat = verifier_commune(lieu)
-    if etat != "dans_zone":
-        return
-    # Une mention de gravel dans le menu commun à tout le site ne suffit pas.
-    if not re.search(r"\bgravel\b|\bgravier\b", normaliser(titre + ' ' + texte[:1600])):
-        return
-    enregistrer(nom, url, extrait, observations, connus, lieux_connus, lieu=lieu, titre=titre)
-
-
-def explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus):
-    hote = urlparse(url).netloc.lower()
-    file_attente = deque([(url, 0)])
-    pages_vues = set()
-    nb_pdf = 0
-
-    while (
-        file_attente
-        and len(pages_vues) < MAX_PAGES_PAR_SITE
-        and nb_pdf < MAX_PDF_PAR_SITE
-    ):
-        page, profondeur = file_attente.popleft()
-        page = urldefrag(page)[0]
-        if page in pages_vues or urlparse(page).netloc.lower() != hote or est_pdf(page):
-            continue
-        pages_vues.add(page)
-        try:
-            contenu, type_contenu = telecharger(page, MAX_OCTETS_PAGE)
-            if "pdf" in type_contenu:
-                if not pdf_utile(page):
-                    continue
-                pdf_a_consulter.setdefault(page, (nom, page))
-                nb_pdf += 1
-                continue
-            if type_contenu and not any(
-                t in type_contenu for t in ("html", "text/", "application/xhtml")
-            ):
-                continue
-            analyser_page_decouverte(nom, page, contenu, observations, connus, lieux_connus)
-            liens = extraire_liens(contenu, page)
-            pdf_liens = sorted(
-                lien for lien in liens
-                if est_pdf(lien) and pdf_utile(lien) and urlparse(lien).netloc.lower() == hote
-            )
-            for lien in pdf_liens:
-                if lien not in pdf_a_consulter and nb_pdf < MAX_PDF_PAR_SITE:
-                    pdf_a_consulter[lien] = (nom, lien)
-                    nb_pdf += 1
-            if profondeur < MAX_PROFONDEUR and len(pages_vues) < MAX_PAGES_PAR_SITE:
-                internes = [
-                    lien for lien in liens
-                    if urlparse(lien).netloc.lower() == hote and not est_pdf(lien)
-                ]
-                internes = [lien for lien in internes if not re.search(
-                    r"\.(?:jpg|jpeg|png|gif|webp|svg|zip|gpx|ics|mp4)(?:$|\?)|"
-                    r"/(?:wp-admin|login|connexion|mon-compte|panier)(?:/|$)",
-                    urlparse(lien).path, re.I)]
-                internes.sort(key=lambda lien: (
-                    0 if re.search(r"gravel|gravier", normaliser(lien)) else 1,
-                    0 if re.search(r"2026|2027|2028", lien) else 1,
-                    0 if any(mot in normaliser(lien) for mot in MOTS_PAGES_PRIORITAIRES) else 1,
-                    len(lien),
-                ))
-                for lien in internes:
-                    if lien not in pages_vues and not any(lien == deja for deja, _ in file_attente):
-                        file_attente.append((lien, profondeur + 1))
-        except Exception as erreur:
-            print(f"Erreur page {page} : {erreur}")
-    print(f"Site consulté : {nom} ({len(pages_vues)} pages, {nb_pdf} PDF repérés)")
-
-
-# Manifestations explicitement validées par l'utilisateur.
-# Les dates et lieux sont conservés comme base de recensement ; les sources
-# manquantes sont signalées, jamais inventées.
-MANIFESTATIONS_VALIDEES = [
-    ("2026-03-08", "Mondonville", "Mondonville (31)", "", ""),
-    ("2026-03-22", "Cugnaux", "Cugnaux (31)", "", ""),
-    ("2026-04-11", "5e Nocturne du Lys", "Saint-Lys (31)", "", ""),
-    ("2026-04-12", "Gravel du Drac", "Salviac (46)", "45, 65 et 85 km", "https://sport.ikinoa.com/fr/evt/graveldudrac2026"),
-    ("2026-05-02", "Coupe de France Gravel — Albi", "Albi (81)", "", "https://competitions.ffc.fr/calendrier/competition/2026/5181246011/coupe-de-france-gravel-albi/"),
-    ("2026-05-24", "Quercy Gravel Challenge", "Cahors (46)", "250 km", "https://www.helloasso.com/associations/cahors-cyclisme/evenements/quercy-gravel-challenge-1"),
-    ("2026-06-14", "Brax", "Brax (31)", "", ""),
-    ("2026-06-14", "Randonnée Gravel/Route de Plaisance-du-Touch", "Plaisance-du-Touch (31)", "", ""),
-    ("2026-06-20", "Gravel'Nore", "Villegly (11)", "20–21 juin ; 40 et 90 km", ""),
-    ("2026-06-28", "Mez'insolite", "Mézens (81)", "35 et 60 km", "https://velo-occitanie.fr/gravels-81/mezinsolite-2026"),
-    ("2026-07-05", "Gravel de Caussade", "Caussade (82)", "Annulé ; conserver dans l'historique", ""),
-    ("2026-09-13", "Gravel Saint-Michéloise", "Cours, Bellefont-La Rauze (46)", "60, 90 et 120 km", "https://www.jds.fr/cahors/sports/gravel-saint-micheloise-1743629_A"),
-    ("2026-09-20", "39e Randonnée de Venerque", "Venerque (31)", "", ""),
-    ("2026-09-20", "Côtes Gasconnes", "Fontenilles (31)", "", ""),
-    ("2026-09-20", "Gravel Saint-André", "Saint-André (31)", "", "https://gravelagenda.com/lieux-gravel/saint-andre/"),
-    ("2026-09-27", "Boucles Brax Bouconne", "Brax (31)", "", ""),
-    ("2026-10-04", "Dralha Blanca", "Bagat-en-Quercy (46)", "34, 58, 83 et 103 km", "https://www.cahorscyclisme.com/dralhablanca"),
-    ("2026-10-17", "La Rêv'd'Autan", "Revel (31)", "40 km ; 800 m D+", ""),
-    ("2026-10-18", "19e Raid du Lys", "Saint-Lys (31)", "60 et 95 km", "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026"),
-    ("2026-10-18", "La Ronde Saubenoise", "Saubens (31)", "47 km ; 721 m D+", "https://www.cyclotourisme-31.com/uploaded/Circuits_InterClubs/2026/saubensgravel2026.pdf"),
-    ("2026-10-25", "La Lauragaise", "Escalquens (31)", "", "https://www.intramuros.org/escalquens/agenda/893310"),
-]
-
-def inventaire_valide(observations):
-    """Conserve l'inventaire, les décisions et les événements historiques.
-
-    Seules les observations ayant une date, un lieu géographiquement vérifié
-    et un titre identifiable deviennent des fiches à vérifier.
-    """
-    chemin = Path("inventaire-gravel.json")
-    if chemin.exists():
-        brut = json.loads(chemin.read_text(encoding="utf-8"))
-        if not isinstance(brut, dict) or not isinstance(brut.get("events"), list):
-            raise ValueError("Format de l'inventaire incorrect : arrêt sans écrasement")
-        fiches = brut["events"]
-    else:
-        fiches = []
-
-    # Les décisions humaines existantes sont prioritaires sur les sources.
-    def cle(f):
-        return (f.get("date", ""), re.sub(r"[^a-z0-9]+", "", normaliser(f.get("title", ""))))
-
-    # Fusionner les entrées publiées sans modifier les décisions déjà enregistrées.
-    if Path("events.json").exists():
-        calendrier = json.loads(Path("events.json").read_text(encoding="utf-8"))
-        if not isinstance(calendrier, dict) or not isinstance(calendrier.get("events"), list):
-            raise ValueError("Format du calendrier incorrect : arrêt sans écrasement")
-        publiees = calendrier["events"]
-    else:
-        publiees = []
-
-    index = {cle(f): f for f in fiches}
-    for f in publiees:
-        if "occitanie 600" in normaliser(f.get("title", "")):
-            continue
-        if cle(f) not in index:
-            nouvelle = dict(f)
-            nouvelle.setdefault("statut", "valide")
-            fiches.append(nouvelle)
-            index[cle(nouvelle)] = nouvelle
-
-    for jour, titre, lieu, details, source in MANIFESTATIONS_VALIDEES:
-        if date.fromisoformat(jour) < date.today() - timedelta(days=365):
-            continue
-        entree = {"date": jour, "title": titre, "location": lieu,
-                  "details": ("Parcours gravel confirmé par l'organisateur / utilisateur. " + details).strip(),
-                  "source": source, "validation_gravel": "utilisateur",
-                  "statut": "annule" if "Annulé" in details else "valide"}
-        if cle(entree) not in index:
-            fiches.append(entree)
-            index[cle(entree)] = entree
-
-    # Toutes les sources peuvent alimenter l'inventaire si la fiche est fiable.
-    # Ne jamais inventer une date, une commune ou un titre depuis un PDF ambigu.
-    # Les observations incomplètes restent dans veille-resultats.json.
-    for item in observations:
-        jour = item.get("date_evenement")
-        lieu = item.get("lieu")
-        if not jour or not lieu or item.get("controle_zone") != "dans_zone":
-            continue
-        try:
-            date.fromisoformat(jour)
-        except (TypeError, ValueError):
-            continue
-
-        titre = (item.get("titre") or "").strip()
-        if not titre and item.get("source") == "Velo Occitanie":
-            match = re.match(
-                r"\s*Détails\s+(.+?)\s+"
-                r"(?:lun|mar|mer|jeu|ven|sam|dim)\.?\s+"
-                r"\d{1,2}\s+[a-zéèêûôàîïù]+\s+20\d{2}",
-                item.get("extrait", ""), re.I | re.S,
-            )
-            if match:
-                titre = match.group(1).strip()
-
-        # Le titre et la commune doivent être explicites et cohérents.
-        if not titre or len(titre) > 120 or len(lieu) > 65:
-            continue
-        titre_n = normaliser(titre)
-        if ("occitanie 600" in titre_n or "ogravel" in titre_n
-                or "o gravel" in titre_n or "ô gravel" in titre.lower()):
-            continue
-        if not re.search(r"\b(?:gravel|gravier)\b", normaliser(item.get("extrait", ""))):
-            continue
-
-        entree = {
-            "date": jour,
-            "title": titre,
-            "location": lieu,
-            "details": "Parcours gravel à vérifier avant publication",
-            "source": item.get("url", ""),
-            "controle_zone": "dans_zone",
-            "distance_toulouse_km": item.get("distance_toulouse_km"),
-            "statut": "a_verifier",
-        }
-        # Les fiches historiques et les décisions humaines sont prioritaires.
-        # Pour une même date, on évite aussi les variantes du même intitulé.
-        cle_nouvelle = cle(entree)
-        if cle_nouvelle in index:
-            continue
-        # Les décisions de refus et les validations restent prioritaires,
-        # y compris pour les variations de casse, accents et ponctuation.
-        def comparable(t):
-            t = normaliser(t)
-            t = re.sub(r"\b(?:eme|e|edition|randonnee|rando|gravel|vtt)\b", " ", t)
-            return re.sub(r"[^a-z0-9]+", "", t)
-        doublon = any(
-            f.get("date") == jour and (
-                (titre_n in normaliser(f.get("title", ""))
-                 or normaliser(f.get("title", "")) in titre_n)
-                or (len(comparable(titre)) >= 7 and comparable(titre) == comparable(f.get("title", "")))
-            )
-            for f in fiches if f.get("title")
-        )
-        if doublon:
-            continue
-        fiches.append(entree)
-        index[cle_nouvelle] = entree
-
-    # Ne supprimer aucune décision ni aucun événement historique ici.
-    # L'affichage public applique déjà la fenêtre glissante de 12 mois.
-    fiches.sort(key=lambda f: (f.get("date", ""), f.get("title", "")))
-    chemin.write_text(json.dumps({"updated": date.today().isoformat(), "events": fiches},
-                                  ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Inventaire préservé : {len(fiches)} fiches (events.json inchangé)")
-
-if FICHIER.exists():
-    donnees = json.loads(FICHIER.read_text(encoding="utf-8"))
-else:
-    donnees = {"observations": []}
-
-observations = nettoyer_observations([
-    item for item in donnees.get("observations", [])
-    if item.get("source") not in ("Gravel Passion", "Battistrada")
-])
-connus = {
-    cle_observation(item.get("url", ""), item.get("extrait", ""))
-    for item in observations
-}
-lieux_connus = {
-    cle_evenement_approximative(item.get("url", ""), item.get("extrait", ""))
-    for item in observations
-    if item.get("date_evenement")
-}
-pdf_a_consulter = {
-    url: (nom, url) for nom, url in PDF_CONNUS.items()
-}
-
-# Pistes confirmées par l'organisateur/utilisateur : gravel oui, date à vérifier.
-# Ne pas ajouter à events.json ni aux observations sans fiche datée vérifiable.
-PISTES_GRAVEL = ("Lézat-sur-Lèze (09)", "Verniolle (09)", "Limoux (11)")
-
-
-def analyser_miles_republic(observations, connus, lieux_connus):
-    """Explore Miles Republic avec limitation stricte et arrêt en cas de blocage 429."""
-    base = SOURCES["Miles Republic"]
-    try:
-        contenu, _ = telecharger(base, MAX_OCTETS_PAGE)
-    except HTTPError as erreur:
-        if erreur.code == 429:
-            print("Miles Republic : accès limité (HTTP 429), aucune relance pour respecter le site")
-            return
-        print(f"Miles Republic : rubrique inaccessible : {erreur}")
-        return
-    except Exception as erreur:
-        print(f"Miles Republic : rubrique inaccessible : {erreur}")
-        return
-
-    liens = sorted(lien for lien in extraire_liens(contenu, base)
-                   if urlparse(lien).netloc == "fr.milesrepublic.com"
-                   and lien.rstrip("/") != base.rstrip("/")
-                   and not re.search(r"/(?:connexion|login|inscription|profil|blog|contact)(?:/|$)",
-                                     urlparse(lien).path, re.I))
-    liens.sort(key=lambda lien: (0 if re.search(r"gravel|rando|course", lien, re.I) else 1, len(lien)))
-    examines = 0
-    for lien in liens[:12]:
-        try:
-            fiche, type_contenu = telecharger(lien, MAX_OCTETS_PAGE)
-            if type_contenu and "html" not in type_contenu:
-                continue
-            analyser_page_decouverte("Miles Republic", lien, fiche,
-                                    observations, connus, lieux_connus)
-            examines += 1
-        except HTTPError as erreur:
-            if erreur.code == 429:
-                print("Miles Republic : arrêt des requêtes après HTTP 429")
-                break
-            print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
-        except Exception as erreur:
-            print(f"Miles Republic : fiche inaccessible {lien} : {erreur}")
-    print(f"Miles Republic : {examines} pages liées examinées")
-
-
-print("Pistes gravel à retrouver avec date confirmée : " + ", ".join(PISTES_GRAVEL))
-
-for nom, url in SOURCES.items():
-    if nom == "Miles Republic":
-        analyser_miles_republic(observations, connus, lieux_connus)
-        continue
-    try:
-        contenu, _ = telecharger(url, MAX_OCTETS_PAGE)
-        texte = nettoyer_html(contenu)
-        if nom == "Velo Occitanie":
-            analyser_velo_occitanie(
-                texte, url, observations, connus, lieux_connus
-            )
-        explorer_site(nom, url, pdf_a_consulter, observations, connus, lieux_connus)
-    except Exception as erreur:
-        print(f"Erreur site {nom} : {erreur}")
-
-# Examiner la fiche signalée et les fiches d'événements reliées au calendrier.
-for nom, urls in PAGES_CIBLEES.items():
-    for url in urls:
-        analyser_page_ciblee(nom, url, observations, connus, lieux_connus)
-
-try:
-    listing_url = SOURCES["Vetete"]
-    contenu, _ = telecharger(listing_url, MAX_OCTETS_PAGE)
-    fiches = {lien for lien in extraire_liens(contenu, listing_url)
-              if urlparse(lien).netloc in ("vetete.com", "www.vetete.com")
-              and re.search(r"-20(?:26|27|28)(?:/|$)", urlparse(lien).path)}
-    print(f"Vetete : {len(fiches)} fiches d'événements repérées")
-    for fiche in sorted(fiches)[:100]:
-        analyser_vetete(fiche, observations, connus, lieux_connus)
-except Exception as erreur:
-    print(f"Erreur calendrier Vetete : {erreur}")
-
-for url, (nom, _) in pdf_a_consulter.items():
-    if not pdf_utile(url):
-        continue
-    try:
-        contenu, type_contenu = telecharger(url)
-        if len(contenu) > MAX_PDF:
-            print(f"PDF trop volumineux : {url}")
-            continue
-        if not (contenu.startswith(b"%PDF") or "pdf" in type_contenu or est_pdf(url)):
-            print(f"Lien ignoré (pas un PDF) : {url}")
-            continue
-        texte = lire_pdf(contenu)
-        lignes = [re.sub(r"\s+", " ", ligne).strip() for ligne in texte.splitlines()]
-        pdf_connu = url in PDF_CONNUS.values()
-        nb_calendrier = analyser_pdf_calendrier(
-            nom, url, lignes, observations, connus, lieux_connus)
-        # Les calendriers multi-événements ne doivent pas être interprétés
-        # comme une seule manifestation datée de la mise à jour du document.
-        if nb_calendrier or re.search(r"calendrier", unquote(urlparse(url).path), re.I):
-            print(f"Calendrier PDF : {nb_calendrier} entrée(s) exploitables — {url}")
-            continue
+    def analyser_lignes(self, texte, url, source, trouve_par="ligne"):
+        lignes = [l.strip() for l in (texte or "").splitlines() if l.strip()]
+        n = 0
         for i, ligne in enumerate(lignes):
-            # Les calendriers multi-événements sont analysés ligne par ligne
-            # par analyser_pdf_calendrier, pas par une date prise dans le voisinage.
-            if "Calendrier_route_FSGT2026_110626.pdf" in url:
+            if not MOTIF_GRAVEL.search(normaliser(ligne)):
                 continue
-            if not re.search(r"\b(?:gravel|gravier)\b", ligne, re.I):
+            # Fenêtre limitée à la même entrée : on s'arrête aux lignes qui
+            # portent une autre date (entrée voisine d'un calendrier).
+            fenetre = [ligne]
+            for j in (i - 1, i - 2):
+                if j < 0 or trouver_dates(lignes[j]):
+                    break
+                fenetre.insert(0, lignes[j])
+            for j in (i + 1, i + 2):
+                if j >= len(lignes) or trouver_dates(lignes[j]):
+                    break
+                fenetre.append(lignes[j])
+            bloc = "\n".join(fenetre)
+            dates = trouver_dates(ligne) or trouver_dates(bloc)
+            if not dates:
                 continue
-            extrait = " ".join(lignes[max(0, i - 3):i + 4])
-            enregistrer(
-                nom, url, extrait, observations, connus, lieux_connus,
-                pdf_connu=pdf_connu,
-            )
-        print(f"PDF consulté : {url}")
-    except Exception as erreur:
-        print(f"Erreur PDF {url} : {erreur}")
+            _, debut, fin = dates[0]
+            commune, etat = self.communes.trouver(ligne, souple=len(ligne) < 160)
+            if not commune or etat == "ambigu":
+                c2, e2 = self.communes.trouver(bloc, souple=False)
+                if c2:
+                    commune, etat = c2, e2
+            titre = self.titre_de_ligne(ligne, fenetre)
+            self.ajouter(titre=titre, debut=debut, fin=fin, commune=commune, etat=etat,
+                         url=url, source=source, trouve_par=trouve_par, extrait=bloc)
+            n += 1
+        return n
 
-observations = nettoyer_observations(observations)
-FICHIER.write_text(
-    json.dumps({"observations": observations}, ensure_ascii=False, indent=2) + "\n",
-    encoding="utf-8",
-)
-print(f"Total observations conservées : {len(observations)}")
+    @staticmethod
+    def titre_de_ligne(ligne, fenetre):
+        t = re.sub(r"(?i)\b(?:lun|mar|mer|jeu|ven|sam|dim)[a-z]*\.?\s+\d{1,2}(?:er)?\s+\w+\.?(?:\s+20\d\d)?", " ", ligne)
+        t = re.sub(r"\b\d{1,2}[/.]\d{1,2}[/.]\d{2,4}\b", " ", t)
+        t = re.sub(r"\s+", " ", t).strip(" -–—:|·,")
+        avant = fenetre[:fenetre.index(ligne)]
+        if avant and MOTIF_GRAVEL.search(normaliser(avant[-1])) and 6 <= len(avant[-1]) <= 120:
+            return avant[-1]
+        if len(t) < 6:
+            autres = [l for l in fenetre if l != ligne and 6 <= len(l) <= 120]
+            t = autres[0] if autres else ligne
+        return t[:120]
 
-# Inventaire conservé indépendamment des observations découvertes sur le Web.
-inventaire_valide(observations)
+    # -- fiche d'événement -----------------------------------------------
+
+    def analyser_page(self, html, url, source, trouve_par):
+        """Renvoie True si la page ressemble à une liste d'événements (à explorer)."""
+        # a) Données structurées schema.org
+        for ev in objets_jsonld(html):
+            nom = unescape(str(ev.get("name") or ""))
+            descr = unescape(str(ev.get("description") or ""))
+            if not MOTIF_GRAVEL.search(normaliser(nom + " " + descr + " " + url)):
+                continue
+            debut = date_iso(ev.get("startDate"))
+            if not debut:
+                continue
+            fin = date_iso(ev.get("endDate"))
+            lieu = ev.get("location") or {}
+            lieu = lieu[0] if isinstance(lieu, list) and lieu else lieu
+            commune, etat, distance, lieu_texte = None, None, None, None
+            if isinstance(lieu, dict):
+                adr = lieu.get("address") or {}
+                if isinstance(adr, dict):
+                    lieu_texte = " ".join(str(adr.get(k) or "") for k in ("postalCode", "addressLocality")).strip()
+                elif isinstance(adr, str):
+                    lieu_texte = adr
+                geo = lieu.get("geo") or {}
+                commune, etat = self.communes.trouver(lieu_texte or "", souple=True)
+                if not commune and isinstance(geo, dict):
+                    try:
+                        c = self.config["centre"]
+                        distance = distance_km(c["lat"], c["lon"], float(geo["latitude"]), float(geo["longitude"]))
+                        etat = "sur"
+                        lieu_texte = (adr.get("addressLocality") if isinstance(adr, dict) else None) or lieu.get("name")
+                    except (KeyError, TypeError, ValueError):
+                        pass
+            self.ajouter(titre=nom, debut=debut, fin=fin, commune=commune, etat=etat,
+                         distance=distance, lieu_texte=lieu_texte, url=str(ev.get("url") or url),
+                         source=source, trouve_par="donnees_structurees", extrait=descr)
+
+        principal = contenu_principal(html)
+        texte = html_vers_texte(principal)
+        t_norm = normaliser(texte)
+        titre = titre_page(html)
+        nb_lignes_gravel = sum(1 for l in texte.splitlines() if MOTIF_GRAVEL.search(normaliser(l)))
+        dates_page = trouver_dates(texte[:20000])
+        liste = len({d for _, d, _ in dates_page}) >= 5
+
+        if liste:
+            # Page calendrier : chaque ligne gravel datée est une piste.
+            self.analyser_lignes(texte, url, source)
+
+        # b) Fiche simple : gravel dans le titre ou au début du contenu
+        titre_gravel = bool(MOTIF_GRAVEL.search(normaliser(titre)))
+        if not (titre_gravel or (not liste and MOTIF_GRAVEL.search(t_norm[:5000]))):
+            return liste or nb_lignes_gravel > 0
+        debut = fin = None
+        d = trouver_dates(titre)
+        if d:
+            _, debut, fin = d[0]
+        elif liste:
+            return True  # page à plusieurs dates : seules les lignes comptent
+        if not debut:
+            m = re.search(r"(?is)<time\b[^>]*datetime=[\"']([^\"']+)", principal)
+            debut = date_iso(m.group(1)) if m else None
+            debut = debut if debut and date_plausible(debut) else None
+        if not debut and dates_page:
+            _, debut, fin = dates_page[0]
+        if not debut:
+            return False
+        commune, etat = self.communes.trouver(titre, souple=True)
+        if not commune or etat == "ambigu":
+            c2, e2 = self.communes.trouver(texte[:6000], souple=False)
+            if c2 and (e2 == "sur" or not commune):
+                commune, etat = c2, e2
+        self.ajouter(titre=titre or source, debut=debut, fin=fin, commune=commune, etat=etat,
+                     url=url, source=source, trouve_par=trouve_par, extrait=texte[:400])
+        return liste
+
+    def analyser_ics(self, texte, url, source):
+        for bloc in re.findall(r"(?s)BEGIN:VEVENT(.*?)END:VEVENT", texte.replace("\r\n ", "")):
+            champs = dict(re.findall(r"(?m)^([A-Z-]+)(?:;[^:]*)?:(.*)$", bloc))
+            resume = champs.get("SUMMARY", "")
+            if not MOTIF_GRAVEL.search(normaliser(resume + " " + champs.get("DESCRIPTION", ""))):
+                continue
+            m = re.match(r"(\d{4})(\d{2})(\d{2})", champs.get("DTSTART", ""))
+            if not m:
+                continue
+            debut = date(*(int(x) for x in m.groups()))
+            commune, etat = self.communes.trouver(champs.get("LOCATION", "").replace("\\,", ","), souple=True)
+            self.ajouter(titre=resume, debut=debut, commune=commune, etat=etat, url=champs.get("URL", url),
+                         source=source, trouve_par="ical", extrait=champs.get("DESCRIPTION", ""))
+
+
+# ---------------------------------------------------------------------------
+# Exploration des sites
+# ---------------------------------------------------------------------------
+
+EXCLURE_LIENS = re.compile(
+    r"\.(?:jpe?g|png|gif|webp|svg|zip|gpx|kml|mp4|mp3|docx?|xlsx?)(?:$|\?)|"
+    r"/(?:wp-admin|wp-login|login|connexion|mon-compte|panier|cart|account|feed|tag|author|"
+    r"resultats?|classements?|photos?|galerie|boutique|contact|mentions-legales|cgv)(?:/|$)|"
+    r"[?&](?:replytocom|share|print)=", re.I)
+RESEAUX = ("facebook.com", "instagram.com", "twitter.com", "x.com", "youtube.com",
+           "strava.com", "linkedin.com", "tiktok.com", "whatsapp.com")
+MOTS_LIENS = ("evenement", "event", "evt", "agenda", "calendrier", "manifestation", "rando",
+              "course", "epreuve", "sortie", "gravel", "raid", "inscription", "programme")
+
+
+def score_lien(url, texte):
+    u = normaliser(unquote(url) + " " + texte)
+    s = 0
+    if MOTIF_GRAVEL.search(u):
+        s += 5
+    if re.search(r"20(?:%d|%d)" % (AUJOURDHUI.year % 100, (AUJOURDHUI.year + 1) % 100), u):
+        s += 2
+    s += sum(1 for m in MOTS_LIENS if m in u)
+    return s
+
+
+def pdf_interessant(url, texte=""):
+    u = normaliser(unquote(url) + " " + texte)
+    annees = [int(a) for a in re.findall(r"(?<!\d)(20[2-3]\d)(?!\d)", u)]
+    if annees and max(annees) < AUJOURDHUI.year:
+        return False
+    if re.search(r"classement|resultat|podium|reglement|assemblee|compte rendu|bilan|statut", u):
+        return False
+    return bool(re.search(r"gravel|calendrier|randonn|programme|agenda|manifestation|interclub", u))
+
+
+def lire_pdf(contenu):
+    from pypdf import PdfReader
+    lecteur = PdfReader(BytesIO(contenu))
+    return "\n".join(page.extract_text() or "" for page in lecteur.pages[:25])
+
+
+def explorer(nom, depart, collecte, tel, limites, suivre=True, max_pages=None):
+    hote = urlparse(depart).netloc.lower().removeprefix("www.")
+    max_pages = max_pages or limites["pages_par_site"]
+    a_voir = [(100, depart, 0)]
+    vus, pdf_vus = set(), set()
+    pages = 0
+    while a_voir and pages < max_pages:
+        a_voir.sort(key=lambda x: -x[0])
+        _, url, profondeur = a_voir.pop(0)
+        if url in vus:
+            continue
+        vus.add(url)
+        try:
+            contenu, type_contenu, finale = tel.get(url)
+        except HTTPError as e:
+            journal(f"  {nom} : {url} → HTTP {e.code}")
+            tel.erreurs += 1
+            if e.code in (403, 429) and pages == 0:
+                return pages
+            continue
+        except Exception as e:
+            journal(f"  {nom} : {url} → {e}")
+            tel.erreurs += 1
+            if "limite globale" in str(e):
+                return pages
+            continue
+        pages += 1
+        if "pdf" in type_contenu or contenu[:4] == b"%PDF":
+            try:
+                collecte.analyser_lignes(lire_pdf(contenu), url, nom, "pdf")
+            except Exception as e:
+                journal(f"  PDF illisible {url} : {e}")
+            continue
+        if "calendar" in type_contenu or url.lower().endswith(".ics"):
+            collecte.analyser_ics(decoder(contenu, type_contenu), url, nom)
+            continue
+        if type_contenu and not any(t in type_contenu for t in ("html", "text/", "xml")):
+            continue
+        html = decoder(contenu, type_contenu)
+        est_liste = collecte.analyser_page(html, finale, nom, "fiche")
+        if (not suivre or profondeur >= 2 or (profondeur >= 1 and not est_liste)
+                or (suivre == "si_liste" and not est_liste)):
+            continue
+        for lien, texte in extraire_liens(html, finale):
+            h = urlparse(lien).netloc.lower().removeprefix("www.")
+            if h != hote or lien in vus or EXCLURE_LIENS.search(lien):
+                continue
+            if lien.lower().split("?")[0].endswith(".pdf"):
+                if lien not in pdf_vus and len(pdf_vus) < limites["pdf_par_site"] and pdf_interessant(lien, texte):
+                    pdf_vus.add(lien)
+                    a_voir.append((50, lien, profondeur + 1))
+                continue
+            s = score_lien(lien, texte)
+            if s >= (1 if profondeur == 0 else 3):
+                a_voir.append((s, lien, profondeur + 1))
+    return pages
+
+
+# ---------------------------------------------------------------------------
+# Recherche web (Brave Search)
+# ---------------------------------------------------------------------------
+
+def requetes_web(config):
+    rw = config.get("recherche_web", {})
+    annee = AUJOURDHUI.year if AUJOURDHUI.month < 9 else AUJOURDHUI.year + 1
+    requetes = []
+    for modele in rw.get("requetes_par_departement", []):
+        for dep in rw.get("departements", []):
+            requetes.append(modele.format(departement=dep, annee=annee))
+    for modele in rw.get("requetes_generales", []):
+        requetes.append(modele.format(annee=annee))
+    return list(dict.fromkeys(requetes))
+
+
+def recherche_brave(config, collecte, tel, limites):
+    cle = os.environ.get("BRAVE_API_KEY", "").strip()
+    if not cle:
+        journal("Recherche web désactivée : secret BRAVE_API_KEY absent.")
+        return 0, 0
+    nb = config.get("recherche_web", {}).get("resultats_par_requete", 20)
+    urls = {}
+    for requete in requetes_web(config):
+        params = urlencode({"q": requete, "country": "fr", "search_lang": "fr", "count": nb})
+        try:
+            contenu, _, _ = tel.get("https://api.search.brave.com/res/v1/web/search?" + params, compter=False,
+                                    entetes={"Accept": "application/json", "X-Subscription-Token": cle})
+            resultats = json.loads(contenu).get("web", {}).get("results", [])
+        except HTTPError as e:
+            journal(f"Brave : « {requete} » → HTTP {e.code}")
+            if e.code in (401, 403):
+                journal("Brave : clé refusée, recherche web interrompue.")
+                break
+            if e.code == 429:
+                time.sleep(2)
+            continue
+        except Exception as e:
+            journal(f"Brave : « {requete} » → {e}")
+            continue
+        time.sleep(1.1)  # offre gratuite : 1 requête par seconde
+        for r in resultats:
+            url = urldefrag(r.get("url", ""))[0]
+            if not url:
+                continue
+            extrait = unescape(re.sub(r"<[^>]+>", "", f"{r.get('title', '')}\n{r.get('description', '')}"))
+            if url not in urls:
+                urls[url] = extrait
+    journal(f"Brave : {len(urls)} pages distinctes trouvées")
+    explorees = 0
+    for url, extrait in urls.items():
+        hote = urlparse(url).netloc.lower()
+        # Le résumé du moteur suffit parfois (Facebook, Instagram ne sont pas lisibles).
+        collecte.analyser_lignes(extrait, url, "Recherche web", "extrait_web")
+        if any(hote.endswith(r) for r in RESEAUX):
+            continue
+        if not MOTIF_GRAVEL.search(normaliser(extrait + " " + url)):
+            continue
+        try:
+            explorer("Recherche web", url, collecte, tel, limites, suivre="si_liste",
+                     max_pages=limites["pages_par_resultat_web"])
+            explorees += 1
+        except Exception as e:
+            journal(f"  Recherche web : {url} → {e}")
+    return len(urls), explorees
+
+
+# ---------------------------------------------------------------------------
+# Fusion avec l'inventaire (les décisions humaines restent prioritaires)
+# ---------------------------------------------------------------------------
+
+def meme_manifestation(a, b):
+    if a.get("date") != b.get("date"):
+        return False
+    la, lb = cle_nom(re.sub(r"\(.*?\)", "", a.get("location", ""))), cle_nom(re.sub(r"\(.*?\)", "", b.get("location", "")))
+    if la and lb and (la == lb or la in lb or lb in la):
+        return True
+    ta, tb = cle_titre(a.get("title", "")), cle_titre(b.get("title", ""))
+    return bool(ta and tb and len(min(ta, tb, key=len)) >= 5 and (ta in tb or tb in ta))
+
+
+def fusionner(candidats):
+    inventaire = charger_json(INVENTAIRE, {"events": []})
+    if not isinstance(inventaire.get("events"), list):
+        raise SystemExit("Format de l'inventaire incorrect : arrêt sans écrasement")
+    fiches = inventaire["events"]
+    calendrier = charger_json(CALENDRIER, {"events": []})
+    existantes = fiches + calendrier.get("events", [])
+    nouvelles = []
+    for c in sorted(candidats, key=lambda f: (f["date"], f["title"])):
+        if any(meme_manifestation(c, f) for f in existantes):
+            continue
+        fiche = {k: v for k, v in c.items() if k != "extrait"}
+        fiche["statut"] = "a_verifier"
+        fiche["date_detection"] = AUJOURDHUI.isoformat()
+        fiches.append(fiche)
+        existantes.append(fiche)
+        nouvelles.append(fiche)
+    fiches.sort(key=lambda f: (f.get("date", ""), f.get("title", "")))
+    inventaire["updated"] = AUJOURDHUI.isoformat()
+    ecrire_json(INVENTAIRE, inventaire)
+    return nouvelles
+
+
+def main():
+    config = charger_json(CONFIG, None)
+    if not config:
+        raise SystemExit("sources.json introuvable")
+    limites = config["limites"]
+    tel = Telechargeur(limites["delai_par_site_s"], limites["pages_total"])
+    communes = Communes.charger(config, tel)
+    collecte = Collecte(config, communes)
+
+    stats = {"sites": {}}
+    for site in config.get("sites", []):
+        avant = len(collecte.candidats) + len(collecte.a_examiner)
+        try:
+            pages = explorer(site["nom"], site["url"], collecte, tel, limites,
+                             suivre=site.get("suivre_liens", True))
+        except Exception as e:
+            journal(f"Erreur sur {site['nom']} : {e}")
+            pages = 0
+        trouves = len(collecte.candidats) + len(collecte.a_examiner) - avant
+        stats["sites"][site["nom"]] = {"pages_lues": pages, "pistes": trouves}
+        journal(f"{site['nom']} : {pages} pages lues, {trouves} pistes")
+
+    stats["recherche_web_pages"], stats["recherche_web_explorees"] = recherche_brave(config, collecte, tel, limites)
+
+    candidats = list(collecte.candidats.values())
+    nouvelles = fusionner(candidats)
+
+    # Les pistes sans lieu reconnu sont conservées d'une exécution à l'autre.
+    anciens = charger_json(RESULTATS, {})
+    pistes = {(p["date"], p["source"]): p for p in anciens.get("a_examiner", [])
+              if p.get("date", "") >= AUJOURDHUI.isoformat()}
+    for cle, p in collecte.a_examiner.items():
+        if p["date"] >= AUJOURDHUI.isoformat() and not any(
+                c["date"] == p["date"] and c["source"] == p["source"] for c in candidats):
+            pistes.setdefault(cle, dict(p, date_detection=AUJOURDHUI.isoformat()))
+
+    stats.update({"pages_lues": tel.nombre, "erreurs": tel.erreurs, "candidats": len(candidats),
+                  "nouvelles_fiches": len(nouvelles), "hors_zone": collecte.hors_zone,
+                  "a_examiner": len(pistes)})
+    ecrire_json(RESULTATS, {
+        "updated": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "statistiques": stats,
+        "candidats": sorted(candidats, key=lambda f: f["date"]),
+        "a_examiner": sorted(pistes.values(), key=lambda p: p["date"])[:300],
+    })
+    journal(f"\nBilan : {tel.nombre} pages lues, {len(candidats)} manifestations reconnues, "
+            f"{len(nouvelles)} nouvelles fiches à vérifier, {len(pistes)} pistes sans lieu reconnu, "
+            f"{collecte.hors_zone} hors rayon.")
+    for f in nouvelles:
+        journal(f"  + {f['date']} — {f['title']} — {f['location']} — {f['source']}")
+
+
+if __name__ == "__main__":
+    sys.exit(main())
