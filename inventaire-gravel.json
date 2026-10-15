@@ -286,6 +286,35 @@
       "date_detection": "2026-10-15"
     },
     {
+      "date": "2027-06-07",
+      "title": "2SEO_LA MURATAISE",
+      "location": "Murat-sur-Vèbre (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/2seo-la-murataise-2025",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 113.7,
+      "fiabilite_lieu": "certaine",
+      "end_date": "2027-06-09",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
+    },
+    {
+      "date": "2027-06-13",
+      "title": "Wish One Millau Grands Causses",
+      "location": "Millau (12)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://competitions.ffc.fr/calendrier/competition/2027/C5112001001/wish-one-millau-grands-causses/",
+      "source_nom": "FFC",
+      "trouve_par": "ffc",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.0,
+      "fiabilite_lieu": "probable",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
+    },
+    {
       "date": "2027-06-15",
       "title": "TEST GRAVEL EMAIL - A SUPPRIMER",
       "location": "Toulouse (31)",
@@ -293,6 +322,20 @@
       "source": "",
       "statut": "refuse",
       "date_decision": "2026-10-14"
+    },
+    {
+      "date": "2027-08-16",
+      "title": "1ère Boucle VTT/Gravel en forêt (Cardeilhac)",
+      "location": "Cardeilhac (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://haute-garonne.ffvelo.fr/calendrier/",
+      "source_nom": "FFVélo 31",
+      "trouve_par": "tableau",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 76.7,
+      "fiabilite_lieu": "probable",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-15"
     }
   ]
 }
