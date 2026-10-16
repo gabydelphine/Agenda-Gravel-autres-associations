@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-16",
   "events": [
     {
       "date": "2026-03-08",
@@ -256,17 +256,6 @@
     },
     {
       "date": "2026-10-18",
-      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
-      "location": "mourens",
-      "details": "Parcours gravel à vérifier avant publication",
-      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 175.6,
-      "statut": "refuse",
-      "date_decision": "2026-10-14"
-    },
-    {
-      "date": "2026-10-18",
       "title": "LA CASTRAISE",
       "location": "Castres (81)",
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
@@ -278,6 +267,17 @@
       "fiabilite_lieu": "certaine",
       "statut": "a_verifier",
       "date_detection": "2026-10-15"
+    },
+    {
+      "date": "2026-10-18",
+      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
+      "location": "mourens",
+      "details": "Parcours gravel à vérifier avant publication",
+      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 175.6,
+      "statut": "refuse",
+      "date_decision": "2026-10-14"
     },
     {
       "date": "2026-10-18",
