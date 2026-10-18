@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-17T05:58:08+00:00",
+  "updated": "2026-10-18T05:59:32+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -35,12 +35,12 @@
         "pistes": 0
       },
       "FFVélo 82": {
-        "pages_lues": 19,
+        "pages_lues": 23,
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 1,
+        "pistes": 1
       },
       "Saubens Cyclo": {
         "pages_lues": 1,
@@ -115,11 +115,11 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 27,
-        "pistes": 2
+        "pages_lues": 16,
+        "pistes": 0
       },
       "Vetete – mois +1": {
-        "pages_lues": 6,
+        "pages_lues": 5,
         "pistes": 0
       },
       "Vetete – mois +2": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 409,
-    "erreurs": 1,
-    "candidats": 15,
+    "pages_lues": 401,
+    "erreurs": 0,
+    "candidats": 13,
     "nouvelles_fiches": 0,
-    "hors_zone": 121,
+    "hors_zone": 109,
     "a_examiner": 9
   },
   "candidats": [
@@ -246,19 +246,6 @@
       "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
     },
     {
-      "date": "2026-10-17",
-      "title": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026",
-      "location": "Revel (31)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://vetete.com/la-rev-d-autan-a-revel-le-samedi-17-octobre-2026",
-      "source_nom": "Vetete",
-      "trouve_par": "fiche",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 47.1,
-      "fiabilite_lieu": "certaine",
-      "extrait": "La Rêv'd'Autan à Revel le samedi 17 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable en cliquant sur sa petite case de fermeture. Les dates annulées apparaissent sur fond noir, les dates reportées sur fond gris. Ne cherchez pas plus longtemps, VTTAE signifie VTT à"
-    },
-    {
       "date": "2026-10-18",
       "title": "19ème Raid du Lys",
       "location": "Saint-Lys (31)",
@@ -283,19 +270,6 @@
       "distance_toulouse_km": 64.5,
       "fiabilite_lieu": "certaine",
       "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
-    },
-    {
-      "date": "2026-10-18",
-      "title": "La 5 ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026",
-      "location": "Mourens (33)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://vetete.com/la-5eme-thomas-boudat-a-mourens-le-dimanche-18-octobre-2026",
-      "source_nom": "Vetete",
-      "trouve_par": "fiche",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 175.6,
-      "fiabilite_lieu": "certaine",
-      "extrait": "La 5ème THOMAS BOUDAT à Mourens le dimanche 18 octobre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable en cliquant sur sa petite case de fermeture. Les dates annulées apparaissent sur fond noir, les dates reportées sur fond gris. Ne cherchez pas plus longtemps, VTTAE sign"
     },
     {
       "date": "2026-10-25",
