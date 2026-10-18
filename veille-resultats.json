@@ -327,17 +327,6 @@
   ],
   "a_examiner": [
     {
-      "date": "2026-08-16",
-      "title": "Rando de l’Ail (Mauvezin)",
-      "source": "https://codep32-ffvelo.blogspot.com/p/calendrier_13.html",
-      "source_nom": "FFVélo 32 (CoDep Gers) – calendrier",
-      "trouve_par": "tableau",
-      "lieu_suppose": "Mauvezin (31)",
-      "raison": "lieu ambigu",
-      "extrait": "Dimanche 16 août | Vélo Club Mauvezinois | MAUVEZIN | Rando de l’Ail | Facebook | Route, VTT, gravel",
-      "date_detection": "2026-10-16"
-    },
-    {
       "date": "2026-10-04",
       "title": "32ème Randonnée des Vendages",
       "source": "https://gravelagenda.com/evenements-gravel/32eme-randonnee-des-vendages/",
