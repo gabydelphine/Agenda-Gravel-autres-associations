@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-19T06:00:37+00:00",
+  "updated": "2026-10-20T05:59:09+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -75,7 +75,7 @@
         "pistes": 0
       },
       "Cyclotourisme 31 – circuit gravel Saubens": {
-        "pages_lues": 0,
+        "pages_lues": 1,
         "pistes": 0
       },
       "Gravel Passion – Haute-Garonne": {
@@ -115,11 +115,11 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 22,
+        "pages_lues": 21,
         "pistes": 1
       },
       "Vetete – mois +1": {
-        "pages_lues": 5,
+        "pages_lues": 6,
         "pistes": 0
       },
       "Vetete – mois +2": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 396,
+    "pages_lues": 397,
     "erreurs": 0,
     "candidats": 12,
     "nouvelles_fiches": 0,
-    "hors_zone": 112,
+    "hors_zone": 113,
     "a_examiner": 10
   },
   "candidats": [
