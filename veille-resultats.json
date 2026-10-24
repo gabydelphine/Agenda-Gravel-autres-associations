@@ -1,14 +1,14 @@
 {
-  "updated": "2026-10-23T05:51:54+00:00",
+  "updated": "2026-10-24T05:59:49+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
-        "pages_lues": 1,
-        "pistes": 0
+        "pages_lues": 60,
+        "pistes": 8
       },
       "Vélo Occitanie – VTT 31": {
-        "pages_lues": 1,
-        "pistes": 0
+        "pages_lues": 60,
+        "pistes": 2
       },
       "Vélo Occitanie – Gravels 81": {
         "pages_lues": 1,
@@ -35,7 +35,7 @@
         "pistes": 0
       },
       "FFVélo 82": {
-        "pages_lues": 0,
+        "pages_lues": 18,
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
@@ -43,7 +43,7 @@
         "pistes": 1
       },
       "Saubens Cyclo": {
-        "pages_lues": 0,
+        "pages_lues": 1,
         "pistes": 0
       },
       "Fontenilles VTT": {
@@ -60,15 +60,15 @@
       },
       "Vélo Occitanie – Raid du Lys": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vélo Occitanie – Randonnée de Venerque": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vélo Occitanie – Nocturne du Lys": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Fontenilles VTT – Côtes Gasconnes": {
         "pages_lues": 1,
@@ -111,8 +111,8 @@
         "pistes": 0
       },
       "Gravel Agenda": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 60,
+        "pistes": 4
       },
       "Vetete": {
         "pages_lues": 19,
@@ -146,14 +146,27 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 200,
-    "erreurs": 3,
-    "candidats": 4,
+    "pages_lues": 394,
+    "erreurs": 0,
+    "candidats": 13,
     "nouvelles_fiches": 0,
-    "hors_zone": 7,
+    "hors_zone": 111,
     "a_examiner": 14
   },
   "candidats": [
+    {
+      "date": "2026-04-11",
+      "title": "5ème Nocturne du Lys",
+      "location": "Sainte-Foy-de-Peyrolières (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31/vtt-31/5eme-nocturne-du-lys-2025",
+      "source_nom": "Vélo Occitanie – Nocturne du Lys",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 28.7,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
+    },
     {
       "date": "2026-04-12",
       "title": "Gravel du Drac 2026",
@@ -166,6 +179,19 @@
       "distance_toulouse_km": 121.2,
       "fiabilite_lieu": "certaine",
       "extrait": "Gravel du Drac 2026 - Gravel, Cyclotourisme, Randonnée - Le 12 avril 2026 à SALVIAC (46)"
+    },
+    {
+      "date": "2026-06-28",
+      "title": "Mez&#039;insolite",
+      "location": "Mézens (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/mezinsolite-2026",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 27.0,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
     },
     {
       "date": "2026-08-16",
@@ -181,6 +207,85 @@
       "extrait": "di 16 | Cardeilhac | 1ère Boucle VTT/Gravel en forêt"
     },
     {
+      "date": "2026-09-06",
+      "title": "la Mailhocoise",
+      "location": "Mailhoc (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/la-mailhocoise-2026",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 67.3,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
+    },
+    {
+      "date": "2026-09-20",
+      "title": "39ème Randonnée de Venerque 31",
+      "location": "Venerque (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://velo-occitanie.fr/vtt-31/39eme-randonnee-de-venerque-31-2026",
+      "source_nom": "Vélo Occitanie – Randonnée de Venerque",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 18.8,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
+    },
+    {
+      "date": "2026-10-18",
+      "title": "19ème Raid du Lys",
+      "location": "Saint-Lys (31)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://velo-occitanie.fr/vtt-31/randonnee-vtt-gravel-2026",
+      "source_nom": "Vélo Occitanie – Raid du Lys",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 22.1,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
+    },
+    {
+      "date": "2026-10-25",
+      "title": "Rando VTT Aspres Thuir 2026",
+      "location": "Thuir (66)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/evenements-partenaires/la-roc-des-aspres-2026-annule",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 151.6,
+      "fiabilite_lieu": "probable",
+      "extrait": "Rando VTT Aspres Thuir 2026 Tweet Événement annulé Propriétés de l'événement Date de l'événement Dim. 25 Octobre 2026 7:00 am 7:00 am - 8:00 am Date butoir pour les inscriptions Sam. 24 Octobre 2026 1:00 pm Discipline VTT Type Chemin forestier Fédération FFC, FSGT, UFOLEP Prestations VTTAE (VTT Électriques) acceptés sur les parcours, Inscription possible sur place le jour même, Une plaque-vélo rem"
+    },
+    {
+      "date": "2026-10-25",
+      "title": "La pampelonnaise",
+      "location": "Pampelonne (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-du-tarn-81/la-pampelonnaise-2026",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 85.1,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
+    },
+    {
+      "date": "2027-06-07",
+      "title": "2SEO_LA MURATAISE",
+      "location": "Murat-sur-Vèbre (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/evenements-gravel-du-tarn-81/2seo-la-murataise-2025",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 113.7,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL",
+      "end_date": "2027-06-09"
+    },
+    {
       "date": "2027-06-13",
       "title": "Wish One Millau Grands Causses",
       "location": "Millau (12)",
@@ -192,6 +297,19 @@
       "distance_toulouse_km": 145.0,
       "fiabilite_lieu": "probable",
       "extrait": "Gravel National Le 13/06/2027 Aveyron WISH ONE MILLAU GRANDS CAUSSES — département Aveyron"
+    },
+    {
+      "date": "2027-06-20",
+      "title": "Cœur Larzac",
+      "location": "Larzac (24)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/cyclos/evenements-cyclo-de-l-aveyron-12/coeur-larzac-2027",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 131.0,
+      "fiabilite_lieu": "probable",
+      "extrait": "Octobre 2026 L M M J V S D 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 Chers passionnés de sport, Contribuez à la dynamique de la communauté en partageant les événements dont vous avez connaissance. Pour cela, inscrivez-vous gratuitement et créez vos événements en ligne en toute simplicité. Invitez vos contacts par e-mail en quelques clics. La plateforme VEL"
     },
     {
       "date": "2027-09-20",
