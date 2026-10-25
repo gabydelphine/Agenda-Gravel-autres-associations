@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15",
+  "updated": "2026-10-25",
   "events": [
     {
       "date": "2026-03-08",
@@ -207,6 +207,14 @@
       "location": "L'Isle-Jourdain (32)",
       "details": "Compétition VTT-Gravel et randonnée VTT / VTTAE / Gravel. Départ du vélodrome « le Placia ».",
       "source": "https://www.facebook.com/groups/1480466703214711/posts/1751905679404144/",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-12-13",
+      "title": "La Rando de noël",
+      "location": "Lalbenque (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/gravels-46/rdn-2026",
       "statut": "valide"
     },
     {
