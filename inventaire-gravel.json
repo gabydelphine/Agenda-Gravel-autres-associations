@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-24",
+  "updated": "2026-10-25",
   "events": [
     {
       "date": "2026-03-08",
@@ -332,6 +332,20 @@
       "validation_gravel": "utilisateur",
       "statut": "valide",
       "date_decision": "2026-10-15"
+    },
+    {
+      "date": "2026-12-13",
+      "title": "La Rando de noël",
+      "location": "Lalbenque (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/gravels/gravels-46/rdn-2026",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 81.8,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-25"
     },
     {
       "date": "2027-06-07",
