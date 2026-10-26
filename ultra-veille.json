@@ -1,28 +1,7 @@
 {
   "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
   "maj": "2026-10-26",
-  "nouveautes": [
-    {
-      "id": "454f0baa75427dc5",
-      "n": "Utopia Gravel",
-      "d": "2027-04-10",
-      "f": "2027-04-11",
-      "l": "Baza, Catalonia, ES",
-      "k": [
-        165
-      ],
-      "t": "gravel",
-      "s": "https://gritline.cc/events/utopia-gravel-2027",
-      "trouve_par": "Gritline – gravel en Catalogne",
-      "vu_le": "2026-10-26",
-      "c": [
-        41.98,
-        2.828
-      ],
-      "p": "ES",
-      "distance_toulouse_km": 213
-    }
-  ],
+  "nouveautes": [],
   "mises_a_jour": [],
   "pistes": [
     {
@@ -99,5 +78,7 @@
       "vu_le": "2026-10-26"
     }
   ],
-  "refusees": []
+  "refusees": [
+    "454f0baa75427dc5"
+  ]
 }

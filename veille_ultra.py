@@ -69,30 +69,43 @@ class Geocodeur:
         self.cache = charger_json(CACHE_GEO, {})
         self.dernier = 0
 
+    def _requete(self, q):
+        attente = 1.1 - (time.time() - self.dernier)
+        if attente > 0:
+            time.sleep(attente)
+        self.dernier = time.time()
+        params = urlencode({"q": q, "format": "json", "limit": 5, "addressdetails": 1,
+                            "countrycodes": "fr,es,ad", "accept-language": "fr"})
+        contenu, _, _ = self.tel.get("https://nominatim.openstreetmap.org/search?" + params,
+                                     compter=False, verifier=False)
+        return json.loads(contenu)
+
     def chercher(self, lieu):
+        """Le résultat doit contenir la commune citée en premier : sinon OpenStreetMap
+        renvoie parfois le centre de la région (« Baza, Catalogne » → Gérone)."""
         cle = normaliser(lieu)
         if not cle:
             return None
         if cle in self.cache:
             return self.cache[cle]
-        attente = 1.1 - (time.time() - self.dernier)
-        if attente > 0:
-            time.sleep(attente)
-        self.dernier = time.time()
-        params = urlencode({"q": lieu, "format": "json", "limit": 1, "addressdetails": 1,
-                            "countrycodes": "fr,es,ad", "accept-language": "fr"})
+        commune = normaliser(re.split(r"[,(]", lieu)[0])
+        resultat = None
         try:
-            contenu, _, _ = self.tel.get("https://nominatim.openstreetmap.org/search?" + params,
-                                         compter=False, verifier=False)
-            r = json.loads(contenu)
+            for q in dict.fromkeys([lieu, re.split(r"[,(]", lieu)[0].strip()]):
+                for r in self._requete(q):
+                    adr = r.get("address", {})
+                    noms = " ".join(normaliser(adr.get(k, "")) for k in
+                                    ("city", "town", "village", "municipality", "hamlet", "suburb"))
+                    if commune and commune in (noms + " " + normaliser(r.get("name", ""))):
+                        pays = (adr.get("country_code") or "").upper()
+                        resultat = {"c": [round(float(r["lat"]), 3), round(float(r["lon"]), 3)],
+                                    "p": "ES" if pays == "ES" else "FR"}
+                        break
+                if resultat:
+                    break
         except Exception as e:
             journal(f"  géocodage « {lieu} » → {e}")
             return None
-        resultat = None
-        if r:
-            pays = (r[0].get("address", {}).get("country_code") or "").upper()
-            resultat = {"c": [round(float(r[0]["lat"]), 3), round(float(r[0]["lon"]), 3)],
-                        "p": "ES" if pays == "ES" else "FR"}
         self.cache[cle] = resultat
         return resultat
 
