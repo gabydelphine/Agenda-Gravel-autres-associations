@@ -52,7 +52,7 @@ jobs:
           git add events.json inventaire-gravel.json ultra.json ultra-veille.json
           if ! git diff --cached --quiet; then
             git commit -m 'Décision humaine sur une manifestation gravel'
-            git pull --rebase origin main
+            git pull --rebase --autostash origin main
             git push
           fi
 
