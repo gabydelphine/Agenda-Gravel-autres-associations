@@ -1,5 +1,5 @@
 {
- "_aide": "Épreuves gravel et bikepacking de 150 km et plus, départ à moins de 350 km de Toulouse. Champs : n = nom, d = début, f = fin (facultatif), a = date approximative affichée (facultatif), l = lieu, p = pays (FR/ES), c = [latitude, longitude] du départ, k = distances en km (150 et plus), t = gravel ou bikepacking, note, s = source.",
+ "_aide": "Épreuves gravel et bikepacking de 150 km et plus, départ à moins de 350 km de Toulouse. Champs : n = nom, d = début, f = fin (facultatif), a = date approximative affichée (facultatif), l = lieu, p = pays (FR/ES), c = [latitude, longitude] du départ, k = distances en km (150 et plus), t = gravel ou bikepacking, note, s = source, o = organisateur (asso = association ou club, prive = entreprise ; absent si inconnu).",
  "maj": "2026-10-26",
  "evenements": [
   {
@@ -18,7 +18,8 @@
    ],
    "t": "gravel",
    "note": "Gravel ou route au choix, en autonomie.",
-   "s": "https://www.finishers.com/course/outdoor-cycling-series-haut-languedoc"
+   "s": "https://www.finishers.com/course/outdoor-cycling-series-haut-languedoc",
+   "o": "prive"
   },
   {
    "n": "GravelMan Marseille",
@@ -37,7 +38,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 60 et 120 km. Gravel ou route.",
-   "s": "https://fr.milesrepublic.com/event/gravelman-series-marseille-17899"
+   "s": "https://fr.milesrepublic.com/event/gravelman-series-marseille-17899",
+   "o": "prive"
   },
   {
    "n": "Gravel Desert",
@@ -70,7 +72,8 @@
    ],
    "t": "bikepacking",
    "note": "Organisé par ÔGravel. Tracé actuel 666 km, en ultra ou en 5 étapes.",
-   "s": "https://www.helloasso.com/associations/o-gravel/evenements/o-gravel-occitanie-600-2027"
+   "s": "https://www.helloasso.com/associations/o-gravel/evenements/o-gravel-occitanie-600-2027",
+   "o": "asso"
   },
   {
    "n": "Basamendi",
@@ -103,7 +106,8 @@
    ],
    "t": "bikepacking",
    "note": "Du Pays basque à l'Andalousie : secteurs imposés, itinéraire libre entre eux.",
-   "s": "https://bikepacking.com/event/desertus-2027/"
+   "s": "https://bikepacking.com/event/desertus-2027/",
+   "o": "prive"
   },
   {
    "n": "La Garba",
@@ -119,7 +123,8 @@
    ],
    "t": "gravel",
    "note": "Six parcours de 60 à 500 km, en autonomie.",
-   "s": "https://bikepacking.com/event/la-garba-2027/"
+   "s": "https://bikepacking.com/event/la-garba-2027/",
+   "o": "prive"
   },
   {
    "n": "GravelMan Salagou",
@@ -137,7 +142,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 60 et 120 km. Gravel ou route.",
-   "s": "https://ultracyclisme.cc/courses/"
+   "s": "https://ultracyclisme.cc/courses/",
+   "o": "prive"
   },
   {
    "n": "The Traka",
@@ -156,7 +162,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 100 km.",
-   "s": "https://www.granfondoguide.com/Events/Popup/10556"
+   "s": "https://www.granfondoguide.com/Events/Popup/10556",
+   "o": "prive"
   },
   {
    "n": "Ahuña Bikepacking – Traversée du Pays basque",
@@ -173,7 +180,8 @@
    ],
    "t": "bikepacking",
    "note": "Boucle gravel en autonomie par les sept provinces basques, 12 430 m D+, 100 h maximum. Solo ou duo, 50 places.",
-   "s": "https://www.ahuna.eus/ahuna-bikepacking"
+   "s": "https://www.ahuna.eus/ahuna-bikepacking",
+   "o": "asso"
   },
   {
    "n": "727 VTT",
@@ -189,7 +197,8 @@
    ],
    "t": "bikepacking",
    "note": "Bikepacking en VTT dans l'Hérault, variantes plus courtes. Même organisateur que la G727.",
-   "s": "https://727bikepacking.fr/727-grand-depart/"
+   "s": "https://727bikepacking.fr/727-grand-depart/",
+   "o": "asso"
   },
   {
    "n": "Outdoor Cycling Series – Causses du Quercy",
@@ -207,7 +216,8 @@
    ],
    "t": "gravel",
    "note": "Gravel ou route, 2 800 m et 6 000 m D+.",
-   "s": "https://www.finishers.com/fr/course/outdoor-cycling-series-causses-du-quercy"
+   "s": "https://www.finishers.com/fr/course/outdoor-cycling-series-causses-du-quercy",
+   "o": "prive"
   },
   {
    "n": "The Wolf Race",
@@ -241,7 +251,8 @@
    ],
    "t": "bikepacking",
    "note": "Boucle gravel en 3 étapes de 90 à 110 km, environ 4 400 m D+.",
-   "s": "https://www.gravelexplore.com/la-dordogne-bikepacking-gravel-and-vtt-2/"
+   "s": "https://www.gravelexplore.com/la-dordogne-bikepacking-gravel-and-vtt-2/",
+   "o": "prive"
   },
   {
    "n": "Ultra rando cyclo la Périgordine",
@@ -277,7 +288,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 70 et 110 km.",
-   "s": "https://fr.milesrepublic.com/en/event/laba-gravel-15280"
+   "s": "https://fr.milesrepublic.com/en/event/laba-gravel-15280",
+   "o": "asso"
   },
   {
    "n": "French Divide",
@@ -294,7 +306,8 @@
    ],
    "t": "bikepacking",
    "note": "Départ de Strasbourg, arrivée au Pays basque. Placé ici à l'arrivée.",
-   "s": "https://www.finishers.com/course/french-divide"
+   "s": "https://www.finishers.com/course/french-divide",
+   "o": "asso"
   },
   {
    "n": "Transpyr Coast to Coast",
@@ -311,7 +324,8 @@
    ],
    "t": "bikepacking",
    "note": "Traversée des Pyrénées en 7 étapes, plus de 900 km. Formule gravel ou VTT.",
-   "s": "https://www.interempresas.net/Ciclismo/664536-La-Transpyr-Coast-to-Coast-ya-tiene-fechas-para-2027.html"
+   "s": "https://www.interempresas.net/Ciclismo/664536-La-Transpyr-Coast-to-Coast-ya-tiene-fechas-para-2027.html",
+   "o": "prive"
   },
   {
    "n": "Lot of Gravel",
@@ -329,7 +343,8 @@
    ],
    "t": "gravel",
    "note": "Le 225 km part de Rocamadour. Aussi 60 et 100 km.",
-   "s": "https://www.finishers.com/fr/course/lot-of-gravel"
+   "s": "https://www.finishers.com/fr/course/lot-of-gravel",
+   "o": "prive"
   },
   {
    "n": "Ranxo Gravel",
@@ -345,7 +360,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 67 et 108 km.",
-   "s": "https://www.granfondoguide.com/Events/Popup/10489"
+   "s": "https://www.granfondoguide.com/Events/Popup/10489",
+   "o": "prive"
   },
   {
    "n": "The Pyrenean Rally",
@@ -414,7 +430,8 @@
    ],
    "t": "gravel",
    "note": "Format GravelMan : de 60 à 500 km. Gravel ou route.",
-   "s": "https://ultracyclisme.cc/courses/"
+   "s": "https://ultracyclisme.cc/courses/",
+   "o": "prive"
   },
   {
    "n": "Pau – Bilbao Bikepacking",
@@ -431,7 +448,8 @@
    ],
    "t": "bikepacking",
    "note": "Par la Poco Loco.",
-   "s": "https://www.finishers.com/fr/course/pau-bilbao-bikepacking"
+   "s": "https://www.finishers.com/fr/course/pau-bilbao-bikepacking",
+   "o": "prive"
   },
   {
    "n": "The Capitals by PedAlma",
@@ -465,7 +483,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 50, 60 et 100 km.",
-   "s": "https://fr.milesrepublic.com/en/course-gravel/charente"
+   "s": "https://fr.milesrepublic.com/en/course-gravel/charente",
+   "o": "asso"
   },
   {
    "n": "Grava Lybica",
@@ -482,7 +501,8 @@
    ],
    "t": "gravel",
    "note": "Gravel en Cerdagne.",
-   "s": "https://www.finishers.com/en/event/grava-lybica"
+   "s": "https://www.finishers.com/en/event/grava-lybica",
+   "o": "asso"
   },
   {
    "n": "Basajaun",
@@ -517,7 +537,8 @@
    ],
    "t": "bikepacking",
    "note": "300 et 500 miles. Type de terrain à vérifier.",
-   "s": "https://www.avaibooksports.com/sport-event/500-y-300-millas-cannibal-2027/private-zone"
+   "s": "https://www.avaibooksports.com/sport-event/500-y-300-millas-cannibal-2027/private-zone",
+   "o": "asso"
   },
   {
    "n": "Outdoor Cycling Series – Pyrénées Ariégeoises",
@@ -535,7 +556,8 @@
    ],
    "t": "gravel",
    "note": "Gravel ou route au choix.",
-   "s": "https://www.finishers.com/en/activities/gravel-bike/gravel-in-france/gravel-in-occitania"
+   "s": "https://www.finishers.com/en/activities/gravel-bike/gravel-in-france/gravel-in-occitania",
+   "o": "prive"
   },
   {
    "n": "Iberica Traversa",
@@ -569,7 +591,8 @@
    ],
    "t": "bikepacking",
    "note": "Par Bivouak.",
-   "s": "https://www.finishers.com/fr/course/la-tapas-odyssey"
+   "s": "https://www.finishers.com/fr/course/la-tapas-odyssey",
+   "o": "prive"
   },
   {
    "n": "G727",
@@ -589,7 +612,8 @@
    ],
    "t": "bikepacking",
    "note": "Boucle gravel depuis l'étang de Thau, à son rythme. Raccourcis à 250, 450 ou 550 km.",
-   "s": "https://727bikepacking.fr/g727/"
+   "s": "https://727bikepacking.fr/g727/",
+   "o": "asso"
   },
   {
    "n": "La Poco Loco Montpellier",
@@ -607,7 +631,8 @@
    ],
    "t": "bikepacking",
    "note": "Vers Barcelone.",
-   "s": "https://www.finishers.com/course/la-poco-loco-montpellier"
+   "s": "https://www.finishers.com/course/la-poco-loco-montpellier",
+   "o": "prive"
   },
   {
    "n": "GravelMan Marseille",
@@ -625,7 +650,8 @@
    ],
    "t": "gravel",
    "note": "Aussi 60 et 120 km. Gravel ou route.",
-   "s": "https://ultracyclisme.cc/courses/"
+   "s": "https://ultracyclisme.cc/courses/",
+   "o": "prive"
   }
  ],
  "a_surveiller": [

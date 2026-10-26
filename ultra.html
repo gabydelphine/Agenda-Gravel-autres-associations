@@ -58,6 +58,11 @@ h2{font:700 1.35rem var(--display);text-transform:uppercase;letter-spacing:.05em
 .type{font:700 .7rem var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
 .ev[data-type="bikepacking"] .type{color:var(--bike)}
 .ev a{font-size:.85rem;color:var(--accent)}
+.org{font:700 .68rem var(--body);text-transform:uppercase;letter-spacing:.05em;padding:2px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.org-asso{border-color:var(--bike);color:var(--bike)}
+.filtres button.fort{font-size:1rem;padding:7px 13px}
+.filtres button.leger{font-size:.78rem;padding:4px 8px}
+@media (max-width:420px){.groupe[data-filtre="org"] span{display:none}}
 @media (max-width:560px){.ev{grid-template-columns:minmax(0,1fr) auto}.quand{grid-column:1/-1}}
 .vide{color:var(--muted);padding:20px 0}
 .bilan{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
@@ -84,6 +89,11 @@ footer{margin-top:30px;font-size:.85rem;color:var(--muted);max-width:70ch}
   </div>
 
   <div class="filtres" role="group" aria-label="Filtres">
+    <div class="groupe" data-filtre="org"><span>Organisateur</span>
+      <button type="button" id="f-org-asso" class="fort" data-v="asso" aria-pressed="true">Associations</button>
+      <button type="button" id="f-org-tout" class="leger" data-v="tout" aria-pressed="false">Tous</button>
+      <button type="button" id="f-org-prive" class="leger" data-v="prive" aria-pressed="false">Privé</button>
+    </div>
     <div class="groupe" data-filtre="type"><span>Type</span>
       <button type="button" id="f-type-tout" data-v="tout" aria-pressed="true">Tout</button>
       <button type="button" id="f-type-gravel" data-v="gravel" aria-pressed="false">Épreuve gravel</button>
@@ -155,12 +165,12 @@ function el(tag, attrs = {}, ...kids){
   for (const k of kids) if (k != null) n.append(k);
   return n;
 }
-const etat = {type:'tout', km:150, pays:'tout'};
-try { Object.assign(etat, JSON.parse(localStorage.getItem('ultra-filtres') || '{}')); } catch (_) {}
+const etat = {type:'tout', km:150, pays:'tout', org:'asso'};
+try { Object.assign(etat, JSON.parse(localStorage.getItem('ultra-filtres-v2') || '{}')); } catch (_) {}
 
 function visibles(){
   const auj = new Date().toISOString().slice(0, 10);  // les épreuves terminées disparaissent
-  return EVENTS.filter(e => (e.f || e.d) >= auj && (etat.type === 'tout' || e.t === etat.type) && e.max >= Number(etat.km) && (etat.pays === 'tout' || e.p === etat.pays));
+  return EVENTS.filter(e => (e.f || e.d) >= auj && (etat.type === 'tout' || e.t === etat.type) && e.max >= Number(etat.km) && (etat.pays === 'tout' || e.p === etat.pays) && (etat.org === 'tout' || e.o === etat.org));
 }
 
 function rendreListe(){
@@ -183,6 +193,7 @@ function rendreListe(){
       el('div', {class:'cote'},
         el('div', {class:'loin'}, Math.round(e.dist) + ' km', el('small', {text:'de Toulouse'})),
         el('div', {class:'type', text: e.t === 'gravel' ? 'Épreuve gravel' : 'Bikepacking'}),
+        e.o ? el('div', {class:'org org-' + e.o, text: e.o === 'asso' ? 'Association' : 'Privé'}) : null,
         /^https?:\/\//.test(e.s || '') ? el('a', {href:e.s, target:'_blank', rel:'noopener', text:'Source'}) : null)));
   }
   rendreRadar(L);
@@ -218,7 +229,7 @@ document.querySelectorAll('.groupe').forEach(g => {
     b.addEventListener('click', () => {
       etat[f] = b.dataset.v;
       g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-      try { localStorage.setItem('ultra-filtres', JSON.stringify(etat)); } catch (_) {}
+      try { localStorage.setItem('ultra-filtres-v2', JSON.stringify(etat)); } catch (_) {}
       rendreListe();
     });
   });
