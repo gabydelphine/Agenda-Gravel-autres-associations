@@ -1,5 +1,5 @@
 {
- "_aide": "Épreuves gravel et bikepacking de plus de 150 km, départ à moins de 350 km de Toulouse. Champs : n = nom, d = début, f = fin (facultatif), a = date approximative affichée (facultatif), l = lieu, p = pays (FR/ES), c = [latitude, longitude] du départ, k = distances en km (150 et plus), t = gravel ou bikepacking, note, s = source.",
+ "_aide": "Épreuves gravel et bikepacking de 150 km et plus, départ à moins de 350 km de Toulouse. Champs : n = nom, d = début, f = fin (facultatif), a = date approximative affichée (facultatif), l = lieu, p = pays (FR/ES), c = [latitude, longitude] du départ, k = distances en km (150 et plus), t = gravel ou bikepacking, note, s = source.",
  "maj": "2026-10-26",
  "evenements": [
   {
@@ -71,6 +71,22 @@
    "t": "gravel",
    "note": "Distance à vérifier : 170 ou 208 km selon les sources.",
    "s": "https://www.granfondoguide.com/Events/Popup/13374"
+  },
+  {
+   "n": "Basamendi",
+   "d": "2027-04-10",
+   "l": "Anglet (64)",
+   "p": "FR",
+   "c": [
+    43.48,
+    -1.52
+   ],
+   "k": [
+    150
+   ],
+   "t": "gravel",
+   "note": "Aussi 80 et 100 km.",
+   "s": "https://fr.milesrepublic.com/en/rando-gravel/pyrenees-atlantiques"
   },
   {
    "n": "La Garba",

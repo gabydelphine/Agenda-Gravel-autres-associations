@@ -296,7 +296,7 @@ def main():
     if ultra_nouv or ultra_dates:
         morceaux_html.append(
             '<h2 style="margin-top:30px;color:#2f6f73;">Calendrier Ultra gravel</h2>'
-            "<p>Épreuves gravel ou bikepacking de plus de 150 km, départ à moins de 350 km de Toulouse.</p>"
+            "<p>Épreuves gravel ou bikepacking de 150 km et plus, départ à moins de 350 km de Toulouse.</p>"
         )
         lignes_texte.extend(["", "CALENDRIER ULTRA GRAVEL", ""])
         for f in ultra_nouv:

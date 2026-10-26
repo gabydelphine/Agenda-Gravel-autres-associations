@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Veille du calendrier « Ultra gravel » (ultra.json).
 
-Épreuves gravel ou bikepacking dont un parcours dépasse 150 km, avec un départ
+Épreuves gravel ou bikepacking dont un parcours fait 150 km ou plus, avec un départ
 à moins de 350 km de Toulouse. Réglages dans ultra-sources.json.
 
 Chaque jour :
