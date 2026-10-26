@@ -40,6 +40,22 @@
    "s": "https://fr.milesrepublic.com/event/gravelman-series-marseille-17899"
   },
   {
+   "n": "Gravel Desert",
+   "d": "2027-03-13",
+   "l": "Grañén (Huesca)",
+   "p": "ES",
+   "c": [
+    41.945,
+    -0.37
+   ],
+   "k": [
+    167
+   ],
+   "t": "gravel",
+   "note": "Désert des Monegros. Aussi 85 km.",
+   "s": "https://graveldesert.com/"
+  },
+  {
    "n": "Ô Gravel Occitanie 600",
    "d": "2027-04-03",
    "f": "2027-04-08",
@@ -57,22 +73,6 @@
    "s": "https://www.helloasso.com/associations/o-gravel/evenements/o-gravel-occitanie-600-2027"
   },
   {
-   "n": "Gravel Desert",
-   "d": "2027-04-10",
-   "l": "Grañén (Huesca)",
-   "p": "ES",
-   "c": [
-    41.945,
-    -0.37
-   ],
-   "k": [
-    170
-   ],
-   "t": "gravel",
-   "note": "Distance à vérifier : 170 ou 208 km selon les sources.",
-   "s": "https://www.granfondoguide.com/Events/Popup/13374"
-  },
-  {
    "n": "Basamendi",
    "d": "2027-04-10",
    "l": "Anglet (64)",
@@ -87,6 +87,23 @@
    "t": "gravel",
    "note": "Aussi 80 et 100 km.",
    "s": "https://fr.milesrepublic.com/en/rando-gravel/pyrenees-atlantiques"
+  },
+  {
+   "n": "Desertus Bikus",
+   "d": "2027-04-10",
+   "f": "2027-04-16",
+   "l": "Ascain (64) → Andalousie",
+   "p": "FR",
+   "c": [
+    43.346,
+    -1.62
+   ],
+   "k": [
+    1300
+   ],
+   "t": "bikepacking",
+   "note": "Du Pays basque à l'Andalousie : secteurs imposés, itinéraire libre entre eux.",
+   "s": "https://bikepacking.com/event/desertus-2027/"
   },
   {
    "n": "La Garba",
@@ -159,6 +176,22 @@
    "s": "https://www.ahuna.eus/ahuna-bikepacking"
   },
   {
+   "n": "727 VTT",
+   "d": "2027-05-08",
+   "l": "Poussan (34)",
+   "p": "FR",
+   "c": [
+    43.49,
+    3.67
+   ],
+   "k": [
+    727
+   ],
+   "t": "bikepacking",
+   "note": "Bikepacking en VTT dans l'Hérault, variantes plus courtes. Même organisateur que la G727.",
+   "s": "https://727bikepacking.fr/727-grand-depart/"
+  },
+  {
    "n": "Outdoor Cycling Series – Causses du Quercy",
    "d": "2027-05-15",
    "a": "mi-mai",
@@ -192,6 +225,23 @@
    "t": "bikepacking",
    "note": "De nuit, en autonomie, environ 90 % de pistes.",
    "s": "https://www.gasteizhoy.com/the-wolf-race-alava-2026/"
+  },
+  {
+   "n": "Le Tour de la Dordogne Bikepacking Off-Road",
+   "d": "2027-05-23",
+   "a": "mai, à confirmer",
+   "l": "Bergerac (24)",
+   "p": "FR",
+   "c": [
+    44.853,
+    0.483
+   ],
+   "k": [
+    310
+   ],
+   "t": "bikepacking",
+   "note": "Boucle gravel en 3 étapes de 90 à 110 km, environ 4 400 m D+.",
+   "s": "https://www.gravelexplore.com/la-dordogne-bikepacking-gravel-and-vtt-2/"
   },
   {
    "n": "Ultra rando cyclo la Périgordine",
@@ -418,6 +468,23 @@
    "s": "https://fr.milesrepublic.com/en/course-gravel/charente"
   },
   {
+   "n": "Grava Lybica",
+   "d": "2027-07-15",
+   "a": "juillet, à confirmer",
+   "l": "Llívia (Cerdagne)",
+   "p": "ES",
+   "c": [
+    42.465,
+    1.98
+   ],
+   "k": [
+    190
+   ],
+   "t": "gravel",
+   "note": "Gravel en Cerdagne.",
+   "s": "https://www.finishers.com/en/event/grava-lybica"
+  },
+  {
    "n": "Basajaun",
    "d": "2027-07-25",
    "f": "2027-08-01",
@@ -565,6 +632,6 @@
   "GravelMan Bordeaux : 22–23 mai 2026, jusqu'à 600 km. Date 2027 pas encore publiée.",
   "GravelMan Pays basque (Saint-Pée-sur-Nivelle) : 19–20 juin 2026, jusqu'à 500 km. Date 2027 pas encore publiée.",
   "CAT700 (Pyrénées catalanes → delta de l'Èbre) : juin 2026, 510 à 800 km. Pas encore de date 2027.",
-  "Ultraïa (Pays basque) : annoncé du 25 sept. au 1er oct. 2027, distance non communiquée."
+  "Ultraïa (Pays basque, départ de Bayonne) : fin septembre ou octobre 2027 selon les sources, 1 000 ou 1 400 km. Type de terrain à vérifier."
  ]
 }
