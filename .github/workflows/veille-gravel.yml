@@ -56,6 +56,7 @@ jobs:
           git add veille-resultats.json inventaire-gravel.json cache/communes-zone.json $(ls ultra-veille.json cache/geo-ultra.json 2>/dev/null)
           if ! git diff --cached --quiet; then
             git commit -m "Mise a jour veille gravel"
+            git pull --rebase origin main
             git push
           fi
 
@@ -68,6 +69,7 @@ jobs:
             git add veille-notifications.json
             if ! git diff --cached --quiet; then
               git commit -m "Mise a jour historique notifications gravel"
+              git pull --rebase origin main
               git push
             fi
           fi
