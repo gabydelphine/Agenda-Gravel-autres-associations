@@ -1,0 +1,103 @@
+{
+  "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
+  "maj": "2026-10-26",
+  "nouveautes": [
+    {
+      "id": "454f0baa75427dc5",
+      "n": "Utopia Gravel",
+      "d": "2027-04-10",
+      "f": "2027-04-11",
+      "l": "Baza, Catalonia, ES",
+      "k": [
+        165
+      ],
+      "t": "gravel",
+      "s": "https://gritline.cc/events/utopia-gravel-2027",
+      "trouve_par": "Gritline – gravel en Catalogne",
+      "vu_le": "2026-10-26",
+      "c": [
+        41.98,
+        2.828
+      ],
+      "p": "ES",
+      "distance_toulouse_km": 213
+    }
+  ],
+  "mises_a_jour": [],
+  "pistes": [
+    {
+      "id": "1e80510b7f8a085b",
+      "n": "Iceni 360 (2026)",
+      "d": "2026-10-31",
+      "f": null,
+      "l": "Ipswich, Suffolk, United Kingdom",
+      "k": [
+        434,
+        579
+      ],
+      "t": "bikepacking",
+      "s": "https://bikepacking.com/event/iceni-360-2026/",
+      "trouve_par": "bikepacking.com – événements",
+      "vu_le": "2026-10-26"
+    },
+    {
+      "id": "5d1c5c1dfaac4325",
+      "n": "2026 Hunt 1000",
+      "d": "2026-11-21",
+      "f": null,
+      "l": "Melbourne, VIC, Australia",
+      "k": [
+        500,
+        999
+      ],
+      "t": "bikepacking",
+      "s": "https://bikepacking.com/event/2026-hunt-1000/",
+      "trouve_par": "bikepacking.com – événements",
+      "vu_le": "2026-10-26"
+    },
+    {
+      "id": "eed0e35dd6113186",
+      "n": "El Sur",
+      "d": "2027-03-14",
+      "f": "2027-03-19",
+      "l": "Málaga, Andalucía, Catalonia, ES",
+      "k": [
+        800
+      ],
+      "t": "bikepacking",
+      "s": "https://gritline.cc/events/el-sur-2027",
+      "trouve_par": "Gritline – gravel en Catalogne",
+      "vu_le": "2026-10-26"
+    },
+    {
+      "id": "8ee8292e8f476008",
+      "n": "Termes 53",
+      "d": "2027-05-15",
+      "f": "2027-05-20",
+      "l": "Mallorca, Spain, Spain",
+      "k": [
+        730
+      ],
+      "t": "bikepacking",
+      "s": "https://gravelevents.com/events/termes-53",
+      "trouve_par": "gravelevents.com – Espagne",
+      "vu_le": "2026-10-26"
+    },
+    {
+      "id": "315f1c0b36aef985",
+      "n": "Grelly ’27",
+      "d": "2027-05-20",
+      "f": null,
+      "l": "Luxembourg, Belgium",
+      "k": [
+        698,
+        700
+      ],
+      "t": "bikepacking",
+      "s": "https://bikepacking.com/event/grelly-2027/",
+      "trouve_par": "bikepacking.com – événements",
+      "vu_le": "2026-10-26"
+    }
+  ],
+  "refusees": []
+}

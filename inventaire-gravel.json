@@ -431,6 +431,20 @@
       "statut": "refuse",
       "date_detection": "2026-10-21",
       "date_decision": "2026-10-25"
+    },
+    {
+      "date": "2027-10-17",
+      "title": "LA CASTRAISE",
+      "location": "Castres (81)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/cyclos/evenements-cyclos-du-tarn-81/la-castraise-2027",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 64.5,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-10-26"
     }
   ]
 }

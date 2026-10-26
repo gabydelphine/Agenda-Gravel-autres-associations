@@ -1,0 +1,35 @@
+{
+  "grenoble, france, france": {
+    "c": [
+      45.188,
+      5.736
+    ],
+    "p": "FR"
+  },
+  "bassin minier, france, france": {
+    "c": [
+      46.603,
+      4.337
+    ],
+    "p": "FR"
+  },
+  "mallorca, spain, spain": null,
+  "malaga, andalucia, catalonia, es": null,
+  "baza, catalonia, es": {
+    "c": [
+      41.98,
+      2.828
+    ],
+    "p": "ES"
+  },
+  "ipswich, suffolk, united kingdom": null,
+  "melbourne, vic, australia": null,
+  "andalucia, spain": {
+    "c": [
+      37.34,
+      -4.581
+    ],
+    "p": "ES"
+  },
+  "luxembourg, belgium": null
+}
