@@ -34,7 +34,7 @@ jobs:
           python - <<'PY'
           import os, re, subprocess
           titre = os.environ['TITRE']
-          ultra = re.fullmatch(r'ULTRA (AJOUTER|REFUSER|DATE) ([0-9a-f]{16})', titre)
+          ultra = re.fullmatch(r'ULTRA (AJOUTER-ASSO|AJOUTER-PRIVE|AJOUTER|REFUSER|DATE) ([0-9a-f]{16})', titre)
           if ultra:
               subprocess.run(['python', 'veille_ultra.py', '--decision', ultra.group(1).lower(), '--id', ultra.group(2)], check=True)
               raise SystemExit(0)
