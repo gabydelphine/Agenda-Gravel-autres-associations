@@ -34,6 +34,10 @@ jobs:
           python - <<'PY'
           import os, re, subprocess
           titre = os.environ['TITRE']
+          ultra = re.fullmatch(r'ULTRA (AJOUTER|REFUSER|DATE) ([0-9a-f]{16})', titre)
+          if ultra:
+              subprocess.run(['python', 'veille_ultra.py', '--decision', ultra.group(1).lower(), '--id', ultra.group(2)], check=True)
+              raise SystemExit(0)
           match = re.fullmatch(r'GRAVEL (VALIDER|REFUSER) ([0-9a-f]{16})', titre)
           if not match:
               raise SystemExit('Titre non reconnu : aucune modification')
@@ -45,7 +49,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add events.json inventaire-gravel.json
+          git add events.json inventaire-gravel.json ultra.json ultra-veille.json
           if ! git diff --cached --quiet; then
             git commit -m 'Décision humaine sur une manifestation gravel'
             git push

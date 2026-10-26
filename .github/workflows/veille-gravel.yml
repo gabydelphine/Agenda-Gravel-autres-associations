@@ -33,6 +33,13 @@ jobs:
           BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
         run: python veille_gravel.py
 
+      - name: Executer la veille Ultra gravel
+        if: github.event.schedule != '0 7 * * 0'
+        continue-on-error: true
+        env:
+          BRAVE_API_KEY: ${{ secrets.BRAVE_API_KEY }}
+        run: python veille_ultra.py
+
       - name: Envoyer le recapitulatif
         if: github.event.schedule == '0 7 * * 0' || github.event_name == 'workflow_dispatch'
         env:
@@ -46,7 +53,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add veille-resultats.json inventaire-gravel.json cache/communes-zone.json
+          git add veille-resultats.json inventaire-gravel.json cache/communes-zone.json $(ls ultra-veille.json cache/geo-ultra.json 2>/dev/null)
           if ! git diff --cached --quiet; then
             git commit -m "Mise a jour veille gravel"
             git push
