@@ -142,6 +142,23 @@
    "s": "https://www.granfondoguide.com/Events/Popup/10556"
   },
   {
+   "n": "Ahuña Bikepacking – Traversée du Pays basque",
+   "d": "2027-05-05",
+   "f": "2027-05-09",
+   "l": "Donostia – Saint-Sébastien",
+   "p": "ES",
+   "c": [
+    43.32,
+    -1.985
+   ],
+   "k": [
+    800
+   ],
+   "t": "bikepacking",
+   "note": "Boucle gravel en autonomie par les sept provinces basques, 12 430 m D+, 100 h maximum. Solo ou duo, 50 places.",
+   "s": "https://www.ahuna.eus/ahuna-bikepacking"
+  },
+  {
    "n": "Outdoor Cycling Series – Causses du Quercy",
    "d": "2027-05-15",
    "a": "mi-mai",
@@ -434,23 +451,6 @@
    "t": "bikepacking",
    "note": "300 et 500 miles. Type de terrain à vérifier.",
    "s": "https://www.avaibooksports.com/sport-event/500-y-300-millas-cannibal-2027/private-zone"
-  },
-  {
-   "n": "Euskal Herria Gravel Divide – Ahuña Gravel",
-   "d": "2027-09-10",
-   "a": "septembre, à confirmer",
-   "l": "Bayonne (64)",
-   "p": "FR",
-   "c": [
-    43.49,
-    -1.475
-   ],
-   "k": [
-    800
-   ],
-   "t": "bikepacking",
-   "note": "Traversée du Pays basque en gravel, solo ou duo, environ 15 000 m D+.",
-   "s": "https://www.ahuna.eus/"
   },
   {
    "n": "Outdoor Cycling Series – Pyrénées Ariégeoises",
