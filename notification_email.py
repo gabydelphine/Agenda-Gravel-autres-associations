@@ -310,13 +310,16 @@ def main():
                 f"({echapper(f.get('distance_toulouse_km'))} km de Toulouse)<br>",
                 f"<strong>Distances :</strong> {echapper(km)} · {echapper(f.get('t'))}</p>",
                 f'<p><a href="{echapper(f.get("s"))}">Voir la source</a></p>',
-                "<p>" + bouton(lien_ultra(f, "AJOUTER", "ajouter au calendrier"), "Ajouter", "#2f6f73")
+                "<p>" + bouton(lien_ultra(f, "AJOUTER-ASSO", "ajouter, organisée par une association"),
+                               "Ajouter (association)", "#2f6f73")
+                + bouton(lien_ultra(f, "AJOUTER-PRIVE", "ajouter, organisateur privé"), "Ajouter (privé)", "#647169")
                 + bouton(lien_ultra(f, "REFUSER", "ne plus proposer"), "Ignorer", "#a83232") + "</p>",
                 "</div>",
             ])
             lignes_texte.extend([f"{f.get('n')} — {f.get('d')} — {f.get('l')} — {km}",
                                  f"Source : {f.get('s')}",
-                                 f"Ajouter : {lien_ultra(f, 'AJOUTER', 'ajouter au calendrier')}",
+                                 f"Ajouter (association) : {lien_ultra(f, 'AJOUTER-ASSO', 'ajouter, organisée par une association')}",
+                                 f"Ajouter (privé) : {lien_ultra(f, 'AJOUTER-PRIVE', 'ajouter, organisateur privé')}",
                                  f"Ignorer : {lien_ultra(f, 'REFUSER', 'ne plus proposer')}", ""])
         for f in ultra_dates:
             morceaux_html.extend([

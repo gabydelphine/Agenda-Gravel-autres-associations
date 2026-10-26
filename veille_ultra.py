@@ -16,7 +16,7 @@ Chaque jour :
 Rien n'est publié automatiquement : tout part dans ultra-veille.json, puis dans
 l'e-mail du dimanche, avec des boutons « Ajouter », « Ignorer » ou « Mettre la
 date à jour ». Ces boutons créent une demande GitHub, qui lance :
-    python veille_ultra.py --decision ajouter|refuser|date --id <identifiant>
+    python veille_ultra.py --decision ajouter|ajouter-asso|ajouter-prive|refuser|date --id <identifiant>
 """
 import argparse
 import hashlib
@@ -326,14 +326,15 @@ def decider(decision, num):
         refusees.add(num)
         etat["nouveautes"] = [n for n in etat.get("nouveautes", []) if n["id"] != num]
         etat["mises_a_jour"] = [m for m in etat.get("mises_a_jour", []) if m["id"] != num]
-    elif decision == "ajouter":
+    elif decision in ("ajouter", "ajouter-asso", "ajouter-prive"):
         fiche = next((n for n in etat.get("nouveautes", []) if n["id"] == num), None)
         if not fiche:
             raise SystemExit(f"Nouveauté {num} introuvable.")
         cal["evenements"].append({k: v for k, v in {
             "n": fiche["n"], "d": fiche["d"], "f": fiche.get("f"), "l": fiche["l"], "p": fiche["p"],
             "c": fiche["c"], "k": fiche["k"], "t": fiche["t"],
-            "note": "Ajouté par la veille, à compléter si besoin.", "s": fiche["s"]}.items() if v})
+            "note": "Ajouté par la veille, à compléter si besoin.", "s": fiche["s"],
+            "o": {"ajouter-asso": "asso", "ajouter-prive": "prive"}.get(decision)}.items() if v})
         etat["nouveautes"] = [n for n in etat["nouveautes"] if n["id"] != num]
         refusees.add(num)  # déjà traitée : ne plus la proposer
     elif decision == "date":
@@ -361,7 +362,7 @@ def decider(decision, num):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--decision", choices=["ajouter", "refuser", "date"])
+    p.add_argument("--decision", choices=["ajouter", "ajouter-asso", "ajouter-prive", "refuser", "date"])
     p.add_argument("--id")
     a = p.parse_args()
     if a.decision:
