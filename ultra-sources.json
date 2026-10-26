@@ -1,0 +1,26 @@
+{
+  "_aide": "Réglages de la veille du calendrier Ultra gravel (veille_ultra.py). Pour surveiller un autre calendrier : copier une ligne de « listes », changer le nom et l'adresse ; « motif_liens » ne garde que les liens vers les fiches d'épreuve. Les requêtes web utilisent la clé BRAVE_API_KEY ; {annee} devient l'année de la saison à venir.",
+  "centre": {"nom": "Toulouse", "lat": 43.6047, "lon": 1.4442},
+  "rayon_km": 350,
+  "distance_min_km": 150,
+  "listes": [
+    {"nom": "Finishers – gravel ultra distance", "url": "https://www.finishers.com/fr/disciplines/gravel/gravels-ultra-distance", "motif_liens": "^/(?:fr/)?(?:course|e|event)/"},
+    {"nom": "Finishers – gravel longue distance", "url": "https://www.finishers.com/disciplines/gravel/gravel-longue-distance", "motif_liens": "^/(?:fr/)?(?:course|e|event)/"},
+    {"nom": "Finishers – gravel en Occitanie", "url": "https://www.finishers.com/en/activities/gravel-bike/gravel-in-france/gravel-in-occitania", "motif_liens": "^/(?:en/)?(?:course|e|event)/"},
+    {"nom": "gravelevents.com – France", "url": "https://gravelevents.com/gravel-events-france", "motif_liens": "/(?:event|events)/"},
+    {"nom": "gravelevents.com – Espagne", "url": "https://gravelevents.com/gravel-events-spain", "motif_liens": "/(?:event|events)/"},
+    {"nom": "ultracyclisme.cc", "url": "https://ultracyclisme.cc/courses/", "motif_liens": "^/courses?/[^/]+"}
+  ],
+  "recherche_web": {
+    "requetes": [
+      "ultra gravel {annee} Occitanie",
+      "bikepacking {annee} Pyrénées gravel",
+      "gravel 300 km {annee} sud-ouest",
+      "ultra gravel {annee} Pays basque",
+      "bikepacking race {annee} Catalunya gravel",
+      "gravel 200 km {annee} Aveyron Lot Tarn"
+    ],
+    "resultats_par_requete": 15
+  },
+  "limites": {"fiches_par_liste": 40, "pages_total": 260, "delai_par_site_s": 1.5}
+}

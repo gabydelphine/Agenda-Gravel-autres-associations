@@ -158,7 +158,8 @@ const etat = {type:'tout', km:150, pays:'tout'};
 try { Object.assign(etat, JSON.parse(localStorage.getItem('ultra-filtres') || '{}')); } catch (_) {}
 
 function visibles(){
-  return EVENTS.filter(e => (etat.type === 'tout' || e.t === etat.type) && e.max >= Number(etat.km) && (etat.pays === 'tout' || e.p === etat.pays));
+  const auj = new Date().toISOString().slice(0, 10);  // les épreuves terminées disparaissent
+  return EVENTS.filter(e => (e.f || e.d) >= auj && (etat.type === 'tout' || e.t === etat.type) && e.max >= Number(etat.km) && (etat.pays === 'tout' || e.p === etat.pays));
 }
 
 function rendreListe(){

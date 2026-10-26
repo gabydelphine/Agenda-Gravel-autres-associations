@@ -15,6 +15,7 @@ from urllib.request import Request, urlopen
 INVENTAIRE = Path("inventaire-gravel.json")
 HISTORIQUE = Path("veille-notifications.json")
 RESULTATS = Path("veille-resultats.json")
+ULTRA = Path("ultra-veille.json")
 
 DEPOT = os.environ.get(
     "GITHUB_REPOSITORY",
@@ -122,6 +123,25 @@ def lien_decision(fiche, decision):
     )
 
 
+def lien_ultra(fiche, decision, texte):
+    """Lien GitHub qui crée la demande « ULTRA AJOUTER|REFUSER|DATE <id> »."""
+    corps = (
+        f"Calendrier Ultra gravel : {fiche.get('n', '')}\n"
+        f"Date : {fiche.get('d', '')}\n"
+        f"Source : {fiche.get('s', '')}\n\n"
+        f"Décision demandée : {texte}\n\n"
+        "Créer cette issue pour confirmer la décision."
+    )
+    return ("https://github.com/" + DEPOT + "/issues/new?"
+            + urlencode({"title": f"ULTRA {decision} {fiche['id']}", "body": corps}))
+
+
+def bouton(lien, texte, couleur):
+    return ('<a href="{}" style="display:inline-block;padding:10px 16px;background:{};'
+            'color:white;text-decoration:none;border-radius:5px;margin-right:6px;">{}</a>'
+            ).format(echapper(lien), couleur, texte)
+
+
 def echapper(valeur):
     return html.escape(str(valeur or ""), quote=True)
 
@@ -172,7 +192,12 @@ def main():
             pistes.append((cle_piste, piste))
     pistes = pistes[:40]
 
-    if not nouveautes and not pistes:
+    # Calendrier Ultra gravel : nouvelles épreuves et dates précisées (veille_ultra.py).
+    ultra = charger(ULTRA, {})
+    ultra_nouv = [f for f in ultra.get("nouveautes", []) if "ultra:" + f["id"] not in deja_envoyes]
+    ultra_dates = [f for f in ultra.get("mises_a_jour", []) if "ultra:" + f["id"] not in deja_envoyes]
+
+    if not nouveautes and not pistes and not ultra_nouv and not ultra_dates:
         print("Aucune nouvelle manifestation à notifier.")
         return
 
@@ -268,6 +293,46 @@ def main():
             lignes_texte.append(f"{piste.get('date')} — {piste.get('title')} — {piste.get('source')}")
         morceaux_html.append("</ul>")
 
+    if ultra_nouv or ultra_dates:
+        morceaux_html.append(
+            '<h2 style="margin-top:30px;color:#2f6f73;">Calendrier Ultra gravel</h2>'
+            "<p>Épreuves gravel ou bikepacking de plus de 150 km, départ à moins de 350 km de Toulouse.</p>"
+        )
+        lignes_texte.extend(["", "CALENDRIER ULTRA GRAVEL", ""])
+        for f in ultra_nouv:
+            km = ", ".join(f"{k} km" for k in f.get("k", []))
+            morceaux_html.extend([
+                '<div style="border-top:1px solid #ddd;padding:14px 0;">',
+                f"<h3>{echapper(f.get('n'))}</h3>",
+                f"<p><strong>Date :</strong> {echapper(f.get('d'))}"
+                + (f" au {echapper(f.get('f'))}" if f.get("f") else "") + "<br>",
+                f"<strong>Lieu :</strong> {echapper(f.get('l'))} "
+                f"({echapper(f.get('distance_toulouse_km'))} km de Toulouse)<br>",
+                f"<strong>Distances :</strong> {echapper(km)} · {echapper(f.get('t'))}</p>",
+                f'<p><a href="{echapper(f.get("s"))}">Voir la source</a></p>',
+                "<p>" + bouton(lien_ultra(f, "AJOUTER", "ajouter au calendrier"), "Ajouter", "#2f6f73")
+                + bouton(lien_ultra(f, "REFUSER", "ne plus proposer"), "Ignorer", "#a83232") + "</p>",
+                "</div>",
+            ])
+            lignes_texte.extend([f"{f.get('n')} — {f.get('d')} — {f.get('l')} — {km}",
+                                 f"Source : {f.get('s')}",
+                                 f"Ajouter : {lien_ultra(f, 'AJOUTER', 'ajouter au calendrier')}",
+                                 f"Ignorer : {lien_ultra(f, 'REFUSER', 'ne plus proposer')}", ""])
+        for f in ultra_dates:
+            morceaux_html.extend([
+                '<div style="border-top:1px solid #ddd;padding:14px 0;">',
+                f"<h3>Date précisée : {echapper(f.get('n'))}</h3>",
+                f"<p>Affiché aujourd'hui : {echapper(f.get('d_actuelle'))}<br>"
+                f"Trouvé sur la source : <strong>{echapper(f.get('d'))}</strong>"
+                + (f" au {echapper(f.get('f'))}" if f.get("f") else "") + "</p>",
+                f'<p><a href="{echapper(f.get("s"))}">Voir la source</a></p>',
+                "<p>" + bouton(lien_ultra(f, "DATE", "mettre la date à jour"), "Mettre à jour", "#2f6f73")
+                + bouton(lien_ultra(f, "REFUSER", "garder la date actuelle"), "Ignorer", "#a83232") + "</p>",
+                "</div>",
+            ])
+            lignes_texte.extend([f"Date précisée : {f.get('n')} → {f.get('d')}",
+                                 f"Mettre à jour : {lien_ultra(f, 'DATE', 'mettre la date à jour')}", ""])
+
     morceaux_html.extend([
         "<p>Veille Gravel Toulouse</p>",
         "</div></body></html>"
@@ -285,6 +350,8 @@ def main():
             f"Veille Gravel - "
             f"{len(nouveautes)} manifestation(s) à valider"
             + (f", {len(pistes)} piste(s)" if pistes else "")
+            + (f", {len(ultra_nouv) + len(ultra_dates)} pour le calendrier Ultra"
+               if ultra_nouv or ultra_dates else "")
         ),
         "htmlContent": "\n".join(morceaux_html),
         "textContent": "\n".join(lignes_texte)
@@ -318,6 +385,7 @@ def main():
         for fiche in nouveautes
     )
     deja_envoyes.update(cle for cle, _ in pistes)
+    deja_envoyes.update("ultra:" + f["id"] for f in ultra_nouv + ultra_dates)
 
     HISTORIQUE.write_text(
         json.dumps(
