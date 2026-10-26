@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ultra gravel autour de Toulouse — 150 km et plus, à 350 km</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Mise en page : en-tête + radar des distances depuis Toulouse, puis la liste mois par mois, filtrable. */
+:root{
+  --bg:#f8f6f1; --surface:#ffffff; --ink:#26312b; --muted:#647169; --line:#e3ded4;
+  --accent:#873c46; --accent-soft:#f1e3e4; --bike:#2f6f73; --bike-soft:#dcecec; --warn:#8a5a00; --warn-soft:#f6ead2;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#171b19; --surface:#202623; --ink:#e7ebe8; --muted:#9aa69f; --line:#333b37;
+  --accent:#d98a94; --accent-soft:#3a2629; --bike:#7cc3c6; --bike-soft:#1f3536; --warn:#e2b55c; --warn-soft:#3a3020; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#171b19; --surface:#202623; --ink:#e7ebe8; --muted:#9aa69f; --line:#333b37;
+  --accent:#d98a94; --accent-soft:#3a2629; --bike:#7cc3c6; --bike-soft:#1f3536; --warn:#e2b55c; --warn-soft:#3a3020; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--body);margin:0}
+.retour{font-size:.9rem;color:var(--accent)}
+.wrap{max-width:860px;margin:0 auto;padding-block:28px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.test{display:inline-block;font:700 .75rem/1 var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--warn);background:var(--warn-soft);padding:6px 9px;border-radius:6px}
+h1{font:700 clamp(2rem,6vw,3.1rem)/1 var(--display);letter-spacing:.01em;margin:12px 0 8px;text-wrap:balance;color:var(--accent)}
+.intro{max-width:62ch;color:var(--muted);margin:0}
+.haut{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:28px;align-items:center;margin-bottom:22px}
+@media (max-width:720px){.haut{grid-template-columns:minmax(0,1fr)}}
+.radar{width:100%;max-width:300px;justify-self:center}
+.radar text{font:600 11px var(--display);fill:var(--muted);letter-spacing:.04em}
+.radar .ville{font:700 12px var(--display);fill:var(--ink)}
+.criteres{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0;padding:0;list-style:none}
+.criteres li{font-size:.85rem;border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:var(--surface)}
+.filtres{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:6px}
+.groupe{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.groupe span{font:600 .8rem var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-right:4px}
+.filtres button{font:600 .9rem var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:6px 11px;cursor:pointer}
+.filtres button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+.filtres button:focus-visible,.ev a:focus-visible{outline:3px solid var(--bike);outline-offset:2px}
+.compte{margin-left:auto;font:600 .95rem var(--display);color:var(--muted);letter-spacing:.03em}
+h2{font:700 1.35rem var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--accent);margin:26px 0 8px}
+.ev{display:grid;grid-template-columns:86px minmax(0,1fr) auto;gap:14px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:8px 0;scroll-margin-top:16px}
+.ev.vu{box-shadow:0 0 0 3px var(--bike)}
+.quand{font:700 1.05rem/1.1 var(--display);color:var(--accent)}
+.quand small{display:block;font:600 .75rem var(--body);color:var(--warn);margin-top:4px;text-transform:none}
+.nom{font-weight:700;font-size:1.05rem}
+.ou{color:var(--muted);font-size:.92rem}
+.km{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.km b{font:700 .95rem var(--display);letter-spacing:.02em;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:6px;font-variant-numeric:tabular-nums}
+.ev[data-type="bikepacking"] .km b{background:var(--bike-soft);color:var(--bike)}
+.note{font-size:.85rem;color:var(--muted);margin-top:6px}
+.cote{text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.loin{font:700 1.15rem/1 var(--display);font-variant-numeric:tabular-nums}
+.loin small{display:block;font:600 .7rem var(--body);color:var(--muted)}
+.type{font:700 .7rem var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.ev[data-type="bikepacking"] .type{color:var(--bike)}
+.ev a{font-size:.85rem;color:var(--accent)}
+@media (max-width:560px){.ev{grid-template-columns:minmax(0,1fr) auto}.quand{grid-column:1/-1}}
+.vide{color:var(--muted);padding:20px 0}
+.bilan{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.bilan section{border-top:3px solid var(--line);padding-top:10px}
+.bilan h3{font:700 1.1rem var(--display);text-transform:uppercase;letter-spacing:.05em;margin:0 0 6px}
+.bilan ul{margin:0;padding-left:18px;font-size:.9rem;color:var(--muted)}
+.bilan li{margin:4px 0}
+footer{margin-top:30px;font-size:.85rem;color:var(--muted);max-width:70ch}
+@media (prefers-reduced-motion:no-preference){.ev{transition:box-shadow .3s}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="retour" href="https://gabydelphine.github.io/Calendrier-des-sorties-OGRAVEL/app/">‹ Appli ÔGravel</a>
+  <div class="haut">
+    <div>
+      <h1>Ultra gravel autour de Toulouse</h1>
+      <p class="intro">Les épreuves gravel et bikepacking annoncées pour la saison qui vient, dont au moins un parcours dépasse 150 km, avec un départ à moins de 350 km de Toulouse à vol d'oiseau.</p>
+      <ul class="criteres">
+        <li>Parcours &gt; 150 km</li><li>Départ ≤ 350 km</li><li>Gravel ou bikepacking</li><li>Nov. 2026 → déc. 2027</li>
+      </ul>
+    </div>
+    <svg class="radar" id="radar" viewBox="-160 -160 320 320" role="img" aria-label="Position des départs autour de Toulouse"></svg>
+  </div>
+
+  <div class="filtres" role="group" aria-label="Filtres">
+    <div class="groupe" data-filtre="type"><span>Type</span>
+      <button type="button" id="f-type-tout" data-v="tout" aria-pressed="true">Tout</button>
+      <button type="button" id="f-type-gravel" data-v="gravel" aria-pressed="false">Épreuve gravel</button>
+      <button type="button" id="f-type-bike" data-v="bikepacking" aria-pressed="false">Bikepacking</button>
+    </div>
+    <div class="groupe" data-filtre="km"><span>Plus long parcours</span>
+      <button type="button" id="f-km-150" data-v="150" aria-pressed="true">150+</button>
+      <button type="button" id="f-km-300" data-v="300" aria-pressed="false">300+</button>
+      <button type="button" id="f-km-600" data-v="600" aria-pressed="false">600+</button>
+    </div>
+    <div class="groupe" data-filtre="pays"><span>Pays</span>
+      <button type="button" id="f-pays-tout" data-v="tout" aria-pressed="true">Tous</button>
+      <button type="button" id="f-pays-fr" data-v="FR" aria-pressed="false">France</button>
+      <button type="button" id="f-pays-es" data-v="ES" aria-pressed="false">Espagne</button>
+    </div>
+    <div class="compte" id="compte" aria-live="polite"></div>
+  </div>
+
+  <div id="liste"></div>
+
+  <div class="bilan">
+    <section>
+      <h3>À surveiller</h3>
+      <ul id="surveiller"></ul>
+    </section>
+    <section>
+      <h3>Écartés</h3>
+      <ul>
+        <li>66°South (Les Angles), Wish One Millau, Gravel Games (La Cavalerie) : aucun parcours au-delà de 150 km.</li>
+        <li>Santa Vall (Gérone) : course par étapes de 122 et 80 km.</li>
+        <li>Lost Horizons (Soria) : départ à 380 km.</li>
+        <li>Pyrenees 36, Kromvojoj, Transpyrenees, Trans Pyrenees Race, 66 degrés Sud : épreuves sur route.</li>
+      </ul>
+    </section>
+  </div>
+
+  <footer>
+    Recensement mis à jour le <span id="maj">26 octobre 2026</span> à partir de Finishers, Miles Republic, GravelPassion, gravelevents.com, bikepacking.com, ultracyclisme.cc et des sites des organisateurs. Les dates marquées « à confirmer » ne sont pas encore fixées par l'organisateur. Les distances depuis Toulouse sont calculées à vol d'oiseau jusqu'au départ.
+  </footer>
+</main>
+
+<script>
+const TLS = [43.6047, 1.4442];
+// d = début, f = fin, a = date approximative (libellé affiché), k = distances (km) ≥ 150 ou la plus longue
+let EVENTS = [];
+
+const MOIS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MC = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const rad = x => x * Math.PI / 180;
+function geo(c){
+  const [a1,o1] = TLS.map(rad), [a2,o2] = c.map(rad);
+  const dist = 2*6371*Math.asin(Math.sqrt(Math.sin((a2-a1)/2)**2 + Math.cos(a1)*Math.cos(a2)*Math.sin((o2-o1)/2)**2));
+  const y = Math.sin(o2-o1)*Math.cos(a2), x = Math.cos(a1)*Math.sin(a2) - Math.sin(a1)*Math.cos(a2)*Math.cos(o2-o1);
+  return {dist, cap: Math.atan2(y, x)};
+}
+
+function jour(s){ return new Date(s + 'T12:00:00'); }
+function libelle(e){
+  if (e.a) return {txt: e.a.split(',')[0].replace(/^./, m => m.toUpperCase()), sous: e.a.includes('confirmer') ? 'à confirmer' : 'date approx.'};
+  const d = jour(e.d);
+  if (!e.f) return {txt: d.getDate() + ' ' + MC[d.getMonth()]};
+  const f = jour(e.f);
+  return {txt: d.getMonth() === f.getMonth() ? d.getDate() + '–' + f.getDate() + ' ' + MC[d.getMonth()] : d.getDate() + ' ' + MC[d.getMonth()] + ' – ' + f.getDate() + ' ' + MC[f.getMonth()]};
+}
+function el(tag, attrs = {}, ...kids){
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)) { if (v == null) continue; if (k === 'text') n.textContent = v; else if (k === 'class') n.className = v; else n.setAttribute(k, v); }
+  for (const k of kids) if (k != null) n.append(k);
+  return n;
+}
+const etat = {type:'tout', km:150, pays:'tout'};
+try { Object.assign(etat, JSON.parse(localStorage.getItem('ultra-filtres') || '{}')); } catch (_) {}
+
+function visibles(){
+  return EVENTS.filter(e => (etat.type === 'tout' || e.t === etat.type) && e.max >= Number(etat.km) && (etat.pays === 'tout' || e.p === etat.pays));
+}
+
+function rendreListe(){
+  const liste = document.getElementById('liste'); liste.textContent = '';
+  const L = visibles().sort((a,b) => a.d.localeCompare(b.d));
+  document.getElementById('compte').textContent = L.length + (L.length > 1 ? ' épreuves' : ' épreuve');
+  if (!L.length) { liste.append(el('p', {class:'vide', text:'Aucune épreuve avec ces filtres. Élargissez le type, la distance ou le pays.'})); }
+  let cle = '';
+  for (const e of L) {
+    const d = jour(e.d), k = d.getFullYear() + '-' + d.getMonth();
+    if (k !== cle) { cle = k; liste.append(el('h2', {text: MOIS[d.getMonth()] + ' ' + d.getFullYear()})); }
+    const q = libelle(e);
+    liste.append(el('article', {class:'ev', id:e.id, 'data-type':e.t},
+      el('div', {class:'quand'}, q.txt, q.sous ? el('small', {text:q.sous}) : null),
+      el('div', {},
+        el('div', {class:'nom', text:e.n}),
+        el('div', {class:'ou', text:e.l + (e.p === 'ES' ? ', Espagne' : '')}),
+        el('div', {class:'km'}, ...e.k.map(x => el('b', {text: x.toLocaleString('fr-FR') + ' km'}))),
+        el('div', {class:'note', text:e.note})),
+      el('div', {class:'cote'},
+        el('div', {class:'loin'}, Math.round(e.dist) + ' km', el('small', {text:'de Toulouse'})),
+        el('div', {class:'type', text: e.t === 'gravel' ? 'Épreuve gravel' : 'Bikepacking'}),
+        /^https?:\/\//.test(e.s || '') ? el('a', {href:e.s, target:'_blank', rel:'noopener', text:'Source'}) : null)));
+  }
+  rendreRadar(L);
+}
+
+function rendreRadar(L){
+  const svg = document.getElementById('radar'), NS = 'http://www.w3.org/2000/svg', R = 140, ECH = R / 350;
+  svg.textContent = '';
+  const s = (t, a) => { const n = document.createElementNS(NS, t); for (const [k,v] of Object.entries(a)) n.setAttribute(k, v); svg.append(n); return n; };
+  for (const r of [100, 200, 350]) {
+    s('circle', {cx:0, cy:0, r:r*ECH, fill:'none', stroke:'var(--line)', 'stroke-width': r === 350 ? 1.5 : 1, 'stroke-dasharray': r === 350 ? '' : '3 4'});
+    s('text', {x:(r*ECH*0.71 + 3).toFixed(1), y:(-r*ECH*0.71 - 3).toFixed(1)}).textContent = r + ' km';
+  }
+  s('circle', {cx:-150, cy:140, r:4, fill:'var(--accent)'}); s('text', {x:-142, y:144}).textContent = 'Épreuve gravel';
+  s('circle', {cx:-150, cy:154, r:4, fill:'var(--bike)'}); s('text', {x:-142, y:158}).textContent = 'Bikepacking';
+  s('line', {x1:-R, y1:0, x2:R, y2:0, stroke:'var(--line)'}); s('line', {x1:0, y1:-R, x2:0, y2:R, stroke:'var(--line)'});
+  for (const [t,x,y] of [['N',0,-R-6],['S',0,R+14],['E',R+6,4],['O',-R-14,4]]) s('text', {x, y, 'text-anchor':'middle'}).textContent = t;
+  for (const e of L) {
+    const x = Math.sin(e.cap) * e.dist * ECH, y = -Math.cos(e.cap) * e.dist * ECH;
+    const p = s('circle', {cx:x.toFixed(1), cy:y.toFixed(1), r:5, fill: e.t === 'gravel' ? 'var(--accent)' : 'var(--bike)', stroke:'var(--bg)', 'stroke-width':1.5, tabindex:0, role:'button', style:'cursor:pointer'});
+    const titre = document.createElementNS(NS, 'title'); titre.textContent = e.n + ' — ' + Math.round(e.dist) + ' km'; p.append(titre);
+    const aller = () => { const a = document.getElementById(e.id); if (!a) return; a.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'center'}); a.classList.add('vu'); setTimeout(() => a.classList.remove('vu'), 1600); };
+    p.addEventListener('click', aller); p.addEventListener('keydown', ev => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); aller(); } });
+  }
+  s('circle', {cx:0, cy:0, r:4, fill:'var(--ink)'});
+  s('text', {x:7, y:14, class:'ville'}).textContent = 'Toulouse';
+}
+
+document.querySelectorAll('.groupe').forEach(g => {
+  const f = g.dataset.filtre;
+  g.querySelectorAll('button').forEach(b => {
+    b.setAttribute('aria-pressed', String(String(etat[f]) === b.dataset.v));
+    b.addEventListener('click', () => {
+      etat[f] = b.dataset.v;
+      g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      try { localStorage.setItem('ultra-filtres', JSON.stringify(etat)); } catch (_) {}
+      rendreListe();
+    });
+  });
+});
+fetch('ultra.json?' + Date.now()).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(data => {
+  EVENTS = (data.evenements || []).filter(e => Array.isArray(e.c) && Array.isArray(e.k) && e.k.length);
+  EVENTS.forEach((e,i) => { e.id = 'ev' + i; Object.assign(e, geo(e.c)); e.max = Math.max(...e.k); });
+  const ul = document.getElementById('surveiller');
+  (data.a_surveiller || []).forEach(t => ul.append(el('li', {text: t})));
+  if (data.maj) { const d = jour(data.maj); document.getElementById('maj').textContent = d.getDate() + ' ' + MOIS[d.getMonth()] + ' ' + d.getFullYear(); }
+  rendreListe();
+}).catch(() => { document.getElementById('liste').textContent = 'Le calendrier ne peut pas être chargé pour le moment. Réessayez dans quelques minutes.'; });
+</script>
+</body>
+</html>

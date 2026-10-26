@@ -1,0 +1,517 @@
+{
+ "_aide": "Épreuves gravel et bikepacking de plus de 150 km, départ à moins de 350 km de Toulouse. Champs : n = nom, d = début, f = fin (facultatif), a = date approximative affichée (facultatif), l = lieu, p = pays (FR/ES), c = [latitude, longitude] du départ, k = distances en km (150 et plus), t = gravel ou bikepacking, note, s = source.",
+ "maj": "2026-10-26",
+ "evenements": [
+  {
+   "n": "Outdoor Cycling Series – Haut-Languedoc",
+   "d": "2026-11-07",
+   "f": "2026-11-09",
+   "l": "Lunas (34)",
+   "p": "FR",
+   "c": [
+    43.705,
+    3.195
+   ],
+   "k": [
+    150,
+    350
+   ],
+   "t": "gravel",
+   "note": "Gravel ou route au choix, en autonomie.",
+   "s": "https://www.finishers.com/course/outdoor-cycling-series-haut-languedoc"
+  },
+  {
+   "n": "GravelMan Marseille",
+   "d": "2026-12-04",
+   "f": "2026-12-05",
+   "l": "Aubagne (13)",
+   "p": "FR",
+   "c": [
+    43.292,
+    5.571
+   ],
+   "k": [
+    200,
+    350,
+    500
+   ],
+   "t": "gravel",
+   "note": "Aussi 60 et 120 km. Gravel ou route.",
+   "s": "https://fr.milesrepublic.com/event/gravelman-series-marseille-17899"
+  },
+  {
+   "n": "Ô Gravel Occitanie 600",
+   "d": "2027-04-03",
+   "f": "2027-04-08",
+   "l": "Garidech (31)",
+   "p": "FR",
+   "c": [
+    43.712,
+    1.563
+   ],
+   "k": [
+    600
+   ],
+   "t": "bikepacking",
+   "note": "Organisé par ÔGravel. Tracé actuel 666 km, en ultra ou en 5 étapes.",
+   "s": "https://www.helloasso.com/associations/o-gravel/evenements/o-gravel-occitanie-600-2027"
+  },
+  {
+   "n": "Gravel Desert",
+   "d": "2027-04-10",
+   "l": "Grañén (Huesca)",
+   "p": "ES",
+   "c": [
+    41.945,
+    -0.37
+   ],
+   "k": [
+    170
+   ],
+   "t": "gravel",
+   "note": "Distance à vérifier : 170 ou 208 km selon les sources.",
+   "s": "https://www.granfondoguide.com/Events/Popup/13374"
+  },
+  {
+   "n": "La Garba",
+   "d": "2027-04-16",
+   "l": "L'Ampolla, delta de l'Èbre",
+   "p": "ES",
+   "c": [
+    40.81,
+    0.71
+   ],
+   "k": [
+    500
+   ],
+   "t": "gravel",
+   "note": "Six parcours de 60 à 500 km, en autonomie.",
+   "s": "https://bikepacking.com/event/la-garba-2027/"
+  },
+  {
+   "n": "GravelMan Salagou",
+   "d": "2027-04-23",
+   "l": "Lac du Salagou (34)",
+   "p": "FR",
+   "c": [
+    43.43,
+    3.43
+   ],
+   "k": [
+    200,
+    350,
+    500
+   ],
+   "t": "gravel",
+   "note": "Aussi 60 et 120 km. Gravel ou route.",
+   "s": "https://ultracyclisme.cc/courses/"
+  },
+  {
+   "n": "The Traka",
+   "d": "2027-04-30",
+   "f": "2027-05-02",
+   "l": "Gérone",
+   "p": "ES",
+   "c": [
+    41.98,
+    2.82
+   ],
+   "k": [
+    200,
+    335,
+    560
+   ],
+   "t": "gravel",
+   "note": "Aussi 100 km.",
+   "s": "https://www.granfondoguide.com/Events/Popup/10556"
+  },
+  {
+   "n": "Outdoor Cycling Series – Causses du Quercy",
+   "d": "2027-05-15",
+   "a": "mi-mai",
+   "l": "Cahors (46)",
+   "p": "FR",
+   "c": [
+    44.447,
+    1.441
+   ],
+   "k": [
+    150,
+    350
+   ],
+   "t": "gravel",
+   "note": "Gravel ou route, 2 800 m et 6 000 m D+.",
+   "s": "https://www.finishers.com/fr/course/outdoor-cycling-series-causses-du-quercy"
+  },
+  {
+   "n": "The Wolf Race",
+   "d": "2027-05-21",
+   "f": "2027-05-22",
+   "l": "Vitoria-Gasteiz",
+   "p": "ES",
+   "c": [
+    42.85,
+    -2.67
+   ],
+   "k": [
+    300
+   ],
+   "t": "bikepacking",
+   "note": "De nuit, en autonomie, environ 90 % de pistes.",
+   "s": "https://www.gasteizhoy.com/the-wolf-race-alava-2026/"
+  },
+  {
+   "n": "Ultra rando cyclo la Périgordine",
+   "d": "2027-05-24",
+   "a": "mai, à confirmer",
+   "l": "Le Lardin-Saint-Lazare (24)",
+   "p": "FR",
+   "c": [
+    45.13,
+    1.24
+   ],
+   "k": [
+    280,
+    540
+   ],
+   "t": "gravel",
+   "note": "Aussi 140 km. Solo, duo ou équipe de quatre.",
+   "s": "https://fr.milesrepublic.com/en/event/ultra-rando-cyclo-la-perigordine-11216"
+  },
+  {
+   "n": "Laba Gravel",
+   "d": "2027-05-28",
+   "a": "fin mai, à confirmer",
+   "l": "Andoain (Gipuzkoa)",
+   "p": "ES",
+   "c": [
+    43.22,
+    -2.02
+   ],
+   "k": [
+    170,
+    270
+   ],
+   "t": "gravel",
+   "note": "Aussi 70 et 110 km.",
+   "s": "https://fr.milesrepublic.com/en/event/laba-gravel-15280"
+  },
+  {
+   "n": "French Divide",
+   "d": "2027-05-29",
+   "a": "fin mai",
+   "l": "Strasbourg → Mendionde (64)",
+   "p": "FR",
+   "c": [
+    43.35,
+    -1.29
+   ],
+   "k": [
+    2086
+   ],
+   "t": "bikepacking",
+   "note": "Départ de Strasbourg, arrivée au Pays basque. Placé ici à l'arrivée.",
+   "s": "https://www.finishers.com/course/french-divide"
+  },
+  {
+   "n": "Transpyr Coast to Coast",
+   "d": "2027-05-30",
+   "f": "2027-06-05",
+   "l": "Roses → Irun",
+   "p": "ES",
+   "c": [
+    42.26,
+    3.18
+   ],
+   "k": [
+    900
+   ],
+   "t": "bikepacking",
+   "note": "Traversée des Pyrénées en 7 étapes, plus de 900 km. Formule gravel ou VTT.",
+   "s": "https://www.interempresas.net/Ciclismo/664536-La-Transpyr-Coast-to-Coast-ya-tiene-fechas-para-2027.html"
+  },
+  {
+   "n": "Lot of Gravel",
+   "d": "2027-06-04",
+   "f": "2027-06-06",
+   "l": "Cahors (46)",
+   "p": "FR",
+   "c": [
+    44.447,
+    1.441
+   ],
+   "k": [
+    225,
+    450
+   ],
+   "t": "gravel",
+   "note": "Le 225 km part de Rocamadour. Aussi 60 et 100 km.",
+   "s": "https://www.finishers.com/fr/course/lot-of-gravel"
+  },
+  {
+   "n": "Ranxo Gravel",
+   "d": "2027-06-06",
+   "l": "Ponts (Lleida)",
+   "p": "ES",
+   "c": [
+    41.92,
+    1.19
+   ],
+   "k": [
+    162
+   ],
+   "t": "gravel",
+   "note": "Aussi 67 et 108 km.",
+   "s": "https://www.granfondoguide.com/Events/Popup/10489"
+  },
+  {
+   "n": "The Pyrenean Rally",
+   "d": "2027-06-06",
+   "f": "2027-06-18",
+   "l": "Llançà (Gérone)",
+   "p": "ES",
+   "c": [
+    42.36,
+    3.15
+   ],
+   "k": [
+    1800
+   ],
+   "t": "bikepacking",
+   "note": "Aller par les pistes espagnoles, retour par les cols français sur route.",
+   "s": "https://bikepacking.com/event/the-pyrenean-rally-2026/"
+  },
+  {
+   "n": "Mendiz Mendi – Défi Ultra Gravel",
+   "d": "2027-06-11",
+   "f": "2027-06-13",
+   "l": "Anglet (64)",
+   "p": "FR",
+   "c": [
+    43.48,
+    -1.52
+   ],
+   "k": [
+    250,
+    500
+   ],
+   "t": "gravel",
+   "note": "5 000 et 8 000 m D+. Inscriptions dès le 21 novembre 2026.",
+   "s": "https://fr.milesrepublic.com/en/event/mendiz-mendi-defi-ultra-gravel-17530"
+  },
+  {
+   "n": "El Piri",
+   "d": "2027-06-13",
+   "l": "Gérone",
+   "p": "ES",
+   "c": [
+    41.98,
+    2.82
+   ],
+   "k": [
+    800
+   ],
+   "t": "bikepacking",
+   "note": "Boucle dans les Pyrénées catalanes, environ 20 000 m D+.",
+   "s": "https://bikepacking.com/?p=233597"
+  },
+  {
+   "n": "GravelMan Tourmalet",
+   "d": "2027-06-18",
+   "l": "Col du Tourmalet (65)",
+   "p": "FR",
+   "c": [
+    42.91,
+    0.145
+   ],
+   "k": [
+    200,
+    350,
+    500
+   ],
+   "t": "gravel",
+   "note": "Format GravelMan : de 60 à 500 km. Gravel ou route.",
+   "s": "https://ultracyclisme.cc/courses/"
+  },
+  {
+   "n": "Pau – Bilbao Bikepacking",
+   "d": "2027-07-03",
+   "a": "début juillet",
+   "l": "Pau (64) → Bilbao",
+   "p": "FR",
+   "c": [
+    43.3,
+    -0.37
+   ],
+   "k": [
+    700
+   ],
+   "t": "bikepacking",
+   "note": "Par la Poco Loco.",
+   "s": "https://www.finishers.com/fr/course/pau-bilbao-bikepacking"
+  },
+  {
+   "n": "The Capitals by PedAlma",
+   "d": "2027-07-04",
+   "f": "2027-07-09",
+   "l": "Barcelone",
+   "p": "ES",
+   "c": [
+    41.39,
+    2.17
+   ],
+   "k": [
+    840
+   ],
+   "t": "bikepacking",
+   "note": "Barcelone, Tarragone, Lleida, Gérone. Pistes, chemins et route.",
+   "s": "https://bikepacking.com/event/the-capitals-by-pedalma-2026/"
+  },
+  {
+   "n": "Nord Charente Classic Gravel Tour",
+   "d": "2027-07-15",
+   "a": "juillet, à confirmer",
+   "l": "Saint-Gourson (16)",
+   "p": "FR",
+   "c": [
+    45.95,
+    0.3
+   ],
+   "k": [
+    160
+   ],
+   "t": "gravel",
+   "note": "Aussi 50, 60 et 100 km.",
+   "s": "https://fr.milesrepublic.com/en/course-gravel/charente"
+  },
+  {
+   "n": "Basajaun",
+   "d": "2027-07-25",
+   "f": "2027-08-01",
+   "l": "Vitoria-Gasteiz",
+   "p": "ES",
+   "c": [
+    42.85,
+    -2.67
+   ],
+   "k": [
+    890
+   ],
+   "t": "bikepacking",
+   "note": "Forêts basques, désert des Bardenas et Pyrénées.",
+   "s": "https://bikepacking.com/event/basajaun-2026/"
+  },
+  {
+   "n": "500 Millas Cannibal",
+   "d": "2027-09-02",
+   "f": "2027-09-05",
+   "l": "Saragosse",
+   "p": "ES",
+   "c": [
+    41.65,
+    -0.88
+   ],
+   "k": [
+    483,
+    805
+   ],
+   "t": "bikepacking",
+   "note": "300 et 500 miles. Type de terrain à vérifier.",
+   "s": "https://www.avaibooksports.com/sport-event/500-y-300-millas-cannibal-2027/private-zone"
+  },
+  {
+   "n": "Outdoor Cycling Series – Pyrénées Ariégeoises",
+   "d": "2027-09-15",
+   "a": "septembre, à confirmer",
+   "l": "Foix (09)",
+   "p": "FR",
+   "c": [
+    42.965,
+    1.607
+   ],
+   "k": [
+    150,
+    350
+   ],
+   "t": "gravel",
+   "note": "Gravel ou route au choix.",
+   "s": "https://www.finishers.com/en/activities/gravel-bike/gravel-in-france/gravel-in-occitania"
+  },
+  {
+   "n": "Iberica Traversa",
+   "d": "2027-09-19",
+   "f": "2027-09-27",
+   "l": "Irun → Tarifa",
+   "p": "ES",
+   "c": [
+    43.34,
+    -1.79
+   ],
+   "k": [
+    1700
+   ],
+   "t": "bikepacking",
+   "note": "Traversée de la péninsule ibérique, en autonomie.",
+   "s": "https://bikepacking.com/event/iberica-traversa-2026/"
+  },
+  {
+   "n": "La Tapas Odyssey",
+   "d": "2027-09-25",
+   "a": "fin septembre",
+   "l": "Montpellier (34)",
+   "p": "FR",
+   "c": [
+    43.61,
+    3.88
+   ],
+   "k": [
+    700
+   ],
+   "t": "bikepacking",
+   "note": "Par Bivouak.",
+   "s": "https://www.finishers.com/fr/course/la-tapas-odyssey"
+  },
+  {
+   "n": "La Poco Loco Montpellier",
+   "d": "2027-10-15",
+   "a": "mi-octobre",
+   "l": "Montpellier (34)",
+   "p": "FR",
+   "c": [
+    43.61,
+    3.88
+   ],
+   "k": [
+    350,
+    700
+   ],
+   "t": "bikepacking",
+   "note": "Vers Barcelone.",
+   "s": "https://www.finishers.com/course/la-poco-loco-montpellier"
+  },
+  {
+   "n": "GravelMan Marseille",
+   "d": "2027-12-10",
+   "l": "Marseille (13)",
+   "p": "FR",
+   "c": [
+    43.292,
+    5.571
+   ],
+   "k": [
+    200,
+    350,
+    500
+   ],
+   "t": "gravel",
+   "note": "Aussi 60 et 120 km. Gravel ou route.",
+   "s": "https://ultracyclisme.cc/courses/"
+  }
+ ],
+ "a_surveiller": [
+  "GravelMan Bordeaux : 22–23 mai 2026, jusqu'à 600 km. Date 2027 pas encore publiée.",
+  "GravelMan Pays basque (Saint-Pée-sur-Nivelle) : 19–20 juin 2026, jusqu'à 500 km. Date 2027 pas encore publiée.",
+  "CAT700 (Pyrénées catalanes → delta de l'Èbre) : juin 2026, 510 à 800 km. Pas encore de date 2027.",
+  "Ultraïa (Pays basque) : annoncé du 25 sept. au 1er oct. 2027, distance non communiquée."
+ ]
+}
