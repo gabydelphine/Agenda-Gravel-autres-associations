@@ -121,7 +121,7 @@ footer{margin-top:30px;font-size:.85rem;color:var(--muted);max-width:70ch}
   </div>
 
   <footer>
-    Recensement mis à jour le <span id="maj">26 octobre 2026</span> à partir de Finishers, Miles Republic, GravelPassion, gravelevents.com, bikepacking.com, ultracyclisme.cc et des sites des organisateurs. Les dates marquées « à confirmer » ne sont pas encore fixées par l'organisateur. Les distances depuis Toulouse sont calculées à vol d'oiseau jusqu'au départ.
+    Recensement mis à jour le <span id="maj">26 octobre 2026</span> à partir de Finishers, Miles Republic, GravelPassion, gravelevents.com, bikepacking.com, ultracyclisme.cc et des sites des organisateurs. Quand l'organisateur n'a pas encore fixé le jour, seul le mois est indiqué, avec la mention « date à confirmer ». Les distances depuis Toulouse sont calculées à vol d'oiseau jusqu'au départ.
   </footer>
 </main>
 
@@ -142,7 +142,8 @@ function geo(c){
 
 function jour(s){ return new Date(s + 'T12:00:00'); }
 function libelle(e){
-  if (e.a) return {txt: e.a.split(',')[0].replace(/^./, m => m.toUpperCase()), sous: e.a.includes('confirmer') ? 'à confirmer' : 'date approx.'};
+  // Date pas encore fixée par l'organisateur : seulement le mois.
+  if (e.a) { const m = MOIS[jour(e.d).getMonth()]; return {txt: m.charAt(0).toUpperCase() + m.slice(1), sous: 'date à confirmer'}; }
   const d = jour(e.d);
   if (!e.f) return {txt: d.getDate() + ' ' + MC[d.getMonth()]};
   const f = jour(e.f);
