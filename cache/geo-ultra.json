@@ -24,5 +24,12 @@
     ],
     "p": "ES"
   },
-  "luxembourg, belgium": null
+  "luxembourg, belgium": null,
+  "pays basque, france, france": {
+    "c": [
+      47.687,
+      7.393
+    ],
+    "p": "FR"
+  }
 }
