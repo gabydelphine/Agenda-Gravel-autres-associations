@@ -1,7 +1,28 @@
 {
   "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
-  "maj": "2026-10-29",
-  "nouveautes": [],
+  "maj": "2026-10-30",
+  "nouveautes": [
+    {
+      "id": "eed0e35dd6113186",
+      "n": "El Sur",
+      "d": "2027-03-14",
+      "f": "2027-03-19",
+      "l": "Málaga, Catalonia, ES",
+      "k": [
+        800
+      ],
+      "t": "bikepacking",
+      "s": "https://gritline.cc/events/el-sur-2027",
+      "trouve_par": "Gritline – gravel en Catalogne",
+      "vu_le": "2026-10-30",
+      "c": [
+        41.383,
+        2.141
+      ],
+      "p": "ES",
+      "distance_toulouse_km": 254
+    }
+  ],
   "mises_a_jour": [],
   "pistes": [
     {
@@ -17,7 +38,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/iceni-360-2026/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-10-29"
+      "vu_le": "2026-10-30"
     },
     {
       "id": "5d1c5c1dfaac4325",
@@ -32,21 +53,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/2026-hunt-1000/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-10-29"
-    },
-    {
-      "id": "eed0e35dd6113186",
-      "n": "El Sur",
-      "d": "2027-03-14",
-      "f": "2027-03-19",
-      "l": "Málaga, Andalucía, Catalonia, ES",
-      "k": [
-        800
-      ],
-      "t": "bikepacking",
-      "s": "https://gritline.cc/events/el-sur-2027",
-      "trouve_par": "Gritline – gravel en Catalogne",
-      "vu_le": "2026-10-29"
+      "vu_le": "2026-10-30"
     },
     {
       "id": "8ee8292e8f476008",
@@ -60,7 +67,7 @@
       "t": "bikepacking",
       "s": "https://gravelevents.com/events/termes-53",
       "trouve_par": "gravelevents.com – Espagne",
-      "vu_le": "2026-10-29"
+      "vu_le": "2026-10-30"
     }
   ],
   "refusees": [
