@@ -1,6 +1,6 @@
 {
   "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
-  "maj": "2026-10-30",
+  "maj": "2026-10-31",
   "nouveautes": [
     {
       "id": "eed0e35dd6113186",
@@ -21,6 +21,26 @@
       ],
       "p": "ES",
       "distance_toulouse_km": 254
+    },
+    {
+      "id": "dd4e23b935c50c82",
+      "n": "El Mito",
+      "d": "2027-03-20",
+      "f": "2027-03-22",
+      "l": "Ronda, Catalonia, ES",
+      "k": [
+        445
+      ],
+      "t": "bikepacking",
+      "s": "https://gritline.cc/events/el-mito-2027",
+      "trouve_par": "Gritline – gravel en Catalogne",
+      "vu_le": "2026-10-31",
+      "c": [
+        41.429,
+        2.144
+      ],
+      "p": "ES",
+      "distance_toulouse_km": 249
     }
   ],
   "mises_a_jour": [],
@@ -38,7 +58,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/iceni-360-2026/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-10-30"
+      "vu_le": "2026-10-31"
     },
     {
       "id": "5d1c5c1dfaac4325",
@@ -53,7 +73,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/2026-hunt-1000/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-10-30"
+      "vu_le": "2026-10-31"
     },
     {
       "id": "8ee8292e8f476008",
@@ -67,7 +87,7 @@
       "t": "bikepacking",
       "s": "https://gravelevents.com/events/termes-53",
       "trouve_par": "gravelevents.com – Espagne",
-      "vu_le": "2026-10-30"
+      "vu_le": "2026-10-31"
     }
   ],
   "refusees": [
