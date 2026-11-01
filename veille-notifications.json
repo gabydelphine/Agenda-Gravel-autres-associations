@@ -48,6 +48,7 @@
     "gravel:0e375f276bc5dc04",
     "gravel:21720c95a9b83b2d",
     "gravel:2802fdb7b1796dc2",
+    "gravel:3ed52f5fb45c7783",
     "gravel:45cd90e6344c474e",
     "gravel:47d492667ac5df9c",
     "gravel:4a4da95d75f7dc73",
@@ -65,6 +66,7 @@
     "gravel:b569d4d452dc8c27",
     "gravel:b5aab251f8154754",
     "gravel:c26a681cd979759d",
+    "gravel:da81b78a0545fb69",
     "gravel:f12b88ba7421ee38",
     "gravel:f7ba9d67c16baba3",
     "gravel:fe380ac45be2e261",
@@ -86,6 +88,9 @@
     "piste:2026-10-04|https://gravelagenda.com/evenements-gravel/7e-randonnee-pommiers-vtt-2/",
     "piste:2026-10-04|https://gravelagenda.com/evenements-gravel/7e-randonnee-pommiers-vtt/",
     "piste:2026-10-04|https://www.gravelpassion.fr/test-selle-san-marco-shortfit-allroad-supercomfort-racing/",
+    "piste:2026-10-05|https://gravelagenda.com/equipement-randonnee-gravel-checklist/",
+    "piste:2026-10-05|https://gravelagenda.com/lire-fiche-evenement-gravel/",
+    "piste:2026-10-05|https://gravelagenda.com/premiere-randonnee-gravel-choisir-distance/",
     "piste:2026-10-10|https://www.gravelpassion.fr/test-igpsport-binavi-ultra/",
     "piste:2026-10-12|https://www.gravelpassion.fr/test-hammerhead-karoo-3/",
     "piste:2026-10-15|https://www.gravelpassion.fr/produit/avona-callis-32/",
@@ -131,11 +136,15 @@
     "piste:2026-10-25|https://www.velo-occitanie.fr/vtt/evenements-vtt-du-tarn-81",
     "piste:2026-10-25|https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
     "piste:2026-10-31|https://vetete.com/les-lucioles-d-ambrussum-6eme-edition-a-lunel-le-samedi-31-octobre-2026",
+    "piste:2026-11-08|https://vetete.com/challenge-de-la-lomagne-27eme-edition-a-polastron-le-dimanche-8-novembre-2026",
     "piste:2026-11-11|https://competitions.ffc.fr/calendrier/competition/2026/C5111001093/du-ddc-parc-a-labbaye-de-rieunette/",
     "piste:2026-12-13|https://velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
     "piste:2026-12-13|https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
     "piste:2027-06-06|https://velo-occitanie.fr/cyclos/evenements-cyclos-du-tarn-81/2seo-la-murataise-2027",
     "piste:2027-06-06|https://www.velo-occitanie.fr/cyclos/evenements-cyclos-du-tarn-81/2seo-la-murataise-2027",
-    "ultra:454f0baa75427dc5"
+    "piste:2027-07-17|https://competitions.ffc.fr/calendrier/competition/2027/4878204258/pyrenees-catalane-gravel-tour/",
+    "ultra:454f0baa75427dc5",
+    "ultra:dd4e23b935c50c82",
+    "ultra:eed0e35dd6113186"
   ]
 }
