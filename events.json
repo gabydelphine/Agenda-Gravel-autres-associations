@@ -210,6 +210,22 @@
       "statut": "valide"
     },
     {
+      "date": "2026-11-08",
+      "title": "La Polastronnaise (Challenge de la Lomagne)",
+      "location": "Polastron (32)",
+      "details": "Catégorie gravel mixte en compétition, et randonnée 30 km. Départ 9 h 30. Organisé par Cyclosport Lombez Samatan. Inscriptions sur Chronostart jusqu'au vendredi 22 h (tarif réduit pour les 4 manches).",
+      "source": "https://chrono-start.com/events/challene-lomagne/",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-11-22",
+      "title": "La Mirandaise (Challenge de la Lomagne)",
+      "location": "Mirande (32)",
+      "details": "Catégorie gravel mixte en compétition, et randonnée 30 km. Départ 9 h 30. Organisé par Les Bleuets Mirandais. Inscriptions sur Chronostart jusqu'au vendredi 22 h (tarif réduit pour les 4 manches).",
+      "source": "https://chrono-start.com/events/challene-lomagne/",
+      "statut": "valide"
+    },
+    {
       "date": "2026-11-29",
       "title": "La l'Isloise (Challenge de la Lomagne)",
       "location": "L'Isle-Jourdain (32)",
@@ -223,6 +239,14 @@
       "location": "Moissac (82)",
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://vetete.com/la-2eme-rando-du-telethon-a-moissac-le-dimanche-6-decembre-2026",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-12-06",
+      "title": "La Colognaise (Challenge de la Lomagne)",
+      "location": "Cologne (32)",
+      "details": "Catégorie gravel mixte en compétition, et randonnée 30 km. Départ 9 h 30. Organisé par Cologne Cycliste. Inscriptions sur Chronostart jusqu'au vendredi 22 h (tarif réduit pour les 4 manches).",
+      "source": "https://chrono-start.com/events/challene-lomagne/",
       "statut": "valide"
     },
     {
