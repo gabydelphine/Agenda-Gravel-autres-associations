@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-31",
+  "updated": "2026-11-01",
   "events": [
     {
       "date": "2026-03-08",
@@ -324,6 +324,20 @@
       "date_detection": "2026-10-15"
     },
     {
+      "date": "2026-11-07",
+      "title": "OCS Haut-Languedoc",
+      "location": "Lunas-les-Châteaux (34)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://gravelagenda.com/evenements-gravel/ocs-haut-languedoc/",
+      "source_nom": "Gravel Agenda",
+      "trouve_par": "donnees_structurees",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 141.2,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-01"
+    },
+    {
       "date": "2026-11-29",
       "title": "La l'Isloise (Challenge de la Lomagne)",
       "location": "L'Isle-Jourdain (32)",
@@ -332,6 +346,20 @@
       "validation_gravel": "utilisateur",
       "statut": "valide",
       "date_decision": "2026-10-15"
+    },
+    {
+      "date": "2026-12-06",
+      "title": "La 2 ème Rando du Téléthon à Moissac le dimanche 6 décembre 2026",
+      "location": "Moissac (82)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://vetete.com/la-2eme-rando-du-telethon-a-moissac-le-dimanche-6-decembre-2026",
+      "source_nom": "Vetete – mois +1",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 63.8,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-01"
     },
     {
       "date": "2026-12-13",
