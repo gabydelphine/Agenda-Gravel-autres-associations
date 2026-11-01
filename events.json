@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-25",
+  "updated": "2026-11-01",
   "events": [
     {
       "date": "2026-03-08",
@@ -199,6 +199,14 @@
       "location": "Escalquens (31)",
       "details": "Nouveau parcours gravel annoncé pour 2026 · distances à confirmer",
       "source": "https://www.intramuros.org/escalquens/agenda/893310",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-11-07",
+      "title": "OCS Haut-Languedoc",
+      "location": "Lunas-les-Châteaux (34)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://gravelagenda.com/evenements-gravel/ocs-haut-languedoc/",
       "statut": "valide"
     },
     {
