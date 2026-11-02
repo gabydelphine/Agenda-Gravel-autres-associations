@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-01T06:16:05+00:00",
+  "updated": "2026-11-02T06:31:08+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -35,12 +35,12 @@
         "pistes": 0
       },
       "FFVélo 82": {
-        "pages_lues": 18,
+        "pages_lues": 17,
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
-        "pages_lues": 1,
-        "pistes": 1
+        "pages_lues": 0,
+        "pistes": 0
       },
       "Saubens Cyclo": {
         "pages_lues": 1,
@@ -79,15 +79,15 @@
         "pistes": 0
       },
       "Gravel Passion – Haute-Garonne": {
-        "pages_lues": 0,
+        "pages_lues": 15,
         "pistes": 0
       },
       "Gravel Passion – Gers": {
-        "pages_lues": 6,
+        "pages_lues": 1,
         "pistes": 0
       },
       "Gravel Passion – Tarn": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Ariège": {
@@ -99,7 +99,7 @@
         "pistes": 0
       },
       "Gravel Passion – Lot": {
-        "pages_lues": 4,
+        "pages_lues": 7,
         "pistes": 0
       },
       "Gravel Passion – Tarn-et-Garonne": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 395,
-    "erreurs": 17,
+    "pages_lues": 392,
+    "erreurs": 1,
     "candidats": 15,
-    "nouvelles_fiches": 2,
-    "hors_zone": 87,
+    "nouvelles_fiches": 0,
+    "hors_zone": 85,
     "a_examiner": 21
   },
   "candidats": [
