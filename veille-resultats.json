@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-03T06:18:49+00:00",
+  "updated": "2026-11-04T06:24:30+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -39,8 +39,8 @@
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 1,
+        "pistes": 1
       },
       "Saubens Cyclo": {
         "pages_lues": 1,
@@ -119,7 +119,7 @@
         "pistes": 1
       },
       "Vetete – mois +1": {
-        "pages_lues": 6,
+        "pages_lues": 7,
         "pistes": 0
       },
       "Vetete – mois +2": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 395,
-    "erreurs": 1,
+    "pages_lues": 396,
+    "erreurs": 0,
     "candidats": 15,
     "nouvelles_fiches": 0,
-    "hors_zone": 84,
+    "hors_zone": 85,
     "a_examiner": 23
   },
   "candidats": [
