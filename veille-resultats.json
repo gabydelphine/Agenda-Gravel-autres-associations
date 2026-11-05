@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-04T06:24:30+00:00",
+  "updated": "2026-11-05T06:27:46+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -107,7 +107,7 @@
         "pistes": 0
       },
       "Gravel Passion – Hautes-Pyrénées": {
-        "pages_lues": 3,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Agenda": {
@@ -115,7 +115,7 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 22,
+        "pages_lues": 20,
         "pistes": 1
       },
       "Vetete – mois +1": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 396,
+    "pages_lues": 393,
     "erreurs": 0,
     "candidats": 15,
     "nouvelles_fiches": 0,
-    "hors_zone": 85,
+    "hors_zone": 84,
     "a_examiner": 23
   },
   "candidats": [
