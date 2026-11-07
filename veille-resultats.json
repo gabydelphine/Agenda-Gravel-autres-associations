@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-06T06:25:34+00:00",
+  "updated": "2026-11-07T06:10:48+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -31,11 +31,11 @@
         "pistes": 0
       },
       "Cyclotourisme 31": {
-        "pages_lues": 60,
+        "pages_lues": 0,
         "pistes": 0
       },
       "FFVélo 82": {
-        "pages_lues": 17,
+        "pages_lues": 18,
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
@@ -115,7 +115,7 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 21,
+        "pages_lues": 20,
         "pistes": 1
       },
       "Vetete – mois +1": {
@@ -146,8 +146,8 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 395,
-    "erreurs": 0,
+    "pages_lues": 336,
+    "erreurs": 1,
     "candidats": 15,
     "nouvelles_fiches": 0,
     "hors_zone": 86,
