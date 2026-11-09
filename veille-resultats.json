@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-08T06:11:54+00:00",
+  "updated": "2026-11-09T06:34:19+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -39,8 +39,8 @@
         "pistes": 0
       },
       "FFVélo 32 (CoDep Gers) – calendrier": {
-        "pages_lues": 1,
-        "pistes": 1
+        "pages_lues": 0,
+        "pistes": 0
       },
       "Saubens Cyclo": {
         "pages_lues": 1,
@@ -115,43 +115,43 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 13,
+        "pages_lues": 19,
         "pistes": 1
       },
       "Vetete – mois +1": {
-        "pages_lues": 8,
-        "pistes": 0
+        "pages_lues": 9,
+        "pistes": 1
       },
       "Vetete – mois +2": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vetete – mois +3": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vetete – mois +4": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vetete – mois +5": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       },
       "Vetete – mois +6": {
         "pages_lues": 1,
-        "pistes": 0
+        "pistes": 1
       }
     },
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 387,
-    "erreurs": 0,
+    "pages_lues": 394,
+    "erreurs": 1,
     "candidats": 15,
     "nouvelles_fiches": 0,
-    "hors_zone": 83,
-    "a_examiner": 23
+    "hors_zone": 86,
+    "a_examiner": 30
   },
   "candidats": [
     {
@@ -527,6 +527,83 @@
       "raison": "lieu non reconnu",
       "extrait": "Gravel Régional Le 11/11/2026 Aude DU DDC PARC à L'ABBAYE DE RIEUNETTE — département Aude",
       "date_detection": "2026-10-16"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=2",
+      "source_nom": "Vetete – mois +1",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain à propos de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck au sujet de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=3",
+      "source_nom": "Vetete – mois +2",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain au sujet de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck à propos de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=4",
+      "source_nom": "Vetete – mois +3",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain parlant de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck au sujet de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=5",
+      "source_nom": "Vetete – mois +4",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain au sujet de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck au sujet de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=6",
+      "source_nom": "Vetete – mois +5",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain parlant de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck au sujet de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-11",
+      "title": "Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km.",
+      "source": "https://vetete.com/?month_page=7",
+      "source_nom": "Vetete – mois +6",
+      "trouve_par": "ligne",
+      "lieu_suppose": null,
+      "raison": "lieu non reconnu",
+      "extrait": "Alain au sujet de la 27ème ronde des rochers. Bonjour, Je souhaite participer à la Montargeoise du 11 novembre 2026, sur le parcours Gravel de 100 km. Je ne trouve pas l’information sur un site internet, ou peut-être que je ne regarde pas au... la suite Franck à propos de la 33ème Montargoise.",
+      "date_detection": "2026-11-09"
+    },
+    {
+      "date": "2026-11-15",
+      "title": "Les randos caumontaises (17 ème édition) à Caumont-l'Éventé le dimanche 15 novembre 2026",
+      "source": "https://vetete.com/les-randos-caumontaises-17eme-edition-a-caumont-l-evente-le-dimanche-15-novembre-2026",
+      "source_nom": "Vetete",
+      "trouve_par": "fiche",
+      "lieu_suppose": "Caumont (09)",
+      "raison": "lieu ambigu",
+      "extrait": "Les randos caumontaises (17ème édition) à Caumont-l'Éventé le dimanche 15 novembre 2026 | vetete.com Sur mobile, déplacez la carte avec 2 doigts. Les dates ne proposant pas les distances recherchées ont leur opacité diminuée. Le partie Filtre est camouflable en cliquant sur sa petite case de fermeture. Les dates annulées apparaissent sur fond noir, les dates reportées sur fond gris. Ne cherchez pa",
+      "date_detection": "2026-11-09"
     },
     {
       "date": "2026-12-06",
