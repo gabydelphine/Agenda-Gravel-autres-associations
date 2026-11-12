@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-01",
+  "updated": "2026-11-13",
   "events": [
     {
       "date": "2026-03-08",
@@ -255,6 +255,24 @@
       "location": "Lalbenque (46)",
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://www.velo-occitanie.fr/gravels/gravels-46/rdn-2026",
+      "statut": "valide"
+    },
+    {
+      "date": "2027-03-27",
+      "end_date": "2027-03-28",
+      "title": "La Brive-Rocamadour",
+      "location": "Lissac-sur-Couze (19)",
+      "details": "Gravel 75 km le samedi (Rocamadour → Lissac), 60 et 105 km le dimanche, d'après l'édition 2026. Dates 2027 à confirmer par l'organisateur (CVG Brive).",
+      "source": "https://www.brive-tourisme.com/en/fiche/fetes-et-manifestations/la-brive-rocamadour-2026-brive-la-gaillarde_TFOFMAAQU019V5003W8",
+      "statut": "valide"
+    },
+    {
+      "date": "2027-05-07",
+      "end_date": "2027-05-09",
+      "title": "La Lozérienne – parcours gravel",
+      "location": "La Canourgue (48)",
+      "details": "Parcours gravel de la Lozérienne Cyclo (étape du Gravel'Tour Cannondale). En 2026, le samedi 9 mai. Dates 2027 et jour du gravel à confirmer.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/lozerienne-gravel/",
       "statut": "valide"
     },
     {

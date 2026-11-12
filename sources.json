@@ -222,6 +222,76 @@
       "motif_liens": "/evenements-calendrier-gravel/"
     },
     {
+      "nom": "Gravel Passion – Aveyron",
+      "url": "https://www.gravelpassion.fr/lieu/aveyron-12/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Cantal",
+      "url": "https://www.gravelpassion.fr/lieu/cantal-15/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Corrèze",
+      "url": "https://www.gravelpassion.fr/lieu/correze-19/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Dordogne",
+      "url": "https://www.gravelpassion.fr/lieu/dordogne-24/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Hérault",
+      "url": "https://www.gravelpassion.fr/lieu/herault-34/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Landes",
+      "url": "https://www.gravelpassion.fr/lieu/landes-40/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Lot-et-Garonne",
+      "url": "https://www.gravelpassion.fr/lieu/lot-et-garonne-47/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Lozère",
+      "url": "https://www.gravelpassion.fr/lieu/lozere-48/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Pyrénées-Atlantiques",
+      "url": "https://www.gravelpassion.fr/lieu/pyrenees-atlantiques-64/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
+      "nom": "Gravel Passion – Pyrénées-Orientales",
+      "url": "https://www.gravelpassion.fr/lieu/pyrenees-orientales-66/",
+      "suivre_liens": true,
+      "pages_max": 15,
+      "motif_liens": "/evenements-calendrier-gravel/"
+    },
+    {
       "nom": "Gravel Agenda",
       "url": "https://gravelagenda.com/",
       "suivre_liens": true
