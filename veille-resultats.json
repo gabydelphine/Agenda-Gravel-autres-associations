@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-11T06:25:56+00:00",
+  "updated": "2026-11-12T06:29:28+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -115,11 +115,11 @@
         "pistes": 4
       },
       "Vetete": {
-        "pages_lues": 15,
+        "pages_lues": 14,
         "pistes": 1
       },
       "Vetete – mois +1": {
-        "pages_lues": 10,
+        "pages_lues": 9,
         "pistes": 0
       },
       "Vetete – mois +2": {
@@ -146,11 +146,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 391,
+    "pages_lues": 389,
     "erreurs": 0,
     "candidats": 15,
     "nouvelles_fiches": 0,
-    "hors_zone": 91,
+    "hors_zone": 92,
     "a_examiner": 30
   },
   "candidats": [

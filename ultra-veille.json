@@ -1,6 +1,6 @@
 {
   "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
-  "maj": "2026-11-11",
+  "maj": "2026-11-12",
   "nouveautes": [
     {
       "id": "eed0e35dd6113186",
@@ -41,6 +41,26 @@
       ],
       "p": "ES",
       "distance_toulouse_km": 249
+    },
+    {
+      "id": "929a09dc714cd005",
+      "n": "Bartje 200",
+      "d": "2027-06-12",
+      "f": null,
+      "l": "Assen, Drenthe, NL",
+      "k": [
+        200
+      ],
+      "t": "gravel",
+      "s": "https://gritline.cc/events/bartje-200-2027",
+      "trouve_par": "Gritline – gravel en Catalogne",
+      "vu_le": "2026-11-12",
+      "c": [
+        45.95,
+        2.168
+      ],
+      "p": "FR",
+      "distance_toulouse_km": 267
     }
   ],
   "mises_a_jour": [],
@@ -58,7 +78,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/2026-hunt-1000/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-11-11"
+      "vu_le": "2026-11-12"
     },
     {
       "id": "8ee8292e8f476008",
@@ -72,7 +92,7 @@
       "t": "bikepacking",
       "s": "https://gravelevents.com/events/termes-53",
       "trouve_par": "gravelevents.com – Espagne",
-      "vu_le": "2026-11-11"
+      "vu_le": "2026-11-12"
     }
   ],
   "refusees": [
