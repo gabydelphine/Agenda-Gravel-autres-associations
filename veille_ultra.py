@@ -80,29 +80,43 @@ class Geocodeur:
                                      compter=False, verifier=False)
         return json.loads(contenu)
 
+    PAYS = {"fr": "FR", "france": "FR", "es": "ES", "espagne": "ES", "spain": "ES", "espana": "ES",
+            "ad": "AD", "andorre": "AD", "andorra": "AD"}
+    TYPES_COMMUNE = {"city", "town", "village", "hamlet", "municipality"}
+
     def chercher(self, lieu):
-        """Le résultat doit contenir la commune citée en premier : sinon OpenStreetMap
-        renvoie parfois le centre de la région (« Baza, Catalogne » → Gérone)."""
+        """Coordonnées de la commune citée en premier dans « lieu ».
+        Seule une commune de France, d'Espagne ou d'Andorre portant exactement ce nom est
+        acceptée : les sites de calendrier donnent parfois une région fausse (« Málaga,
+        Catalonia »), et OpenStreetMap renvoie alors une rue de Barcelone ou un hameau français."""
         cle = normaliser(lieu)
         if not cle:
             return None
         if cle in self.cache:
             return self.cache[cle]
-        commune = normaliser(re.split(r"[,(]", lieu)[0])
+        morceaux = [m.strip() for m in re.split(r"[,(]", lieu.replace(")", "")) if m.strip()]
+        commune = normaliser(morceaux[0]) if morceaux else ""
+        dernier = normaliser(morceaux[-1]) if len(morceaux) > 1 else ""
+        attendu = None
+        if dernier:
+            if dernier in self.PAYS:
+                attendu = self.PAYS[dernier]
+            elif re.fullmatch(r"[a-z]{2}|united states|united kingdom|belgium|belgique|"
+                              r"netherlands|pays-bas|italy|italie|portugal|germany|allemagne|"
+                              r"switzerland|suisse|australia|luxembourg", dernier):
+                self.cache[cle] = None  # hors de France, d'Espagne et d'Andorre
+                return None
         resultat = None
         try:
-            for q in dict.fromkeys([lieu, re.split(r"[,(]", lieu)[0].strip()]):
-                for r in self._requete(q):
-                    adr = r.get("address", {})
-                    noms = " ".join(normaliser(adr.get(k, "")) for k in
-                                    ("city", "town", "village", "municipality", "hamlet", "suburb"))
-                    if commune and commune in (noms + " " + normaliser(r.get("name", ""))):
-                        pays = (adr.get("country_code") or "").upper()
-                        resultat = {"c": [round(float(r["lat"]), 3), round(float(r["lon"]), 3)],
-                                    "p": "ES" if pays == "ES" else "FR"}
-                        break
-                if resultat:
-                    break
+            for r in self._requete(morceaux[0] if morceaux else lieu):
+                pays = (r.get("address", {}).get("country_code") or "").upper()
+                if r.get("addresstype") not in self.TYPES_COMMUNE or normaliser(r.get("name", "")) != commune:
+                    continue
+                if attendu and pays != attendu:
+                    continue
+                resultat = {"c": [round(float(r["lat"]), 3), round(float(r["lon"]), 3)],
+                            "p": "ES" if pays == "ES" else "FR"}
+                break
         except Exception as e:
             journal(f"  géocodage « {lieu} » → {e}")
             return None
