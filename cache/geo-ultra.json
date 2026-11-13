@@ -1,1 +1,29 @@
-{}
+{
+  "pays basque, france, france": null,
+  "grenoble, france, france": {
+    "c": [
+      45.188,
+      5.736
+    ],
+    "p": "FR"
+  },
+  "bassin minier, france, france": null,
+  "mallorca, spain, spain": null,
+  "el rompido (cartaya), andalucia, es": {
+    "c": [
+      37.223,
+      -7.124
+    ],
+    "p": "ES"
+  },
+  "maspalomas, canary islands, es": {
+    "c": [
+      27.753,
+      -15.597
+    ],
+    "p": "ES"
+  },
+  "melbourne, vic, australia": null,
+  "andalucia, spain": null,
+  "fayetteville, ar, united states": null
+}
