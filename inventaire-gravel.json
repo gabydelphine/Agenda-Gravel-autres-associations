@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13",
+  "updated": "2026-11-14",
   "events": [
     {
       "date": "2026-03-08",
@@ -429,6 +429,20 @@
       "validation_gravel": "utilisateur",
       "statut": "valide",
       "date_decision": "2026-11-13"
+    },
+    {
+      "date": "2027-05-23",
+      "title": "Le Gravel 47, au cœur des chemins verts du Pays de Lauzun.",
+      "location": "Lauzun (47)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://competitions.ffc.fr/calendrier/competition/2027/C5047230005/le-gravel-47-au-cur-des-chemins-verts-du-pays-de-lauzun/",
+      "source_nom": "FFC",
+      "trouve_par": "ffc",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 139.4,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-14"
     },
     {
       "date": "2027-06-07",
