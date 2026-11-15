@@ -349,6 +349,20 @@
       "date_decision": "2026-11-01"
     },
     {
+      "date": "2026-11-15",
+      "title": "La Raisin d’Or",
+      "location": "Sauternes (33)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/la-raisin-d-or/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 176.3,
+      "fiabilite_lieu": "probable",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-15"
+    },
+    {
       "date": "2026-11-22",
       "title": "La Mirandaise (Challenge de la Lomagne)",
       "location": "Mirande (32)",
@@ -418,6 +432,34 @@
       "validation_gravel": "utilisateur",
       "statut": "valide",
       "date_decision": "2026-11-13"
+    },
+    {
+      "date": "2027-04-11",
+      "title": "Le Défi 47",
+      "location": "Villeneuve-sur-Lot (47)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/le-defi-47/",
+      "source_nom": "Gravel Passion – Lot-et-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 106.2,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-15"
+    },
+    {
+      "date": "2027-04-23",
+      "title": "GravelMan Salagou",
+      "location": "Castelnau-de-Guers (34)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravelman-salagou/",
+      "source_nom": "Gravel Passion – Hérault",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 164.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-15"
     },
     {
       "date": "2027-05-07",
@@ -503,7 +545,14 @@
       "distance_toulouse_km": 131.0,
       "fiabilite_lieu": "probable",
       "statut": "a_verifier",
-      "date_detection": "2026-10-22"
+      "date_detection": "2026-10-22",
+      "autres_sources": [
+        {
+          "nom": "Vélo Occitanie – VTT 31",
+          "url": "https://velo-occitanie.fr/cyclos/evenements-cyclo-de-l-aveyron-12/coeur-larzac-2027",
+          "titre": "Cœur Larzac"
+        }
+      ]
     },
     {
       "date": "2027-08-16",
@@ -547,7 +596,14 @@
       "distance_toulouse_km": 64.5,
       "fiabilite_lieu": "certaine",
       "statut": "a_verifier",
-      "date_detection": "2026-10-26"
+      "date_detection": "2026-10-26",
+      "autres_sources": [
+        {
+          "nom": "Vélo Occitanie – VTT 31",
+          "url": "https://velo-occitanie.fr/cyclos/evenements-cyclos-du-tarn-81/la-castraise-2027",
+          "titre": "LA CASTRAISE"
+        }
+      ]
     }
   ]
 }
