@@ -445,17 +445,6 @@
   ],
   "a_examiner": [
     {
-      "date": "2025-11-30",
-      "title": "Seconde édition de La Gravel'n truffes le 30 novembre 2025 à Sorges (24420).",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/la-gravel-n-truffes/",
-      "source_nom": "Gravel Passion – Dordogne",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Organisé par Vélo Club Trélissac À propos de cette épreuve Seconde édition de La Gravel'n truffes le 30 novembre 2025 à Sorges (24420). 2 ravitos et une \"Pasta Party\" à votre arrivé compris dans l’inscription de 12 euros. Le parcours n'est pas balisé, la trace gpx vous seras envoyé par mail avant votre départ.",
-      "date_detection": "2026-11-15"
-    },
-    {
       "date": "2026-08-16",
       "title": "Rando de l’Ail (Mauvezin)",
       "source": "https://codep32-ffvelo.blogspot.com/p/calendrier_13.html",
@@ -709,17 +698,6 @@
       "date_detection": "2026-11-09"
     },
     {
-      "date": "2026-11-23",
-      "title": "Race The Nile – Uganda Ultra 2026 est une nouvelle épreuve d’ultra-distance gravel en autonomie, organisée du 23 au 27 n",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/race-the-nile/",
-      "source_nom": "Gravel Passion – Haute-Garonne",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Organisé par Race The Nile À propos de cette épreuve Race The Nile – Uganda Ultra 2026 est une nouvelle épreuve d’ultra-distance gravel en autonomie, organisée du 23 au 27 novembre 2026 dans la région de West Nile, au nord-ouest de l’Ouganda. Pendant cinq jours, un peloton international volontairement limité s’élancera d’Arua City pour parcourir une région encore largement absente des itinéraires ",
-      "date_detection": "2026-11-15"
-    },
-    {
       "date": "2026-12-06",
       "title": "Groupe Cyclos, VTT, Gravel, Marche Occitanie",
       "source": "https://www.velo-occitanie.fr/vtt/evenements-vtt-haute-garonne-31",
@@ -762,28 +740,6 @@
       "raison": "lieu non reconnu",
       "extrait": "La plateforme VELO OCCITANIE a été conçue pour faciliter l’organisation de vos sorties sportives. Son interface intuitive Lire la suite: Avant de vous rendre à une manifestation, n’hésitez pas à contacter l’organisateur pour savoir si celle-ci a toujours lieu. Groupe Cyclos, VTT, Gravel, Marche Occitanie 13 Déc",
       "date_detection": "2026-10-26"
-    },
-    {
-      "date": "2027-03-29",
-      "title": "Quatre parcours gravel seront proposés : 65 km ; 78 km ; 105 km ou 120 km, le",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/la-choureute/",
-      "source_nom": "Gravel Passion – Landes",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "Organisé par Cyclo Club Ychoussois À propos de cette épreuve Quatre parcours gravel seront proposés : 65 km ; 78 km ; 105 km ou 120 km, le dimanche 29 mars.",
-      "date_detection": "2026-11-15"
-    },
-    {
-      "date": "2027-04-04",
-      "title": "Gravel Tourisme, limitée à 15 participants, avec départ le vers 9h00, après le petit-déjeuner chez notre partenaire Clém",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/o-gravel-occitanie-600/",
-      "source_nom": "Gravel Passion – Haute-Garonne",
-      "trouve_par": "ligne",
-      "lieu_suppose": null,
-      "raison": "lieu non reconnu",
-      "extrait": "– Gravel Tourisme, limitée à 15 participants, avec départ le dimanche 4 avril vers 9h00, après le petit-déjeuner chez notre partenaire Clément et le briefing de départ. Dans cette formule, le tracé est découpé en 5 étapes dans des sites où vous devriez pouvoir trouver des points de couchage plus confortables (hôtels, gîtes). 🤑 Inscription & tarifs 150 euros avant le 31/10/2026",
-      "date_detection": "2026-11-15"
     },
     {
       "date": "2027-05-09",

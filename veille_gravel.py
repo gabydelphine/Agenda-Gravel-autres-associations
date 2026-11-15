@@ -268,6 +268,33 @@ def page_rubrique(url, titre):
     return bool(re.fullmatch(r"[a-z ]{2,20}\(\s*\d{2}\s*\)", normaliser(titre)))
 
 
+def fiche_faq(html):
+    """Fiches Gravel Passion : un bloc FAQ (schema.org) donne la date exacte
+    (« aura lieu le 23/05/2027 ») et le départ (« Le départ … est à … »).
+    Renvoie None si la page n'en a pas."""
+    for m in re.finditer(r"(?is)<script[^>]+application/ld\+json[^>]*>(.*?)</script>", html):
+        try:
+            obj = json.loads(m.group(1).strip())
+        except ValueError:
+            continue
+        if not (isinstance(obj, dict) and obj.get("@type") == "FAQPage"):
+            continue
+        quand, nom, adresse = None, None, None
+        for q in obj.get("mainEntity") or []:
+            question = unescape(str(q.get("name") or ""))
+            reponse = unescape(str((q.get("acceptedAnswer") or {}).get("text") or "")).replace("\xa0", " ")
+            if re.search(r"(?i)prochaine [ée]dition|aura lieu", question + " " + reponse) and quand is None:
+                quand = reponse
+            d = re.search(r"(?i)d[ée]part de l[’']?[ée]preuve (.+?)\s*\?\s*$", question)
+            if d:
+                nom = d.group(1).strip()
+                a = re.search(r"(?i)\best [àa] (.+?)\.?\s*$", reponse)
+                adresse = a.group(1).strip() if a else reponse
+        if quand is not None:
+            return {"quand": quand, "nom": nom, "adresse": adresse}
+    return None
+
+
 def objets_jsonld(html):
     """Renvoie les objets schema.org de type Event trouvés dans la page."""
     resultats = []
@@ -457,13 +484,15 @@ RE_DATE_TEXTE = re.compile(
     r"\b(?:" + _JOURS + r")?(\d{1,2})(?:er|e)?"
     r"(?:\s*(?:et|au|-|–|/|&)\s*(?:" + _JOURS + r")?(\d{1,2})(?:er|e)?)?"
     r"\s+(" + _MOIS_RE + r")\.?(?:\s+(20\d{2}))?\b")
-RE_DATE_NUM = re.compile(r"(?<![\d/.])(\d{1,2})[/.](\d{1,2})[/.](20\d{2}|\d{2})(?![\d/.])")
+RE_DATE_NUM = re.compile(r"(?<![\d/.])(\d{1,2})[/.](\d{1,2})[/.](20\d{2}|\d{2})(?![\d/]|\.\d)")
 RE_DATE_ISO = re.compile(r"\b(20\d{2})-(\d{2})-(\d{2})")
 # « Dimanche 28/2 » (calendriers FSGT) : jour de la semaine obligatoire, sans année.
 RE_DATE_COURTE = re.compile(r"\b" + _JOURS + r"(\d{1,2})\s*/\s*(\d{1,2})(?!\s*/|\d)")
 RE_CONTEXTE_FAUX = re.compile(
     r"(?:publi|mis a jour|mise a jour|modifi|cree le|poste|ecrit le|actualis|version|"
-    r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$")
+    r"jusqu|avant le|date limite|clotur|naissance|copyright|©|derniere|inscriptions? (?:ouvertes|closes|avant|jusqu))[^.\n]{0,30}$"
+    # « Place du 11 Novembre 1918 », « rue du 8 mai 1945 » : un nom de rue, pas une date
+    r"|\b(?:place|pl|rue|avenue|av|bd|boulevard|allee|square|impasse|chemin|quai|cours|esplanade|parc|pont)\.? (?:du |de la )?$")
 
 
 # Fenêtre de recherche : les 365 derniers jours (rubrique « passés » de l'agenda)
@@ -592,7 +621,12 @@ class Collecte:
             ancien = self.candidats.get(cle)
             # Une fiche d'événement est plus fiable qu'une ligne de calendrier.
             if not ancien or (ancien["trouve_par"] == "ligne" and trouve_par != "ligne"):
+                if ancien:
+                    fiche["autres_sources"] = ancien.get("autres_sources", []) + [
+                        {"nom": ancien["source_nom"], "url": ancien["source"], "titre": ancien["title"]}]
                 self.candidats[cle] = fiche
+            elif ancien["source"] != url and all(a["url"] != url for a in ancien.get("autres_sources", [])):
+                ancien.setdefault("autres_sources", []).append({"nom": source, "url": url, "titre": titre})
             return
         cle = (debut.isoformat(), url)
         if cle not in self.a_examiner:
@@ -657,6 +691,26 @@ class Collecte:
 
     def analyser_page(self, html, url, source, trouve_par):
         """Renvoie True si la page ressemble à une liste d'événements (à explorer)."""
+        faq = fiche_faq(html)
+        if faq:
+            # La FAQ fait foi : une édition passée (date non plausible) est ignorée.
+            dates = [d for d in trouver_dates(faq["quand"], annee_implicite=False) if d[1] >= AUJOURDHUI]
+            if dates:
+                _, debut, fin = dates[0]
+                if len(dates) > 1 and dates[-1][1] > debut:
+                    fin = dates[-1][1]
+                h1 = re.search(r"(?is)<h1\b[^>]*>(.*?)</h1>", html)
+                titre = faq["nom"] or (re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", h1.group(1)))).strip() if h1 else "")
+                commune, etat = None, None
+                adresse = faq["adresse"] or ""
+                morceaux = [m.strip() for m in adresse.split(",") if m.strip() and normaliser(m.strip()) != "france"]
+                for essai in ([morceaux[-1]] if morceaux else []) + [adresse]:
+                    commune, etat = self.communes.trouver(essai, souple=True)
+                    if commune and etat != "ambigu":
+                        break
+                self.ajouter(titre=titre or titre_page(html), debut=debut, fin=fin, commune=commune, etat=etat,
+                             url=url, source=source, trouve_par="fiche", extrait=f"{faq['quand']} Départ : {adresse}")
+            return False
         # a) Données structurées schema.org
         for ev in objets_jsonld(html):
             nom = unescape(str(ev.get("name") or ""))
@@ -1065,11 +1119,16 @@ def fusionner(candidats):
         if deja:
             # Même épreuve vue sur un autre site : on garde le lien en complément
             # sur la fiche encore à vérifier (pratique pour juger une annonce floue).
+            vues = [{"nom": c.get("source_nom", ""), "url": c.get("source"), "titre": c.get("title", "")}]
+            vues += c.get("autres_sources", [])
             for f in deja:
-                if f.get("statut") == "a_verifier" and c.get("source") and c["source"] != f.get("source"):
-                    autres = f.setdefault("autres_sources", [])
-                    if all(a.get("url") != c["source"] for a in autres):
-                        autres.append({"nom": c.get("source_nom", ""), "url": c["source"], "titre": c.get("title", "")})
+                if f.get("statut") != "a_verifier":
+                    continue
+                for v in vues:
+                    if v["url"] and v["url"] != f.get("source"):
+                        autres = f.setdefault("autres_sources", [])
+                        if all(a.get("url") != v["url"] for a in autres):
+                            autres.append(v)
             continue
         fiche = {k: v for k, v in c.items() if k != "extrait"}
         fiche["statut"] = "a_verifier"

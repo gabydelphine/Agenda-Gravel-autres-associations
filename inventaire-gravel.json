@@ -349,20 +349,6 @@
       "date_decision": "2026-11-01"
     },
     {
-      "date": "2026-11-11",
-      "title": "Le départ de cette épreuve gravel est à Pl. du 11 Novembre 1918, 46110 Vayrac, France.",
-      "location": "Vayrac (46)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/uxel-lotoise/",
-      "source_nom": "Gravel Passion – Lot",
-      "trouve_par": "ligne",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 150.2,
-      "fiabilite_lieu": "certaine",
-      "statut": "a_verifier",
-      "date_detection": "2026-11-15"
-    },
-    {
       "date": "2026-11-22",
       "title": "La Mirandaise (Challenge de la Lomagne)",
       "location": "Mirande (32)",
@@ -456,7 +442,14 @@
       "distance_toulouse_km": 139.4,
       "fiabilite_lieu": "certaine",
       "statut": "a_verifier",
-      "date_detection": "2026-11-14"
+      "date_detection": "2026-11-14",
+      "autres_sources": [
+        {
+          "nom": "Gravel Passion – Lot-et-Garonne",
+          "url": "https://www.gravelpassion.fr/evenements-calendrier-gravel/le-gravel-47/",
+          "titre": "Le Gravel 47"
+        }
+      ]
     },
     {
       "date": "2027-06-07",
@@ -528,20 +521,6 @@
       "date_decision": "2026-10-15"
     },
     {
-      "date": "2027-08-30",
-      "title": "RANDO VTT & GRAVEL ESPALION",
-      "location": "Espalion (12)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/3-boucles-espalion/",
-      "source_nom": "Gravel Passion – Aveyron",
-      "trouve_par": "ligne",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 146.4,
-      "fiabilite_lieu": "certaine",
-      "statut": "a_verifier",
-      "date_detection": "2026-11-15"
-    },
-    {
       "date": "2027-09-20",
       "title": "Dimanc he 20 septembre Gravel St André (31) matin et après-midi A.C. Le Fousseret 06 50 61 39 10",
       "location": "Le Fousseret (31)",
@@ -555,20 +534,6 @@
       "statut": "refuse",
       "date_detection": "2026-10-21",
       "date_decision": "2026-10-25"
-    },
-    {
-      "date": "2027-10-03",
-      "title": "Du au , vous avez rendez-vous chez Wish One (Millau en Aveyron) au cœur des paysages du Pars Naturel Régional des Grands",
-      "location": "Saint-Affrique (12)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/wish-one-camp/",
-      "source_nom": "Gravel Passion – Aveyron",
-      "trouve_par": "ligne",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 119.7,
-      "fiabilite_lieu": "certaine",
-      "statut": "a_verifier",
-      "date_detection": "2026-11-15"
     },
     {
       "date": "2027-10-17",
