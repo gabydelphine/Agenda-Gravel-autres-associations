@@ -247,6 +247,13 @@ def main():
                     echapper(source)
                 )
             )
+        for autre in fiche.get("autres_sources") or []:
+            morceaux_html.append(
+                '<p>Aussi annoncé sur {} : <a href="{}">{}</a></p>'.format(
+                    echapper(autre.get("nom") or "un autre site"), echapper(autre.get("url")),
+                    echapper(autre.get("titre") or autre.get("url"))
+                )
+            )
 
         morceaux_html.extend([
             '<p><a href="{}" style="display:inline-block;'
@@ -269,6 +276,7 @@ def main():
             f"Lieu : {lieu}",
             f"Détails : {details}",
             f"Source : {source}",
+            *[f"Aussi annoncé sur {a.get('nom') or 'un autre site'} : {a.get('url')}" for a in fiche.get("autres_sources") or []],
             f"Valider : {valider}",
             f"Refuser : {refuser}",
             ""

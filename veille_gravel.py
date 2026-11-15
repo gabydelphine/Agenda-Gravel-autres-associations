@@ -202,12 +202,23 @@ def html_vers_texte(html):
 
 
 def contenu_principal(html):
+    m = re.search(r"(?is)<body\b[^>]*>(.*)</body>", html)
+    corps = m.group(1) if m else html
+    dates_corps = None
     for balise in ("main", "article"):
         m = re.search(rf"(?is)<{balise}\b[^>]*>(.*)</{balise}>", html)
-        if m and len(m.group(1)) > 500:
+        if not (m and len(m.group(1)) > 500):
+            continue
+        # Certains sites (Gravel Passion…) n'emploient <article> que pour des
+        # encarts « à lire aussi » : la fiche de l'épreuve est ailleurs. On ne
+        # garde la zone que si elle porte une date, ou si la page n'en a aucune.
+        if trouver_dates(html_vers_texte(m.group(1))[:20000]):
             return m.group(1)
-    m = re.search(r"(?is)<body\b[^>]*>(.*)</body>", html)
-    return m.group(1) if m else html
+        if dates_corps is None:
+            dates_corps = bool(trouver_dates(html_vers_texte(corps)[:20000]))
+        if not dates_corps:
+            return m.group(1)
+    return corps
 
 
 def titre_page(html):
@@ -217,6 +228,8 @@ def titre_page(html):
         m = re.search(motif, html)
         if m:
             t = re.sub(r"\s+", " ", unescape(re.sub(r"<[^>]+>", " ", m.group(2)))).strip()
+            # « Le Gravel 47 2026 : parcours, infos, inscription… » (Gravel Passion)
+            t = re.sub(r"(?i)\s+20\d\d\s*:\s*parcours\b.*$", "", t)
             t = re.sub(r"\s*[|\-–—]\s*(?:vetete\.com|miles republic|helloasso|klikego|njuko|gravel passion|gravel agenda).*$", "", t, flags=re.I)
             if 4 <= len(t) <= 200:
                 return t
@@ -1048,7 +1061,15 @@ def fusionner(candidats):
     existantes = fiches + calendrier.get("events", [])
     nouvelles = []
     for c in sorted(candidats, key=lambda f: (f["date"], f["title"])):
-        if any(meme_manifestation(c, f) for f in existantes):
+        deja = [f for f in existantes if meme_manifestation(c, f)]
+        if deja:
+            # Même épreuve vue sur un autre site : on garde le lien en complément
+            # sur la fiche encore à vérifier (pratique pour juger une annonce floue).
+            for f in deja:
+                if f.get("statut") == "a_verifier" and c.get("source") and c["source"] != f.get("source"):
+                    autres = f.setdefault("autres_sources", [])
+                    if all(a.get("url") != c["source"] for a in autres):
+                        autres.append({"nom": c.get("source_nom", ""), "url": c["source"], "titre": c.get("title", "")})
             continue
         fiche = {k: v for k, v in c.items() if k != "extrait"}
         fiche["statut"] = "a_verifier"
@@ -1103,6 +1124,12 @@ def main():
         if p["date"] >= limite and not any(
                 c["date"] == p["date"] and c["source"] == p["source"] for c in candidats):
             pistes.setdefault(cle, dict(p, date_detection=AUJOURDHUI.isoformat()))
+    # Une piste sans lieu est résolue si la même épreuve (même date, même nom)
+    # a été reconnue ailleurs, avec sa commune.
+    for cle in [k for k, p in pistes.items()
+                if any(c["date"] == p["date"] and meme_manifestation(dict(p, location=""), dict(c, location=""))
+                       for c in candidats)]:
+        del pistes[cle]
 
     stats.update({"pages_lues": tel.nombre, "erreurs": tel.erreurs, "candidats": len(candidats),
                   "nouvelles_fiches": len(nouvelles), "hors_zone": collecte.hors_zone,
