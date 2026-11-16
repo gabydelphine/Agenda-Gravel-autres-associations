@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-15T22:58:27+00:00",
+  "updated": "2026-11-16T14:01:12+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -80,7 +80,7 @@
       },
       "Gravel Passion – Haute-Garonne": {
         "pages_lues": 15,
-        "pistes": 1
+        "pistes": 0
       },
       "Gravel Passion – Gers": {
         "pages_lues": 1,
@@ -188,8 +188,8 @@
     "recherche_web_explorees": 0,
     "pages_lues": 422,
     "erreurs": 0,
-    "candidats": 19,
-    "nouvelles_fiches": 3,
+    "candidats": 18,
+    "nouvelles_fiches": 0,
     "hors_zone": 93,
     "a_examiner": 33
   },
@@ -318,19 +318,6 @@
       "distance_toulouse_km": 141.2,
       "fiabilite_lieu": "certaine",
       "extrait": "OCS Haut-Languedoc est programmé le 07/11/2026 à Lunas-les-Châteaux. Les distances annoncées sont de 350 km. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. TypeUltra gravel Date7 novembre 2026 LieuLunas, 34144, France OrganisateurOutdoor Cycling Series…"
-    },
-    {
-      "date": "2026-11-15",
-      "title": "La Raisin d’Or",
-      "location": "Sauternes (33)",
-      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/la-raisin-d-or/",
-      "source_nom": "Gravel Passion – Haute-Garonne",
-      "trouve_par": "fiche",
-      "controle_zone": "dans_zone",
-      "distance_toulouse_km": 176.3,
-      "fiabilite_lieu": "probable",
-      "extrait": "Cette épreuve gravel aura lieu le 15/11/2026. Départ : Château Filhot, Route de Filhot, Sauternes, France"
     },
     {
       "date": "2026-12-06",

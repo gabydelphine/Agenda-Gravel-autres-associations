@@ -1,6 +1,6 @@
 {
   "_aide": "Résultats de veille_ultra.py. Rien n'est publié sans décision : voir l'e-mail du dimanche. « refusees » : épreuves et dates à ne plus proposer.",
-  "maj": "2026-11-15",
+  "maj": "2026-11-16",
   "nouveautes": [],
   "mises_a_jour": [],
   "pistes": [
@@ -17,7 +17,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/2026-hunt-1000/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     },
     {
       "id": "acbdcd259120d799",
@@ -31,7 +31,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/el-sur-2027/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     },
     {
       "id": "ed6eb4b787202af0",
@@ -46,7 +46,7 @@
       "t": "bikepacking",
       "s": "https://bikepacking.com/event/doom-2027/",
       "trouve_par": "bikepacking.com – événements",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     },
     {
       "id": "a0ba2c30c0d198a4",
@@ -60,7 +60,7 @@
       "t": "bikepacking",
       "s": "https://gritline.cc/events/veneto-gravel-2027",
       "trouve_par": "Gritline – gravel en Catalogne",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     },
     {
       "id": "8ee8292e8f476008",
@@ -74,7 +74,22 @@
       "t": "bikepacking",
       "s": "https://gravelevents.com/events/termes-53",
       "trouve_par": "gravelevents.com – Espagne",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
+    },
+    {
+      "id": "315f1c0b36aef985",
+      "n": "Grelly ’27",
+      "d": "2027-05-20",
+      "f": null,
+      "l": "Luxembourg, Belgium",
+      "k": [
+        698,
+        700
+      ],
+      "t": "bikepacking",
+      "s": "https://bikepacking.com/event/grelly-2027/",
+      "trouve_par": "bikepacking.com – événements",
+      "vu_le": "2026-11-16"
     },
     {
       "id": "6e5ab9de6c3717cb",
@@ -90,7 +105,7 @@
       "t": "bikepacking",
       "s": "https://gravelevents.com/events/zone-64",
       "trouve_par": "gravelevents.com – France",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     },
     {
       "id": "1c024d3c8c55f2d1",
@@ -104,7 +119,7 @@
       "t": "gravel",
       "s": "https://gravelevents.com/events/gravel-is-mine-2027",
       "trouve_par": "gravelevents.com – France",
-      "vu_le": "2026-11-15"
+      "vu_le": "2026-11-16"
     }
   ],
   "refusees": [
