@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-13",
+  "updated": "2026-11-16",
   "events": [
     {
       "date": "2026-03-08",
@@ -264,6 +264,14 @@
       "location": "Lissac-sur-Couze (19)",
       "details": "Gravel 75 km le samedi (Rocamadour → Lissac), 60 et 105 km le dimanche, d'après l'édition 2026. Dates 2027 à confirmer par l'organisateur (CVG Brive).",
       "source": "https://www.brive-tourisme.com/en/fiche/fetes-et-manifestations/la-brive-rocamadour-2026-brive-la-gaillarde_TFOFMAAQU019V5003W8",
+      "statut": "valide"
+    },
+    {
+      "date": "2027-04-11",
+      "title": "Le Défi 47",
+      "location": "Villeneuve-sur-Lot (47)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/le-defi-47/",
       "statut": "valide"
     },
     {
