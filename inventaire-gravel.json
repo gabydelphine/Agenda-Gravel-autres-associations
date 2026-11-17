@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16",
+  "updated": "2026-11-17",
   "events": [
     {
       "date": "2026-03-08",
@@ -375,6 +375,20 @@
     },
     {
       "date": "2026-11-29",
+      "title": "Grand pignon et champignon",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/grand-pignon-et-champignon/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
+    },
+    {
+      "date": "2026-11-29",
       "title": "La l'Isloise (Challenge de la Lomagne)",
       "location": "L'Isle-Jourdain (32)",
       "details": "Compétition VTT-Gravel et randonnée VTT / VTTAE / Gravel. Départ du vélodrome « le Placia ».",
@@ -424,6 +438,34 @@
       "date_decision": "2026-10-25"
     },
     {
+      "date": "2026-12-19",
+      "title": "Foie gravel",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/foie-gravel/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
+    },
+    {
+      "date": "2027-02-20",
+      "title": "Gravel d’hiver",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravel-d-hiver/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
+    },
+    {
       "date": "2027-03-27",
       "end_date": "2027-03-28",
       "title": "La Brive-Rocamadour",
@@ -433,6 +475,20 @@
       "validation_gravel": "utilisateur",
       "statut": "valide",
       "date_decision": "2026-11-13"
+    },
+    {
+      "date": "2027-03-28",
+      "title": "Bicisberg",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/bicisberg/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
     },
     {
       "date": "2027-04-11",
@@ -463,6 +519,20 @@
       "statut": "valide",
       "date_detection": "2026-11-15",
       "date_decision": "2026-11-16"
+    },
+    {
+      "date": "2027-05-07",
+      "title": "Bici Gravel Loops",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/bici-gravel-loops/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
     },
     {
       "date": "2027-05-07",
@@ -556,6 +626,48 @@
           "titre": "Cœur Larzac"
         }
       ]
+    },
+    {
+      "date": "2027-06-25",
+      "title": "L’estive",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/l-estive/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
+    },
+    {
+      "date": "2027-07-10",
+      "title": "Tour du Lot féminin bikepacking",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/tour-du-lot-feminin-bikepacking/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
+    },
+    {
+      "date": "2027-08-15",
+      "title": "Gravel d’été",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravel-d-ete/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "statut": "a_verifier",
+      "date_detection": "2026-11-17"
     },
     {
       "date": "2027-08-16",
