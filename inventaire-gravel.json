@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-18",
+  "updated": "2026-11-19",
   "events": [
     {
       "date": "2026-03-08",
@@ -654,6 +654,27 @@
       "fiabilite_lieu": "certaine",
       "statut": "a_verifier",
       "date_detection": "2026-11-17"
+    },
+    {
+      "date": "2027-08-01",
+      "title": "VELOTOISE",
+      "location": "Figeac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/cyclos/evenements-cyclos-du-lot-46/velotoise-2027",
+      "source_nom": "Vélo Occitanie",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 120.6,
+      "fiabilite_lieu": "certaine",
+      "autres_sources": [
+        {
+          "nom": "Vélo Occitanie – VTT 31",
+          "url": "https://velo-occitanie.fr/cyclos/evenements-cyclos-du-lot-46/velotoise-2027",
+          "titre": "VELOTOISE"
+        }
+      ],
+      "statut": "a_verifier",
+      "date_detection": "2026-11-19"
     },
     {
       "date": "2027-08-15",
