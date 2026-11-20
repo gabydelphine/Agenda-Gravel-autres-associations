@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-19T14:39:23+00:00",
+  "updated": "2026-11-20T14:21:13+00:00",
   "statistiques": {
     "sites": {
       "Vélo Occitanie": {
@@ -79,75 +79,75 @@
         "pistes": 0
       },
       "Gravel Passion – Haute-Garonne": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 15,
+        "pistes": 4
       },
       "Gravel Passion – Gers": {
-        "pages_lues": 0,
+        "pages_lues": 1,
         "pistes": 0
       },
       "Gravel Passion – Tarn": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Ariège": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Aude": {
-        "pages_lues": 0,
+        "pages_lues": 5,
         "pistes": 0
       },
       "Gravel Passion – Lot": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 10,
+        "pistes": 4
       },
       "Gravel Passion – Tarn-et-Garonne": {
-        "pages_lues": 0,
+        "pages_lues": 3,
         "pistes": 0
       },
       "Gravel Passion – Hautes-Pyrénées": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Aveyron": {
-        "pages_lues": 0,
+        "pages_lues": 12,
         "pistes": 0
       },
       "Gravel Passion – Cantal": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Corrèze": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Dordogne": {
-        "pages_lues": 0,
+        "pages_lues": 3,
         "pistes": 0
       },
       "Gravel Passion – Hérault": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 5,
+        "pistes": 1
       },
       "Gravel Passion – Landes": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Lot-et-Garonne": {
-        "pages_lues": 0,
-        "pistes": 0
+        "pages_lues": 3,
+        "pistes": 2
       },
       "Gravel Passion – Lozère": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Pyrénées-Atlantiques": {
-        "pages_lues": 0,
+        "pages_lues": 2,
         "pistes": 0
       },
       "Gravel Passion – Pyrénées-Orientales": {
-        "pages_lues": 0,
+        "pages_lues": 3,
         "pistes": 0
       },
       "Gravel Agenda": {
@@ -186,11 +186,11 @@
     "ffc_pages": 26,
     "recherche_web_pages": 0,
     "recherche_web_explorees": 0,
-    "pages_lues": 373,
-    "erreurs": 18,
-    "candidats": 17,
-    "nouvelles_fiches": 1,
-    "hors_zone": 84,
+    "pages_lues": 431,
+    "erreurs": 0,
+    "candidats": 27,
+    "nouvelles_fiches": 0,
+    "hors_zone": 91,
     "a_examiner": 33
   },
   "candidats": [
@@ -320,6 +320,19 @@
       "extrait": "OCS Haut-Languedoc est programmé le 07/11/2026 à Lunas-les-Châteaux. Les distances annoncées sont de 350 km. Consultez le site de l’organisation pour confirmer les horaires, les conditions d’inscription et les éventuelles modifications avant votre déplacement. TypeUltra gravel Date7 novembre 2026 LieuLunas, 34144, France OrganisateurOutdoor Cycling Series…"
     },
     {
+      "date": "2026-11-29",
+      "title": "Grand pignon et champignon",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/grand-pignon-et-champignon/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 29/11/2026. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
       "date": "2026-12-06",
       "title": "Rando Téléthon Moissac 2026",
       "location": "Moissac (82)",
@@ -390,17 +403,102 @@
       ]
     },
     {
+      "date": "2026-12-19",
+      "title": "Foie gravel",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/foie-gravel/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 19/12/2026. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
+      "date": "2027-02-20",
+      "title": "Gravel d’hiver",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravel-d-hiver/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 20/02/2027. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
+      "date": "2027-03-28",
+      "title": "Bicisberg",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/bicisberg/",
+      "source_nom": "Gravel Passion – Haute-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 28/03/2027. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
+      "date": "2027-04-11",
+      "title": "Le Défi 47",
+      "location": "Villeneuve-sur-Lot (47)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/le-defi-47/",
+      "source_nom": "Gravel Passion – Lot-et-Garonne",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 106.2,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 11/04/2027. Départ : Stade Myre Mory D911, 47300 Villeneuve-sur-Lot"
+    },
+    {
+      "date": "2027-04-23",
+      "title": "GravelMan Salagou",
+      "location": "Castelnau-de-Guers (34)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravelman-salagou/",
+      "source_nom": "Gravel Passion – Hérault",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 164.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 23/04/2027. Départ : Avenue de Pomérols, 34120 Castelnau-de-Guers, France"
+    },
+    {
+      "date": "2027-05-07",
+      "title": "Bici Gravel Loops",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/bici-gravel-loops/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 07/05/2027. Départ : 46200 Souillac, France"
+    },
+    {
       "date": "2027-05-23",
-      "title": "Le Gravel 47, au cœur des chemins verts du Pays de Lauzun.",
+      "title": "Le Gravel 47",
       "location": "Lauzun (47)",
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
-      "source": "https://competitions.ffc.fr/calendrier/competition/2027/C5047230005/le-gravel-47-au-cur-des-chemins-verts-du-pays-de-lauzun/",
-      "source_nom": "FFC",
-      "trouve_par": "ffc",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/le-gravel-47/",
+      "source_nom": "Gravel Passion – Lot-et-Garonne",
+      "trouve_par": "fiche",
       "controle_zone": "dans_zone",
       "distance_toulouse_km": 139.4,
       "fiabilite_lieu": "certaine",
-      "extrait": "Gravel National Le 23/05/2027 Lot-et-Garonne Le Gravel 47, au cœur des chemins verts du Pays de Lauzun. — département Lot-et-Garonne"
+      "extrait": "Cette épreuve gravel aura lieu le 23/05/2027. Départ : 235 Chem. de la Tourasse, 47410 Lauzun, France",
+      "autres_sources": [
+        {
+          "nom": "FFC",
+          "url": "https://competitions.ffc.fr/calendrier/competition/2027/C5047230005/le-gravel-47-au-cur-des-chemins-verts-du-pays-de-lauzun/",
+          "titre": "Le Gravel 47, au cœur des chemins verts du Pays de Lauzun."
+        }
+      ]
     },
     {
       "date": "2027-06-07",
@@ -457,6 +555,32 @@
       ]
     },
     {
+      "date": "2027-06-25",
+      "title": "L’estive",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/l-estive/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 25/06/2027. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
+      "date": "2027-07-10",
+      "title": "Tour du Lot féminin bikepacking",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/tour-du-lot-feminin-bikepacking/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 10/07/2027. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
+    },
+    {
       "date": "2027-08-01",
       "title": "VELOTOISE",
       "location": "Figeac (46)",
@@ -475,6 +599,19 @@
           "titre": "VELOTOISE"
         }
       ]
+    },
+    {
+      "date": "2027-08-15",
+      "title": "Gravel d’été",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravel-d-ete/",
+      "source_nom": "Gravel Passion – Lot",
+      "trouve_par": "fiche",
+      "controle_zone": "dans_zone",
+      "distance_toulouse_km": 145.6,
+      "fiabilite_lieu": "certaine",
+      "extrait": "Cette épreuve gravel aura lieu le 15/08/2027. Départ : 25 Av. de Sarlat, 46200 Souillac, France"
     },
     {
       "date": "2027-09-20",
