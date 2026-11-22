@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-16",
+  "updated": "2026-11-22",
   "events": [
     {
       "date": "2026-03-08",
@@ -231,6 +231,14 @@
       "location": "Mirande (32)",
       "details": "Catégorie gravel mixte en compétition, et randonnée 30 km. Départ 9 h 30. Organisé par Les Bleuets Mirandais. Inscriptions sur Chronostart jusqu'au vendredi 22 h (tarif réduit pour les 4 manches).",
       "source": "https://chrono-start.com/events/challene-lomagne/",
+      "statut": "valide"
+    },
+    {
+      "date": "2026-11-29",
+      "title": "Grand pignon et champignon",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/grand-pignon-et-champignon/",
       "statut": "valide"
     },
     {
