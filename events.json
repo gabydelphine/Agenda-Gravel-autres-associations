@@ -355,6 +355,14 @@
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/l-estive/",
       "statut": "valide"
+    },
+    {
+      "date": "2027-07-10",
+      "title": "Tour du Lot féminin bikepacking",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/tour-du-lot-feminin-bikepacking/",
+      "statut": "valide"
     }
   ]
 }
