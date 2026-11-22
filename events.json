@@ -371,6 +371,14 @@
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://www.velo-occitanie.fr/cyclos/evenements-cyclos-du-lot-46/velotoise-2027",
       "statut": "valide"
+    },
+    {
+      "date": "2027-08-15",
+      "title": "Gravel d’été",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/gravel-d-ete/",
+      "statut": "valide"
     }
   ]
 }
