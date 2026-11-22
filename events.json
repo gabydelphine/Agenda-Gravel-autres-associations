@@ -347,6 +347,14 @@
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://competitions.ffc.fr/calendrier/competition/2027/C5112001001/wish-one-millau-grands-causses/",
       "statut": "valide"
+    },
+    {
+      "date": "2027-06-25",
+      "title": "L’estive",
+      "location": "Souillac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/l-estive/",
+      "statut": "valide"
     }
   ]
 }
