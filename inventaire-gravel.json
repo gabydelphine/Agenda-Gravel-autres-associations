@@ -679,8 +679,9 @@
           "titre": "VELOTOISE"
         }
       ],
-      "statut": "a_verifier",
-      "date_detection": "2026-11-19"
+      "statut": "valide",
+      "date_detection": "2026-11-19",
+      "date_decision": "2026-11-22"
     },
     {
       "date": "2027-08-15",

@@ -363,6 +363,14 @@
       "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
       "source": "https://www.gravelpassion.fr/evenements-calendrier-gravel/tour-du-lot-feminin-bikepacking/",
       "statut": "valide"
+    },
+    {
+      "date": "2027-08-01",
+      "title": "VELOTOISE",
+      "location": "Figeac (46)",
+      "details": "Repéré automatiquement — parcours gravel à vérifier avant publication.",
+      "source": "https://www.velo-occitanie.fr/cyclos/evenements-cyclos-du-lot-46/velotoise-2027",
+      "statut": "valide"
     }
   ]
 }
