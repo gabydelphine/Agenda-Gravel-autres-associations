@@ -27,5 +27,12 @@
   "andalucia, spain": null,
   "fayetteville, ar, united states": null,
   "bassano del grappa, veneto, it": null,
-  "luxembourg, belgium": null
+  "luxembourg, belgium": null,
+  "annecy, auvergne-rhone-alpes, fr": {
+    "c": [
+      45.899,
+      6.129
+    ],
+    "p": "FR"
+  }
 }
